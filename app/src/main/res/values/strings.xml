@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">VTU DS Lab</string>
+    <string name="no_internet_connection">No Internet Connection.</string>
+    <string name="error_occurred">Some Error Occurred.</string>
+</resources>
