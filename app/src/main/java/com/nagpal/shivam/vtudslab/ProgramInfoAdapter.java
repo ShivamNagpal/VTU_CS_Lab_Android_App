@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ProgramAdapter extends ArrayAdapter<ProgramInfo> {
+public class ProgramInfoAdapter extends ArrayAdapter<ProgramInfo> {
 
-    public ProgramAdapter(@NonNull Context context, ArrayList<ProgramInfo> programInfoArrayList) {
+    public ProgramInfoAdapter(@NonNull Context context, ArrayList<ProgramInfo> programInfoArrayList) {
         super(context, 0, programInfoArrayList);
     }
 

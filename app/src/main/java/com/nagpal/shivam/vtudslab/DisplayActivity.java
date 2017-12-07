@@ -82,6 +82,7 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
             emptyTextView.setText(R.string.error_occurred);
             return;
         }
+        s = s.replaceAll("\t", "\t\t");
         displayTextView.setText(s);
     }
 

@@ -16,7 +16,9 @@ gen/
 out/
 
 # Gradle files
+.gradle
 .gradle/
+build
 build/
 
 # Local configuration file (sdk path, etc)
@@ -36,9 +38,11 @@ captures/
 
 # Intellij
 *.iml
+.idea
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/gradle.xml
+.idea/vcs.xml
 .idea/dictionaries
 .idea/libraries
 
@@ -50,8 +54,11 @@ captures/
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
+app/google-services.json
 
 # Freeline
 freeline.py
 freeline/
 freeline_project_description.json
+
+.DS_Store

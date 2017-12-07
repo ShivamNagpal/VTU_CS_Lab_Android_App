@@ -7,7 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -23,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private TextView emptyTextView;
     private ProgressBar progressBar;
     private ListView programListView;
-    private ProgramAdapter programAdapter;
+    private ProgramInfoAdapter programInfoAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +30,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
 
         initViews();
-        programAdapter = new ProgramAdapter(MainActivity.this, new ArrayList<ProgramInfo>());
-        programListView.setAdapter(programAdapter);
+        programInfoAdapter = new ProgramInfoAdapter(MainActivity.this, new ArrayList<ProgramInfo>());
+        programListView.setAdapter(programInfoAdapter);
 
         programListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -75,12 +74,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             emptyTextView.setText(R.string.error_occurred);
             return;
         }
-        programAdapter.clear();
-        programAdapter.addAll(programInfos);
+        programInfoAdapter.clear();
+        programInfoAdapter.addAll(programInfos);
     }
 
     @Override
     public void onLoaderReset(Loader<List<ProgramInfo>> loader) {
-        programAdapter.clear();
+        programInfoAdapter.clear();
     }
 }

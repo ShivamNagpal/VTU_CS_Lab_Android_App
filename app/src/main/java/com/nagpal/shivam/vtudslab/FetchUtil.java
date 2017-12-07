@@ -83,6 +83,7 @@ public class FetchUtil {
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String line = bufferedReader.readLine();
             while (line != null) {
+//                line = line.replaceAll("\t", "\t\t");
                 stringBuilder.append(line);
                 stringBuilder.append("\n");
                 line = bufferedReader.readLine();
