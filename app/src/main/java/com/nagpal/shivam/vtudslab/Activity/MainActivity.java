@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtudslab;
+package com.nagpal.shivam.vtudslab.Activity;
 
 import android.app.LoaderManager;
 import android.content.Intent;
@@ -13,10 +13,15 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.nagpal.shivam.vtudslab.Adapter.ProgramInfoAdapter;
+import com.nagpal.shivam.vtudslab.Loader.ProgramInfoLoader;
+import com.nagpal.shivam.vtudslab.R;
+import com.nagpal.shivam.vtudslab.Utility.IndexJsonResponse;
+import com.nagpal.shivam.vtudslab.Utility.ProgramInfo;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<ProgramInfo>> {
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<IndexJsonResponse> {
 
     private final String url = "https://raw.githubusercontent.com/ShivamNagpal/VTU-DS-Lab-Program/master/Index.json";
     private TextView emptyTextView;
@@ -63,23 +68,33 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
     @Override
-    public Loader<List<ProgramInfo>> onCreateLoader(int i, Bundle bundle) {
+    public Loader<IndexJsonResponse> onCreateLoader(int i, Bundle bundle) {
         return new ProgramInfoLoader(MainActivity.this, url);
     }
 
     @Override
-    public void onLoadFinished(Loader<List<ProgramInfo>> loader, List<ProgramInfo> programInfos) {
+    public void onLoadFinished(Loader<IndexJsonResponse> loader, IndexJsonResponse indexJsonResponse) {
         progressBar.setVisibility(View.GONE);
-        if (programInfos == null || programInfos.isEmpty()) {
+
+        if (indexJsonResponse == null) {
             emptyTextView.setText(R.string.error_occurred);
             return;
         }
-        programInfoAdapter.clear();
-        programInfoAdapter.addAll(programInfos);
+
+        if (indexJsonResponse.getValid()) {
+            if (indexJsonResponse.getProgramInfoList().isEmpty()) {
+                emptyTextView.setText(R.string.error_occurred);
+                return;
+            }
+            programInfoAdapter.clear();
+            programInfoAdapter.addAll(indexJsonResponse.getProgramInfoList());
+        } else {
+            emptyTextView.setText(indexJsonResponse.getInvalidationMessage());
+        }
     }
 
     @Override
-    public void onLoaderReset(Loader<List<ProgramInfo>> loader) {
+    public void onLoaderReset(Loader<IndexJsonResponse> loader) {
         programInfoAdapter.clear();
     }
 }

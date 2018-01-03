@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtudslab;
+package com.nagpal.shivam.vtudslab.Activity;
 
 import android.app.LoaderManager;
 import android.content.Intent;
@@ -13,6 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.nagpal.shivam.vtudslab.Loader.ProgramContentLoader;
+import com.nagpal.shivam.vtudslab.R;
 
 public class DisplayActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
     public static final String title_intent_tag = "title";
@@ -72,7 +75,7 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public Loader<String> onCreateLoader(int i, Bundle bundle) {
-        return new ProgramLoader(DisplayActivity.this, url);
+        return new ProgramContentLoader(DisplayActivity.this, url);
     }
 
     @Override

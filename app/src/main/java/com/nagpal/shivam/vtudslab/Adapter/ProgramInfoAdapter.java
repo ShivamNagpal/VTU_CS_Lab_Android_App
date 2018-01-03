@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtudslab;
+package com.nagpal.shivam.vtudslab.Adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.nagpal.shivam.vtudslab.Utility.ProgramInfo;
+import com.nagpal.shivam.vtudslab.R;
 
 import java.util.ArrayList;
 

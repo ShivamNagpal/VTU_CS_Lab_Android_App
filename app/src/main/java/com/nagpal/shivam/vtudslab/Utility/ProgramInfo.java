@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtudslab;
+package com.nagpal.shivam.vtudslab.Utility;
 
 public class ProgramInfo {
     private String mTitle;
