@@ -1,6 +1,8 @@
 package com.nagpal.shivam.vtudslab.Activity;
 
 import android.app.LoaderManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.Loader;
 import android.net.ConnectivityManager;
@@ -9,10 +11,12 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nagpal.shivam.vtudslab.Loader.ProgramContentLoader;
 import com.nagpal.shivam.vtudslab.R;
@@ -20,17 +24,38 @@ import com.nagpal.shivam.vtudslab.R;
 public class DisplayActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
     public static final String title_intent_tag = "title";
     public static final String url_intent_tag = "url";
+
+    private MenuItem copyMenuItem;
+    private TextView displayTextView;
     private TextView emptyTextView;
     private ProgressBar progressBar;
-    private TextView displayTextView;
+
     private String url;
     private String title;
+    private String code;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.display_activity_menu, menu);
+        copyMenuItem = menu.findItem(R.id.copy_menu_item_display_activity);
+
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                return true;
+
+            case R.id.copy_menu_item_display_activity:
+                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                ClipData clipData = new ClipData(ClipData.newPlainText("Code", code));
+                if (clipboardManager != null) {
+                    clipboardManager.setPrimaryClip(clipData);
+                    Toast.makeText(DisplayActivity.this, "Code copied to Clipboard.", Toast.LENGTH_SHORT).show();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -85,6 +110,8 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
             emptyTextView.setText(R.string.error_occurred);
             return;
         }
+        copyMenuItem.setEnabled(true);
+        code = s;
         s = s.replaceAll("\t", "\t\t");
         displayTextView.setText(s);
     }
