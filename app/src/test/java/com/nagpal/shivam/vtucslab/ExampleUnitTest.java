@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtudslab;
+package com.nagpal.shivam.vtucslab;
 
 import org.junit.Test;
 

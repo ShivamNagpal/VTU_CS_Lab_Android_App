@@ -1,19 +1,17 @@
-package com.nagpal.shivam.vtudslab.Loader;
+package com.nagpal.shivam.vtucslab.Loader;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.nagpal.shivam.vtudslab.Utility.FetchUtil;
-import com.nagpal.shivam.vtudslab.Utility.IndexJsonResponse;
-import com.nagpal.shivam.vtudslab.Utility.ProgramInfo;
+import com.nagpal.shivam.vtucslab.Utility.FetchUtil;
+import com.nagpal.shivam.vtucslab.Utility.IndexJsonResponse;
+import com.nagpal.shivam.vtucslab.Utility.ProgramInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
 
 public class ProgramInfoLoader extends AsyncTaskLoader<IndexJsonResponse> {
     private String mUrl;

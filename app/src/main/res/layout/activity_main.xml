@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.nagpal.shivam.vtudslab.Activity.MainActivity">
+    tools:context="com.nagpal.shivam.vtucslab.Activity.MainActivity">
 
     <ListView
         android:id="@+id/program_list_view"

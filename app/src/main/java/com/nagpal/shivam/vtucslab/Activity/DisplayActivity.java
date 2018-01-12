@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtudslab.Activity;
+package com.nagpal.shivam.vtucslab.Activity;
 
 import android.app.LoaderManager;
 import android.content.ClipData;
@@ -18,8 +18,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nagpal.shivam.vtudslab.Loader.ProgramContentLoader;
-import com.nagpal.shivam.vtudslab.R;
+import com.nagpal.shivam.vtucslab.Loader.ProgramContentLoader;
+import com.nagpal.shivam.vtucslab.R;
 
 public class DisplayActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
     public static final String title_intent_tag = "title";

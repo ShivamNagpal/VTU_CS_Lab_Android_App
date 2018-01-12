@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtudslab.Activity;
+package com.nagpal.shivam.vtucslab.Activity;
 
 import android.app.LoaderManager;
 import android.content.Intent;
@@ -13,11 +13,11 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.nagpal.shivam.vtudslab.Adapter.ProgramInfoAdapter;
-import com.nagpal.shivam.vtudslab.Loader.ProgramInfoLoader;
-import com.nagpal.shivam.vtudslab.R;
-import com.nagpal.shivam.vtudslab.Utility.IndexJsonResponse;
-import com.nagpal.shivam.vtudslab.Utility.ProgramInfo;
+import com.nagpal.shivam.vtucslab.Adapter.ProgramInfoAdapter;
+import com.nagpal.shivam.vtucslab.Loader.ProgramInfoLoader;
+import com.nagpal.shivam.vtucslab.R;
+import com.nagpal.shivam.vtucslab.Utility.IndexJsonResponse;
+import com.nagpal.shivam.vtucslab.Utility.ProgramInfo;
 
 import java.util.ArrayList;
 

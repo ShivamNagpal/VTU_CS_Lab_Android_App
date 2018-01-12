@@ -1,9 +1,9 @@
-package com.nagpal.shivam.vtudslab.Loader;
+package com.nagpal.shivam.vtucslab.Loader;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
-import com.nagpal.shivam.vtudslab.Utility.FetchUtil;
+import com.nagpal.shivam.vtucslab.Utility.FetchUtil;
 
 public class ProgramContentLoader extends AsyncTaskLoader<String> {
     private String mUrl;

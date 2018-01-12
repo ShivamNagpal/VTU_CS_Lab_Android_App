@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtudslab.Utility;
+package com.nagpal.shivam.vtucslab.Utility;
 
 import android.util.Log;
 

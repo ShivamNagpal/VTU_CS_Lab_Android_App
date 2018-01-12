@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.3"
     defaultConfig {
-        applicationId "com.nagpal.shivam.vtudslab"
+        applicationId "com.nagpal.shivam.vtucslab"
         minSdkVersion 19
         targetSdkVersion 26
         versionCode 1
