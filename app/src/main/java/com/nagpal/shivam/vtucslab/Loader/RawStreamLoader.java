@@ -5,10 +5,10 @@ import android.content.Context;
 
 import com.nagpal.shivam.vtucslab.Utility.FetchUtil;
 
-public class ProgramContentLoader extends AsyncTaskLoader<String> {
+public class RawStreamLoader extends AsyncTaskLoader<String> {
     private String mUrl;
 
-    public ProgramContentLoader(Context context, String url) {
+    public RawStreamLoader(Context context, String url) {
         super(context);
         mUrl = url;
     }

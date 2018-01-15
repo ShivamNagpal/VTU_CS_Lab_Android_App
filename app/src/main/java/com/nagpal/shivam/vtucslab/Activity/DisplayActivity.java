@@ -18,12 +18,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nagpal.shivam.vtucslab.Loader.ProgramContentLoader;
+import com.nagpal.shivam.vtucslab.Loader.RawStreamLoader;
 import com.nagpal.shivam.vtucslab.R;
+import com.nagpal.shivam.vtucslab.Utility.ConstantVariables;
 
 public class DisplayActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
-    public static final String title_intent_tag = "title";
-    public static final String url_intent_tag = "url";
 
     private MenuItem copyMenuItem;
     private TextView displayTextView;
@@ -71,8 +70,8 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
         initViews();
 
         Intent intent = getIntent();
-        title = intent.getStringExtra(title_intent_tag);
-        url = intent.getStringExtra(url_intent_tag);
+        title = intent.getStringExtra(ConstantVariables.title_intent_tag);
+        url = intent.getStringExtra(ConstantVariables.url_intent_tag);
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -100,7 +99,7 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public Loader<String> onCreateLoader(int i, Bundle bundle) {
-        return new ProgramContentLoader(DisplayActivity.this, url);
+        return new RawStreamLoader(DisplayActivity.this, url);
     }
 
     @Override

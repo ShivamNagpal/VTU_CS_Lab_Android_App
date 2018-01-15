@@ -9,15 +9,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.nagpal.shivam.vtucslab.Utility.ProgramInfo;
 import com.nagpal.shivam.vtucslab.R;
+import com.nagpal.shivam.vtucslab.Utility.Info;
 
 import java.util.ArrayList;
 
-public class ProgramInfoAdapter extends ArrayAdapter<ProgramInfo> {
+public class InfoAdapter extends ArrayAdapter<Info> {
 
-    public ProgramInfoAdapter(@NonNull Context context, ArrayList<ProgramInfo> programInfoArrayList) {
-        super(context, 0, programInfoArrayList);
+    public InfoAdapter(@NonNull Context context, ArrayList<Info> infoArrayList) {
+        super(context, 0, infoArrayList);
     }
 
     @NonNull
@@ -27,7 +27,7 @@ public class ProgramInfoAdapter extends ArrayAdapter<ProgramInfo> {
         if (convertView == null) {
             listItemView = LayoutInflater.from(getContext()).inflate(R.layout.text_view_layout, parent, false);
         }
-        ProgramInfo currentInfo = getItem(position);
+        Info currentInfo = getItem(position);
         TextView textView = listItemView.findViewById(R.id.text_view_layout);
         if (currentInfo != null) {
             textView.setText(currentInfo.getTitle());

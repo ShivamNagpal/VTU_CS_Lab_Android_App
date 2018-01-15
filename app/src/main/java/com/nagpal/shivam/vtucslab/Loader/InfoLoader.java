@@ -7,16 +7,16 @@ import android.util.Log;
 
 import com.nagpal.shivam.vtucslab.Utility.FetchUtil;
 import com.nagpal.shivam.vtucslab.Utility.IndexJsonResponse;
-import com.nagpal.shivam.vtucslab.Utility.ProgramInfo;
+import com.nagpal.shivam.vtucslab.Utility.Info;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ProgramInfoLoader extends AsyncTaskLoader<IndexJsonResponse> {
+public class InfoLoader extends AsyncTaskLoader<IndexJsonResponse> {
     private String mUrl;
 
-    public ProgramInfoLoader(Context context, String url) {
+    public InfoLoader(Context context, String url) {
         super(context);
         mUrl = url;
     }
@@ -49,8 +49,9 @@ public class ProgramInfoLoader extends AsyncTaskLoader<IndexJsonResponse> {
                     JSONObject info = jsonArray.getJSONObject(i);
                     String title = info.getString("title");
                     String url = info.getString("url");
-                    indexJsonResponse.getProgramInfoList().add(new ProgramInfo(title, url));
+                    indexJsonResponse.getInfoList().add(new Info(title, url));
                 }
+                indexJsonResponse.setLinkToRepo(root.getString("link_to_repo"));
             } else {
                 indexJsonResponse.setInvalidationMessage(root.getString("invalidation_message"));
             }

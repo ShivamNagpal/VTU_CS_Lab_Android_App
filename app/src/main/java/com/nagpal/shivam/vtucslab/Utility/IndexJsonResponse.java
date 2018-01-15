@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IndexJsonResponse {
-    private List<ProgramInfo> programInfoList = new ArrayList<>();
+    private List<Info> infoList = new ArrayList<>();
     private Boolean isValid;
     private String invalidationMessage;
+    private String linkToRepo;
 
     public IndexJsonResponse() {
     }
 
-    public List<ProgramInfo> getProgramInfoList() {
-        return programInfoList;
+    public List<Info> getInfoList() {
+        return infoList;
     }
 
     public Boolean getValid() {
@@ -29,5 +30,13 @@ public class IndexJsonResponse {
 
     public void setInvalidationMessage(String invalidationMessage) {
         this.invalidationMessage = invalidationMessage;
+    }
+
+    public String getLinkToRepo() {
+        return linkToRepo;
+    }
+
+    public void setLinkToRepo(String linkToRepo) {
+        this.linkToRepo = linkToRepo;
     }
 }

@@ -1,10 +1,10 @@
 package com.nagpal.shivam.vtucslab.Utility;
 
-public class ProgramInfo {
+public class Info {
     private String mTitle;
     private String mUrl;
 
-    public ProgramInfo(String title, String url){
+    public Info(String title, String url) {
         mTitle = title;
         mUrl = url;
     }
