@@ -24,11 +24,11 @@ import com.nagpal.shivam.vtucslab.Utility.ConstantVariables;
 
 public class DisplayActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
 
-    private MenuItem copyMenuItem;
     private TextView displayTextView;
     private TextView emptyTextView;
     private ProgressBar progressBar;
 
+    private Boolean succeeded = false;
     private String url;
     private String title;
     private String code;
@@ -36,8 +36,10 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.display_activity_menu, menu);
-        copyMenuItem = menu.findItem(R.id.copy_menu_item_display_activity);
-
+        if (succeeded) {
+            MenuItem copyMenuItem = menu.findItem(R.id.copy_menu_item_display_activity);
+            copyMenuItem.setEnabled(true);
+        }
         return true;
     }
 
@@ -109,10 +111,11 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
             emptyTextView.setText(R.string.error_occurred);
             return;
         }
-        copyMenuItem.setEnabled(true);
+        succeeded = true;
         code = s;
         s = s.replaceAll("\t", "\t\t");
         displayTextView.setText(s);
+        invalidateOptionsMenu();
     }
 
     @Override

@@ -28,22 +28,26 @@ import java.util.ArrayList;
 
 public class RepoDisplayActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<IndexJsonResponse> {
 
+    private Boolean succeeded = false;
     private String linkToRepo;
     private String title;
     private String url;
 
     private InfoAdapter programInfoAdapter;
     private ListView programListView;
-    private MenuItem gitRepoMenuItem;
     private ProgressBar progressBar;
     private TextView emptyTextView;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.repo_display_activity_menu, menu);
-        gitRepoMenuItem = menu.findItem(R.id.git_repo_menu_item_repo_display_activity);
+        if (succeeded) {
+            MenuItem gitRepoMenuItem = menu.findItem(R.id.git_repo_menu_item_repo_display_activity);
+            gitRepoMenuItem.setEnabled(true);
+        }
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -134,9 +138,10 @@ public class RepoDisplayActivity extends AppCompatActivity implements LoaderMana
                 emptyTextView.setText(R.string.error_occurred);
                 return;
             }
+            succeeded = true;
             programInfoAdapter.clear();
             programInfoAdapter.addAll(indexJsonResponse.getInfoList());
-            gitRepoMenuItem.setEnabled(true);
+            invalidateOptionsMenu();
             linkToRepo = indexJsonResponse.getLinkToRepo();
         } else {
             emptyTextView.setText(indexJsonResponse.getInvalidationMessage());
@@ -146,5 +151,11 @@ public class RepoDisplayActivity extends AppCompatActivity implements LoaderMana
     @Override
     public void onLoaderReset(Loader<IndexJsonResponse> loader) {
         programInfoAdapter.clear();
+    }
+
+    @Override
+    protected void onPause() {
+        supportInvalidateOptionsMenu();
+        super.onPause();
     }
 }
