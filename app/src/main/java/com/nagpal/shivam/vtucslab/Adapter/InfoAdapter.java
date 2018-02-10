@@ -15,9 +15,11 @@ import com.nagpal.shivam.vtucslab.Utility.Info;
 import java.util.ArrayList;
 
 public class InfoAdapter extends ArrayAdapter<Info> {
+    private int layoutId;
 
-    public InfoAdapter(@NonNull Context context, ArrayList<Info> infoArrayList) {
+    public InfoAdapter(@NonNull Context context, ArrayList<Info> infoArrayList, int layoutId) {
         super(context, 0, infoArrayList);
+        this.layoutId = layoutId;
     }
 
     @NonNull
@@ -25,7 +27,7 @@ public class InfoAdapter extends ArrayAdapter<Info> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View listItemView = convertView;
         if (convertView == null) {
-            listItemView = LayoutInflater.from(getContext()).inflate(R.layout.text_view_layout, parent, false);
+            listItemView = LayoutInflater.from(getContext()).inflate(layoutId, parent, false);
         }
         Info currentInfo = getItem(position);
         TextView textView = listItemView.findViewById(R.id.text_view_layout);

@@ -35,9 +35,9 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.display_activity_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_display_activity, menu);
         if (succeeded) {
-            MenuItem copyMenuItem = menu.findItem(R.id.copy_menu_item_display_activity);
+            MenuItem copyMenuItem = menu.findItem(R.id.menu_item_copy_display_activity);
             copyMenuItem.setEnabled(true);
         }
         return true;
@@ -50,7 +50,7 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
                 onBackPressed();
                 return true;
 
-            case R.id.copy_menu_item_display_activity:
+            case R.id.menu_item_copy_display_activity:
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                 ClipData clipData = new ClipData(ClipData.newPlainText("Code", code));
                 if (clipboardManager != null) {
