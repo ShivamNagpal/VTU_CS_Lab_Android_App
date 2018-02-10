@@ -119,8 +119,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             loaderManager.initLoader(NAV_LOADER_ID, null, MainActivity.this);
         } else {
             progressBar.setVisibility(View.GONE);
-            emptyTextView.setVisibility(View.VISIBLE);
-            emptyTextView.setText(R.string.no_internet_connection);
+            showErrorMessage(getString(R.string.no_internet_connection));
         }
 
         navListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -180,13 +179,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
         if (indexJsonResponse == null) {
-            emptyTextView.setText(R.string.error_occurred);
+            showErrorMessage(getString(R.string.error_occurred));
             return;
         }
 
         if (indexJsonResponse.getValid()) {
             if (indexJsonResponse.getInfoList().isEmpty()) {
-                emptyTextView.setText(R.string.error_occurred);
+                showErrorMessage(getString(R.string.error_occurred));
                 return;
             }
             int loaderId = loader.getId();
@@ -205,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 invalidateOptionsMenu();
             }
         } else {
-            emptyTextView.setText(indexJsonResponse.getInvalidationMessage());
+            showErrorMessage(indexJsonResponse.getInvalidationMessage());
         }
     }
 
@@ -217,4 +216,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             programInfoAdapter.clear();
         }
     }
+
+    private void showErrorMessage(String error) {
+        emptyTextView.setVisibility(View.VISIBLE);
+        emptyTextView.setText(error);
+    }
+
 }
