@@ -131,6 +131,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 editor.putInt(ACTIVE_ITEM_KEY, activeItem);
                 editor.apply();
 
+                emptyTextView.setVisibility(View.GONE);
+
                 loaderManager.destroyLoader(REPO_LOADER_ID);
                 Info info = (Info) adapterView.getItemAtPosition(i);
                 setTitle(info.getTitle());
