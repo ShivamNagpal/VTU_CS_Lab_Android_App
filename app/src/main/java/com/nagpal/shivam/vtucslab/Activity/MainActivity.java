@@ -67,6 +67,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.main_menu_item_refresh:
+                recreate();
+                return true;
+
             case R.id.menu_item_git_repo_main_activity:
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(linkToRepo));

@@ -50,6 +50,10 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
                 onBackPressed();
                 return true;
 
+            case R.id.display_menu_item_refresh:
+                recreate();
+                return true;
+
             case R.id.menu_item_copy_display_activity:
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                 ClipData clipData = new ClipData(ClipData.newPlainText("Code", code));
