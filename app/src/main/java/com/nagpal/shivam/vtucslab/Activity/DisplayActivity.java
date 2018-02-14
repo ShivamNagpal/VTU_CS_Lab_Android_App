@@ -24,6 +24,8 @@ import com.nagpal.shivam.vtucslab.Utility.ConstantVariables;
 
 public class DisplayActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
 
+    private static final int LOADER_ID = 1;
+
     private TextView displayTextView;
     private TextView emptyTextView;
     private ProgressBar progressBar;
@@ -87,9 +89,14 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
+        LoaderManager loaderManager = getLoaderManager();
+
+        if (!succeeded) {
+            loaderManager.destroyLoader(LOADER_ID);
+        }
+
         if (networkInfo != null && networkInfo.isConnected()) {
-            LoaderManager loaderManager = getLoaderManager();
-            loaderManager.initLoader(2, null, DisplayActivity.this);
+            loaderManager.initLoader(LOADER_ID, null, DisplayActivity.this);
         } else {
             progressBar.setVisibility(View.GONE);
             emptyTextView.setVisibility(View.VISIBLE);

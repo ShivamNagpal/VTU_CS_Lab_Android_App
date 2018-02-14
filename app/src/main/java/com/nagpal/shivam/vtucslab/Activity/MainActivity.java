@@ -119,12 +119,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         NetworkInfo networkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
         final LoaderManager loaderManager = getLoaderManager();
 
+        if (!succeeded) {
+            loaderManager.destroyLoader(NAV_LOADER_ID);
+        }
+
         if (networkInfo != null && networkInfo.isConnected()) {
             loaderManager.initLoader(NAV_LOADER_ID, null, MainActivity.this);
         } else {
             progressBar.setVisibility(View.GONE);
             showErrorMessage(getString(R.string.no_internet_connection));
         }
+
 
         navListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
