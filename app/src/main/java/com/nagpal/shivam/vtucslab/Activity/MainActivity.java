@@ -151,6 +151,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                     loaderManager.destroyLoader(REPO_LOADER_ID);
                 }
+
+                if (!succeeded) {
+                    loaderManager.destroyLoader(REPO_LOADER_ID);
+                }
+
                 emptyTextView.setVisibility(View.GONE);
 
                 Info info = (Info) adapterView.getItemAtPosition(i);
