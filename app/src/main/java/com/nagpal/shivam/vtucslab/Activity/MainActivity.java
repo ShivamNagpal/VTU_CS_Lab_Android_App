@@ -74,9 +74,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 return true;
 
             case R.id.menu_item_git_repo_main_activity:
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(linkToRepo));
-                startActivity(intent);
+                if (linkToRepo != null) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(linkToRepo));
+                    startActivity(intent);
+                }
                 return true;
 
             case R.id.menu_item_rate_app_main_activity:
