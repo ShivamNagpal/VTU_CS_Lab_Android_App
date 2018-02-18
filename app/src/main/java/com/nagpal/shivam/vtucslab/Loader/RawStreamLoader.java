@@ -7,6 +7,7 @@ import com.nagpal.shivam.vtucslab.Utility.FetchUtil;
 
 public class RawStreamLoader extends AsyncTaskLoader<String> {
     private String mUrl;
+    private String fetchedData;
 
     public RawStreamLoader(Context context, String url) {
         super(context);
@@ -15,11 +16,16 @@ public class RawStreamLoader extends AsyncTaskLoader<String> {
 
     @Override
     protected void onStartLoading() {
-        forceLoad();
+        if (fetchedData != null) {
+            deliverResult(fetchedData);
+        } else {
+            forceLoad();
+        }
     }
 
     @Override
     public String loadInBackground() {
-        return FetchUtil.fetchData(mUrl);
+        fetchedData = FetchUtil.fetchData(mUrl);
+        return fetchedData;
     }
 }

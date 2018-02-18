@@ -21,6 +21,7 @@ public class FetchUtil {
     }
 
     public static String fetchData(String requestUrl) {
+        Log.i(LOG_TAG, "Fetching Data.");
         URL url = createUrl(requestUrl);
         String jsonResponse = "";
         try {

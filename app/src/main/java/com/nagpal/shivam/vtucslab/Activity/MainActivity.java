@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nagpal.shivam.vtucslab.Adapter.InfoAdapter;
 import com.nagpal.shivam.vtucslab.Loader.InfoLoader;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<IndexJsonResponse> {
 
     private static final String ACTIVE_ITEM_KEY = "active_item_key";
+    private static final String SUCCEEDED_KEY = "succeeded_key";
     private static final int NAV_LOADER_ID = 1;
     private static final int REPO_LOADER_ID = 2;
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -94,7 +96,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(LOG_TAG, "OnCreate");
+        Log.i(LOG_TAG, "OnCreate Method Called.");
+
+        if (savedInstanceState != null) {
+            succeeded = savedInstanceState.getBoolean(SUCCEEDED_KEY, false);
+        }
 
         sharedPreferences = getPreferences(MODE_PRIVATE);
         activeItem = sharedPreferences.getInt(ACTIVE_ITEM_KEY, 0);
@@ -120,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         final LoaderManager loaderManager = getLoaderManager();
 
         if (!succeeded) {
+            logd("Destroying Navigation Loader.");
             loaderManager.destroyLoader(NAV_LOADER_ID);
         }
 
@@ -127,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             loaderManager.initLoader(NAV_LOADER_ID, null, MainActivity.this);
         } else {
             progressBar.setVisibility(View.GONE);
+            succeeded = false;
             showErrorMessage(getString(R.string.no_internet_connection));
         }
 
@@ -134,15 +142,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         navListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                activeItem = i;
+                if (activeItem != i) {
+                    activeItem = i;
 
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putInt(ACTIVE_ITEM_KEY, activeItem);
-                editor.apply();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putInt(ACTIVE_ITEM_KEY, activeItem);
+                    editor.apply();
 
+                    loaderManager.destroyLoader(REPO_LOADER_ID);
+                }
                 emptyTextView.setVisibility(View.GONE);
 
-                loaderManager.destroyLoader(REPO_LOADER_ID);
                 Info info = (Info) adapterView.getItemAtPosition(i);
                 setTitle(info.getTitle());
                 Bundle bundle = new Bundle();
@@ -175,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<IndexJsonResponse> onCreateLoader(int i, Bundle bundle) {
-
+        logd("OnCreateLoader:  " + i);
         if (i == NAV_LOADER_ID) {
             return new InfoLoader(MainActivity.this, URL);
         } else {
@@ -190,21 +200,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
         if (indexJsonResponse == null) {
-            showErrorMessage(getString(R.string.error_occurred));
+            logd("First error");
+            succeeded = false;
+            Toast.makeText(MainActivity.this, getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
             return;
         }
 
         if (indexJsonResponse.getValid()) {
             if (indexJsonResponse.getInfoList().isEmpty()) {
-                showErrorMessage(getString(R.string.error_occurred));
+                logd("Second Error");
+                succeeded = false;
+                Toast.makeText(MainActivity.this, getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
                 return;
             }
             int loaderId = loader.getId();
-            Log.d(LOG_TAG, "On load finished: " + loaderId);
+            logd("On load finished: " + loaderId);
             if (loaderId == NAV_LOADER_ID) {
                 navInfoAdapter.clear();
                 navInfoAdapter.addAll(indexJsonResponse.getInfoList());
-                Log.d(LOG_TAG, "first time list item selected: " + activeItem);
+
+                logd("Selecting Item for first Time.");
                 navListView.performItemClick(navListView.getChildAt(activeItem), activeItem, navListView.getAdapter().getItemId(activeItem));
                 navListView.setItemChecked(activeItem, true);
             } else {
@@ -215,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 invalidateOptionsMenu();
             }
         } else {
+            succeeded = false;
             showErrorMessage(indexJsonResponse.getInvalidationMessage());
         }
     }
@@ -233,4 +249,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         emptyTextView.setText(error);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(SUCCEEDED_KEY, succeeded);
+        super.onSaveInstanceState(outState);
+    }
+
+    private void logd(String str) {
+        Log.d(LOG_TAG, str);
+    }
 }

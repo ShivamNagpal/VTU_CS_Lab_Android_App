@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,9 @@ import com.nagpal.shivam.vtucslab.Utility.ConstantVariables;
 public class DisplayActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
 
     private static final int LOADER_ID = 1;
+    private static final String SUCCEEDED_KEY = "succeeded_key";
+    private static final String LOG_TAG = DisplayActivity.class.getSimpleName();
+
 
     private TextView displayTextView;
     private TextView emptyTextView;
@@ -72,10 +76,14 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
-
+        logd("OnCreate Called");
         ActionBar actionBar = getSupportActionBar();
 
         initViews();
+
+        if (savedInstanceState != null) {
+            succeeded = savedInstanceState.getBoolean(SUCCEEDED_KEY, false);
+        }
 
         Intent intent = getIntent();
         title = intent.getStringExtra(ConstantVariables.title_intent_tag);
@@ -101,6 +109,7 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
             progressBar.setVisibility(View.GONE);
             emptyTextView.setVisibility(View.VISIBLE);
             emptyTextView.setText(R.string.no_internet_connection);
+            succeeded = false;
         }
     }
 
@@ -119,9 +128,11 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     public void onLoadFinished(Loader<String> loader, String s) {
         progressBar.setVisibility(View.GONE);
         if (TextUtils.isEmpty(s)) {
-            emptyTextView.setText(R.string.error_occurred);
+            Toast.makeText(DisplayActivity.this, getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
+            succeeded = false;
             return;
         }
+
         succeeded = true;
         code = s;
         s = s.replaceAll("\t", "\t\t");
@@ -132,5 +143,15 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     @Override
     public void onLoaderReset(Loader<String> loader) {
         displayTextView.setText(null);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(SUCCEEDED_KEY, succeeded);
+        super.onSaveInstanceState(outState);
+    }
+
+    private void logd(String str) {
+        Log.d(LOG_TAG, str);
     }
 }

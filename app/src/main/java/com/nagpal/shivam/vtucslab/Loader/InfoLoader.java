@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 public class InfoLoader extends AsyncTaskLoader<IndexJsonResponse> {
     private String mUrl;
+    private IndexJsonResponse indexJsonResponse;
 
     public InfoLoader(Context context, String url) {
         super(context);
@@ -23,7 +24,12 @@ public class InfoLoader extends AsyncTaskLoader<IndexJsonResponse> {
 
     @Override
     protected void onStartLoading() {
-        forceLoad();
+        if (indexJsonResponse != null) {
+            deliverResult(indexJsonResponse);
+        } else {
+            forceLoad();
+        }
+
     }
 
     @Override
@@ -32,7 +38,8 @@ public class InfoLoader extends AsyncTaskLoader<IndexJsonResponse> {
             return null;
         }
         String jsonResponse = FetchUtil.fetchData(mUrl);
-        return extractFeaturesFromJson(jsonResponse);
+        indexJsonResponse = extractFeaturesFromJson(jsonResponse);
+        return indexJsonResponse;
     }
 
     private IndexJsonResponse extractFeaturesFromJson(String jsonResponse) {
