@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         final LoaderManager loaderManager = getLoaderManager();
 
         if (!succeeded) {
-            logd("Destroying Navigation Loader.");
+//            logd("Destroying Navigation Loader.");
             loaderManager.destroyLoader(NAV_LOADER_ID);
         }
 
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<IndexJsonResponse> onCreateLoader(int i, Bundle bundle) {
-        logd("OnCreateLoader:  " + i);
+//        logd("OnCreateLoader:  " + i);
         if (i == NAV_LOADER_ID) {
             return new InfoLoader(MainActivity.this, URL);
         } else {
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
 
         if (indexJsonResponse == null) {
-            logd("First error");
+//            logd("First error");
             succeeded = false;
             Toast.makeText(MainActivity.this, getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
             return;
@@ -215,18 +215,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         if (indexJsonResponse.getValid()) {
             if (indexJsonResponse.getInfoList().isEmpty()) {
-                logd("Second Error");
+//                logd("Second Error");
                 succeeded = false;
                 Toast.makeText(MainActivity.this, getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
                 return;
             }
             int loaderId = loader.getId();
-            logd("On load finished: " + loaderId);
+//            logd("On load finished: " + loaderId);
             if (loaderId == NAV_LOADER_ID) {
                 navInfoAdapter.clear();
                 navInfoAdapter.addAll(indexJsonResponse.getInfoList());
 
-                logd("Selecting Item for first Time.");
+//                logd("Selecting Item for first Time.");
                 navListView.performItemClick(navListView.getChildAt(activeItem), activeItem, navListView.getAdapter().getItemId(activeItem));
                 navListView.setItemChecked(activeItem, true);
             } else {
@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onSaveInstanceState(outState);
     }
 
-    private void logd(String str) {
-        Log.d(LOG_TAG, str);
-    }
+//    private void logd(String str) {
+//        Log.d(LOG_TAG, str);
+//    }
 }

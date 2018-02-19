@@ -76,7 +76,7 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
-        logd("OnCreate Called");
+//        logd("OnCreate Called");
         ActionBar actionBar = getSupportActionBar();
 
         initViews();
@@ -151,7 +151,7 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
         super.onSaveInstanceState(outState);
     }
 
-    private void logd(String str) {
-        Log.d(LOG_TAG, str);
-    }
+//    private void logd(String str) {
+//        Log.d(LOG_TAG, str);
+//    }
 }
