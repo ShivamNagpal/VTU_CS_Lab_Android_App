@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -116,6 +117,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
+        ImageButton navigationDrawerBackButton = findViewById(R.id.main_navigation_view_image_button_back);
+        navigationDrawerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeNavigationDrawer();
+            }
+        });
+
         navInfoAdapter = new InfoAdapter(MainActivity.this, new ArrayList<Info>(), R.layout.text_view_layout);
         navListView.setAdapter(navInfoAdapter);
 
@@ -180,6 +189,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
 
+    }
+
+    private void closeNavigationDrawer() {
+        drawerLayout.closeDrawer(Gravity.START, true);
     }
 
     void initViews() {
@@ -265,4 +278,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 //    private void logd(String str) {
 //        Log.d(LOG_TAG, str);
 //    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(Gravity.START)) {
+            closeNavigationDrawer();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

@@ -19,16 +19,31 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/actionBarSize"
                 android:background="@color/colorPrimary"
-                android:gravity="center_vertical"
-                android:paddingEnd="16dp"
-                android:paddingStart="16dp"
-                android:text="@string/app_name"
-                android:textColor="@android:color/white"
-                android:textSize="24sp" />
+                android:gravity="center_vertical">
+
+                <ImageButton
+                    android:id="@+id/main_navigation_view_image_button_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
+                    android:src="@drawable/ic_action_arrow_back" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:paddingEnd="8dp"
+                    android:paddingStart="8dp"
+                    android:text="@string/app_name"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp" />
+            </LinearLayout>
 
             <ListView
                 android:id="@+id/nav_list_main_activity"
