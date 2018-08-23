@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nagpal.shivam.pageview.PageView;
 import com.nagpal.shivam.vtucslab.Loader.RawStreamLoader;
 import com.nagpal.shivam.vtucslab.R;
 import com.nagpal.shivam.vtucslab.Utility.ConstantVariables;
@@ -30,7 +30,8 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     private static final String LOG_TAG = DisplayActivity.class.getSimpleName();
 
 
-    private TextView displayTextView;
+    //    private TextView displayTextView;
+    private PageView displayPageView;
     private TextView emptyTextView;
     private ProgressBar progressBar;
 
@@ -114,7 +115,8 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     }
 
     private void initViews() {
-        displayTextView = findViewById(R.id.display_text_view);
+//        displayTextView = findViewById(R.id.display_text_view);
+        displayPageView = findViewById(R.id.display_page_view);
         emptyTextView = findViewById(R.id.empty_text_view_display);
         progressBar = findViewById(R.id.progress_bar_display);
     }
@@ -136,13 +138,15 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
         succeeded = true;
         code = s;
         s = s.replaceAll("\t", "\t\t");
-        displayTextView.setText(s);
+//        displayTextView.setText(s);
+        displayPageView.setText(s);
         invalidateOptionsMenu();
     }
 
     @Override
     public void onLoaderReset(Loader<String> loader) {
-        displayTextView.setText(null);
+//        displayTextView.setText(null);
+        displayPageView.setText(null);
     }
 
     @Override
