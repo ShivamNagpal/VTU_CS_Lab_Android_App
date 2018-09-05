@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -31,19 +32,19 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
 
     //    private TextView displayTextView;
-    private PageView displayPageView;
-    private TextView emptyTextView;
-    private ProgressBar progressBar;
+    private PageView mDisplayPageView;
+    private TextView mEmptyTextView;
+    private ProgressBar mProgressBar;
 
-    private Boolean succeeded = false;
-    private String url;
-    private String title;
-    private String code;
+    private Boolean mSucceeded = false;
+    private String mUrl;
+    private String mTitle;
+    private String mCode;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_display_activity, menu);
-        if (succeeded) {
+        if (mSucceeded) {
             MenuItem copyMenuItem = menu.findItem(R.id.menu_item_copy_display_activity);
             copyMenuItem.setEnabled(true);
         }
@@ -63,7 +64,7 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
             case R.id.menu_item_copy_display_activity:
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                ClipData clipData = new ClipData(ClipData.newPlainText("Code", code));
+                ClipData clipData = new ClipData(ClipData.newPlainText("Code", mCode));
                 if (clipboardManager != null) {
                     clipboardManager.setPrimaryClip(clipData);
                     Toast.makeText(DisplayActivity.this, "Code copied to Clipboard.", Toast.LENGTH_SHORT).show();
@@ -83,75 +84,78 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
         initViews();
 
         if (savedInstanceState != null) {
-            succeeded = savedInstanceState.getBoolean(SUCCEEDED_KEY, false);
+            mSucceeded = savedInstanceState.getBoolean(SUCCEEDED_KEY, false);
         }
 
         Intent intent = getIntent();
-        title = intent.getStringExtra(ConstantVariables.title_intent_tag);
-        url = intent.getStringExtra(ConstantVariables.url_intent_tag);
+        mTitle = intent.getStringExtra(ConstantVariables.title_intent_tag);
+        mUrl = intent.getStringExtra(ConstantVariables.url_intent_tag);
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        DisplayActivity.this.setTitle(title);
+        DisplayActivity.this.setTitle(mTitle);
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
         LoaderManager loaderManager = getLoaderManager();
 
-        if (!succeeded) {
+        if (!mSucceeded) {
             loaderManager.destroyLoader(LOADER_ID);
         }
 
         if (networkInfo != null && networkInfo.isConnected()) {
             loaderManager.initLoader(LOADER_ID, null, DisplayActivity.this);
         } else {
-            progressBar.setVisibility(View.GONE);
-            emptyTextView.setVisibility(View.VISIBLE);
-            emptyTextView.setText(R.string.no_internet_connection);
-            succeeded = false;
+            mProgressBar.setVisibility(View.GONE);
+            mEmptyTextView.setVisibility(View.VISIBLE);
+            mEmptyTextView.setText(R.string.no_internet_connection);
+            mSucceeded = false;
         }
     }
 
     private void initViews() {
 //        displayTextView = findViewById(R.id.display_text_view);
-        displayPageView = findViewById(R.id.display_page_view);
-        emptyTextView = findViewById(R.id.empty_text_view_display);
-        progressBar = findViewById(R.id.progress_bar_display);
+        mDisplayPageView = findViewById(R.id.display_page_view);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mDisplayPageView.setLetterSpacing(0.1f);
+        }
+        mEmptyTextView = findViewById(R.id.empty_text_view_display);
+        mProgressBar = findViewById(R.id.progress_bar_display);
     }
 
     @Override
     public Loader<String> onCreateLoader(int i, Bundle bundle) {
-        return new RawStreamLoader(DisplayActivity.this, url);
+        return new RawStreamLoader(DisplayActivity.this, mUrl);
     }
 
     @Override
     public void onLoadFinished(Loader<String> loader, String s) {
-        progressBar.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
         if (TextUtils.isEmpty(s)) {
             Toast.makeText(DisplayActivity.this, getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
-            succeeded = false;
+            mSucceeded = false;
             return;
         }
 
-        succeeded = true;
-        code = s;
+        mSucceeded = true;
+        mCode = s;
         s = s.replaceAll("\t", "\t\t");
 //        displayTextView.setText(s);
-        displayPageView.setText(s);
+        mDisplayPageView.setText(s);
         invalidateOptionsMenu();
     }
 
     @Override
     public void onLoaderReset(Loader<String> loader) {
 //        displayTextView.setText(null);
-        displayPageView.setText(null);
+        mDisplayPageView.setText(null);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(SUCCEEDED_KEY, succeeded);
+        outState.putBoolean(SUCCEEDED_KEY, mSucceeded);
         super.onSaveInstanceState(outState);
     }
 

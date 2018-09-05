@@ -34,7 +34,8 @@ import com.nagpal.shivam.vtucslab.Utility.Info;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<IndexJsonResponse> {
+public class MainActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<IndexJsonResponse> {
 
     private static final String ACTIVE_ITEM_KEY = "active_item_key";
     private static final String SUCCEEDED_KEY = "succeeded_key";
@@ -43,24 +44,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String URL = "https://raw.githubusercontent.com/VTU-CS-LAB/Init/master/root.json";
 
-    private int activeItem;
+    private int mActiveItem;
 
-    private Boolean succeeded = false;
-    private String linkToRepo;
+    private Boolean mSucceeded = false;
+    private String mLinkToRepo;
 
-    private InfoAdapter programInfoAdapter;
-    private InfoAdapter navInfoAdapter;
-    private ListView navListView;
-    private ListView programListView;
-    private ProgressBar progressBar;
-    private TextView emptyTextView;
-    private DrawerLayout drawerLayout;
-    private SharedPreferences sharedPreferences;
+    private InfoAdapter mProgramInfoAdapter;
+    private InfoAdapter mNavInfoAdapter;
+    private ListView mNavListView;
+    private ListView mProgramListView;
+    private ProgressBar mProgressBar;
+    private TextView mEmptyTextView;
+    private DrawerLayout mDrawerLayout;
+    private SharedPreferences mSharedPreferences;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main_activity, menu);
-        if (succeeded) {
+        if (mSucceeded) {
             MenuItem gitRepoMenuItem = menu.findItem(R.id.menu_item_git_repo_main_activity);
             gitRepoMenuItem.setEnabled(true);
         }
@@ -75,9 +76,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 return true;
 
             case R.id.menu_item_git_repo_main_activity:
-                if (linkToRepo != null) {
+                if (mLinkToRepo != null) {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(linkToRepo));
+                    intent.setData(Uri.parse(mLinkToRepo));
                     startActivity(intent);
                 }
                 return true;
@@ -102,19 +103,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Log.i(LOG_TAG, "OnCreate Method Called.");
 
         if (savedInstanceState != null) {
-            succeeded = savedInstanceState.getBoolean(SUCCEEDED_KEY, false);
+            mSucceeded = savedInstanceState.getBoolean(SUCCEEDED_KEY, false);
         }
 
-        sharedPreferences = getPreferences(MODE_PRIVATE);
-        activeItem = sharedPreferences.getInt(ACTIVE_ITEM_KEY, 0);
+        mSharedPreferences = getPreferences(MODE_PRIVATE);
+        mActiveItem = mSharedPreferences.getInt(ACTIVE_ITEM_KEY, 0);
 
         Toolbar toolbar = findViewById(R.id.toolbar_main_activity);
         setSupportActionBar(toolbar);
 
         initViews();
 
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        ActionBarDrawerToggle actionBarDrawerToggle =
+                new ActionBarDrawerToggle(MainActivity.this,
+                        mDrawerLayout,
+                        toolbar,
+                        R.string.drawer_open,
+                        R.string.drawer_close);
+        mDrawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
         ImageButton navigationDrawerBackButton = findViewById(R.id.main_navigation_view_image_button_back);
@@ -125,18 +131,24 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
 
-        navInfoAdapter = new InfoAdapter(MainActivity.this, new ArrayList<Info>(), R.layout.text_view_layout);
-        navListView.setAdapter(navInfoAdapter);
+        mNavInfoAdapter = new InfoAdapter(MainActivity.this,
+                new ArrayList<Info>(),
+                R.layout.text_view_layout);
 
-        programInfoAdapter = new InfoAdapter(MainActivity.this, new ArrayList<Info>(), R.layout.text_view_layout);
-        programListView.setAdapter(programInfoAdapter);
+        mNavListView.setAdapter(mNavInfoAdapter);
+
+        mProgramInfoAdapter = new InfoAdapter(MainActivity.this,
+                new ArrayList<Info>(),
+                R.layout.text_view_layout);
+
+        mProgramListView.setAdapter(mProgramInfoAdapter);
 
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
         final LoaderManager loaderManager = getLoaderManager();
 
-        if (!succeeded) {
+        if (!mSucceeded) {
 //            logd("Destroying Navigation Loader.");
             loaderManager.destroyLoader(NAV_LOADER_ID);
         }
@@ -144,41 +156,41 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (networkInfo != null && networkInfo.isConnected()) {
             loaderManager.initLoader(NAV_LOADER_ID, null, MainActivity.this);
         } else {
-            progressBar.setVisibility(View.GONE);
-            succeeded = false;
+            mProgressBar.setVisibility(View.GONE);
+            mSucceeded = false;
             showErrorMessage(getString(R.string.no_internet_connection));
         }
 
 
-        navListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mNavListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (activeItem != i) {
-                    activeItem = i;
+                if (mActiveItem != i) {
+                    mActiveItem = i;
 
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putInt(ACTIVE_ITEM_KEY, activeItem);
+                    SharedPreferences.Editor editor = mSharedPreferences.edit();
+                    editor.putInt(ACTIVE_ITEM_KEY, mActiveItem);
                     editor.apply();
 
                     loaderManager.destroyLoader(REPO_LOADER_ID);
                 }
 
-                if (!succeeded) {
+                if (!mSucceeded) {
                     loaderManager.destroyLoader(REPO_LOADER_ID);
                 }
 
-                emptyTextView.setVisibility(View.GONE);
+                mEmptyTextView.setVisibility(View.GONE);
 
                 Info info = (Info) adapterView.getItemAtPosition(i);
                 setTitle(info.getTitle());
                 Bundle bundle = new Bundle();
                 bundle.putString("URL", info.getUrl());
                 loaderManager.initLoader(REPO_LOADER_ID, bundle, MainActivity.this);
-                drawerLayout.closeDrawer(Gravity.START);
+                mDrawerLayout.closeDrawer(Gravity.START);
             }
         });
 
-        programListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mProgramListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Info info = (Info) adapterView.getItemAtPosition(i);
@@ -192,15 +204,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void closeNavigationDrawer() {
-        drawerLayout.closeDrawer(Gravity.START, true);
+        mDrawerLayout.closeDrawer(Gravity.START, true);
     }
 
     void initViews() {
-        drawerLayout = findViewById(R.id.drawer_layout_main_activity);
-        emptyTextView = findViewById(R.id.empty_text_view_main);
-        navListView = findViewById(R.id.nav_list_main_activity);
-        programListView = findViewById(R.id.program_list_view);
-        progressBar = findViewById(R.id.progress_bar_main);
+        mDrawerLayout = findViewById(R.id.drawer_layout_main_activity);
+        mEmptyTextView = findViewById(R.id.empty_text_view_main);
+        mNavListView = findViewById(R.id.nav_list_main_activity);
+        mProgramListView = findViewById(R.id.program_list_view);
+        mProgressBar = findViewById(R.id.progress_bar_main);
     }
 
     @Override
@@ -216,12 +228,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<IndexJsonResponse> loader, IndexJsonResponse indexJsonResponse) {
 
-        progressBar.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.GONE);
 
 
         if (indexJsonResponse == null) {
 //            logd("First error");
-            succeeded = false;
+            mSucceeded = false;
             Toast.makeText(MainActivity.this, getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
             return;
         }
@@ -229,28 +241,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (indexJsonResponse.getValid()) {
             if (indexJsonResponse.getInfoList().isEmpty()) {
 //                logd("Second Error");
-                succeeded = false;
+                mSucceeded = false;
                 Toast.makeText(MainActivity.this, getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
                 return;
             }
             int loaderId = loader.getId();
 //            logd("On load finished: " + loaderId);
             if (loaderId == NAV_LOADER_ID) {
-                navInfoAdapter.clear();
-                navInfoAdapter.addAll(indexJsonResponse.getInfoList());
+                mNavInfoAdapter.clear();
+                mNavInfoAdapter.addAll(indexJsonResponse.getInfoList());
 
 //                logd("Selecting Item for first Time.");
-                navListView.performItemClick(navListView.getChildAt(activeItem), activeItem, navListView.getAdapter().getItemId(activeItem));
-                navListView.setItemChecked(activeItem, true);
+                mNavListView.performItemClick(mNavListView.getChildAt(mActiveItem), mActiveItem, mNavListView.getAdapter().getItemId(mActiveItem));
+                mNavListView.setItemChecked(mActiveItem, true);
             } else {
-                succeeded = true;
-                programInfoAdapter.clear();
-                programInfoAdapter.addAll(indexJsonResponse.getInfoList());
-                linkToRepo = indexJsonResponse.getLinkToRepo();
+                mSucceeded = true;
+                mProgramInfoAdapter.clear();
+                mProgramInfoAdapter.addAll(indexJsonResponse.getInfoList());
+                mLinkToRepo = indexJsonResponse.getLinkToRepo();
                 invalidateOptionsMenu();
             }
         } else {
-            succeeded = false;
+            mSucceeded = false;
             showErrorMessage(indexJsonResponse.getInvalidationMessage());
         }
     }
@@ -258,20 +270,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<IndexJsonResponse> loader) {
         if (loader.getId() == NAV_LOADER_ID) {
-            navInfoAdapter.clear();
+            mNavInfoAdapter.clear();
         } else {
-            programInfoAdapter.clear();
+            mProgramInfoAdapter.clear();
         }
     }
 
     private void showErrorMessage(String error) {
-        emptyTextView.setVisibility(View.VISIBLE);
-        emptyTextView.setText(error);
+        mEmptyTextView.setVisibility(View.VISIBLE);
+        mEmptyTextView.setText(error);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean(SUCCEEDED_KEY, succeeded);
+        outState.putBoolean(SUCCEEDED_KEY, mSucceeded);
         super.onSaveInstanceState(outState);
     }
 
@@ -281,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(Gravity.START)) {
+        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
             closeNavigationDrawer();
         } else {
             super.onBackPressed();
