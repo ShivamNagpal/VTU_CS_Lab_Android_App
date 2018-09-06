@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IndexJsonResponse {
-    private List<Info> infoList = new ArrayList<>();
+    private ArrayList<Info> infoList = new ArrayList<>();
     private Boolean isValid;
     private String invalidationMessage;
     private String linkToRepo;
@@ -12,7 +12,7 @@ public class IndexJsonResponse {
     public IndexJsonResponse() {
     }
 
-    public List<Info> getInfoList() {
+    public ArrayList<Info> getInfoList() {
         return infoList;
     }
 

@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <ListView
-        android:id="@+id/program_list_view"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/main_recycler_view_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

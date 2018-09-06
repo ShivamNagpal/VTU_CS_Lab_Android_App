@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,6 +27,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nagpal.shivam.vtucslab.Adapter.ContentAdapter;
 import com.nagpal.shivam.vtucslab.Adapter.InfoAdapter;
 import com.nagpal.shivam.vtucslab.Loader.InfoLoader;
 import com.nagpal.shivam.vtucslab.R;
@@ -49,10 +52,12 @@ public class MainActivity extends AppCompatActivity
     private Boolean mSucceeded = false;
     private String mLinkToRepo;
 
-    private InfoAdapter mProgramInfoAdapter;
+    private ContentAdapter mProgramContentAdapter;
+    //    private InfoAdapter mProgramInfoAdapter;
     private InfoAdapter mNavInfoAdapter;
     private ListView mNavListView;
-    private ListView mProgramListView;
+    //    private ListView mProgramListView;
+    private RecyclerView mProgramRecyclerView;
     private ProgressBar mProgressBar;
     private TextView mEmptyTextView;
     private DrawerLayout mDrawerLayout;
@@ -137,11 +142,12 @@ public class MainActivity extends AppCompatActivity
 
         mNavListView.setAdapter(mNavInfoAdapter);
 
-        mProgramInfoAdapter = new InfoAdapter(MainActivity.this,
-                new ArrayList<Info>(),
-                R.layout.text_view_layout);
+        mProgramContentAdapter = new ContentAdapter(MainActivity.this,
+                new ArrayList<Info>());
 
-        mProgramListView.setAdapter(mProgramInfoAdapter);
+        mProgramRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
+        mProgramRecyclerView.setHasFixedSize(true);
+        mProgramRecyclerView.setAdapter(mProgramContentAdapter);
 
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
@@ -190,10 +196,9 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mProgramListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mProgramContentAdapter.setItemClickHandler(new ContentAdapter.ItemClickHandler() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Info info = (Info) adapterView.getItemAtPosition(i);
+            public void onClick(Info info, int position) {
                 Intent intent = new Intent(MainActivity.this, DisplayActivity.class);
                 intent.putExtra(ConstantVariables.title_intent_tag, info.getTitle());
                 intent.putExtra(ConstantVariables.url_intent_tag, info.getUrl());
@@ -211,7 +216,7 @@ public class MainActivity extends AppCompatActivity
         mDrawerLayout = findViewById(R.id.drawer_layout_main_activity);
         mEmptyTextView = findViewById(R.id.empty_text_view_main);
         mNavListView = findViewById(R.id.nav_list_main_activity);
-        mProgramListView = findViewById(R.id.program_list_view);
+        mProgramRecyclerView = findViewById(R.id.main_recycler_view_content);
         mProgressBar = findViewById(R.id.progress_bar_main);
     }
 
@@ -256,8 +261,8 @@ public class MainActivity extends AppCompatActivity
                 mNavListView.setItemChecked(mActiveItem, true);
             } else {
                 mSucceeded = true;
-                mProgramInfoAdapter.clear();
-                mProgramInfoAdapter.addAll(indexJsonResponse.getInfoList());
+                mProgramContentAdapter.clear();
+                mProgramContentAdapter.addAll(indexJsonResponse.getInfoList());
                 mLinkToRepo = indexJsonResponse.getLinkToRepo();
                 invalidateOptionsMenu();
             }
@@ -272,7 +277,7 @@ public class MainActivity extends AppCompatActivity
         if (loader.getId() == NAV_LOADER_ID) {
             mNavInfoAdapter.clear();
         } else {
-            mProgramInfoAdapter.clear();
+            mProgramContentAdapter.clear();
         }
     }
 
