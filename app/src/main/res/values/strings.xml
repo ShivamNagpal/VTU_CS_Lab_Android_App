@@ -9,4 +9,5 @@
     <string name="rate_this_app">Rate this App!</string>
     <string name="refresh">Refresh</string>
     <string name="content_index">Content Index</string>
+    <string name="back_button">Back Button</string>
 </resources>

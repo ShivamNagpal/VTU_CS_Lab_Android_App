@@ -49,6 +49,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
     @Override
     public void onBindViewHolder(@NonNull ContentViewHolder holder, int position) {
         Info info = mInfoArrayList.get(position);
+        holder.mNumber.setText(String.valueOf(position + 1));
         holder.mTitle.setText(info.getTitle());
     }
 
