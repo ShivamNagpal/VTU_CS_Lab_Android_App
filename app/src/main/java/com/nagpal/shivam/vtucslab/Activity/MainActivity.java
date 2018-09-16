@@ -20,15 +20,13 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nagpal.shivam.vtucslab.Adapter.ContentAdapter;
-import com.nagpal.shivam.vtucslab.Adapter.InfoAdapter;
+import com.nagpal.shivam.vtucslab.Adapter.NavigationAdapter;
 import com.nagpal.shivam.vtucslab.Loader.InfoLoader;
 import com.nagpal.shivam.vtucslab.R;
 import com.nagpal.shivam.vtucslab.Utility.ConstantVariables;
@@ -53,10 +51,9 @@ public class MainActivity extends AppCompatActivity
     private String mLinkToRepo;
 
     private ContentAdapter mProgramContentAdapter;
-    //    private InfoAdapter mProgramInfoAdapter;
-    private InfoAdapter mNavInfoAdapter;
-    private ListView mNavListView;
-    //    private ListView mProgramListView;
+
+    private NavigationAdapter mNavigationAdapter;
+    private RecyclerView mNavigationRecyclerView;
     private RecyclerView mProgramRecyclerView;
     private ProgressBar mProgressBar;
     private TextView mEmptyTextView;
@@ -136,11 +133,12 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mNavInfoAdapter = new InfoAdapter(MainActivity.this,
-                new ArrayList<Info>(),
-                R.layout.text_view_layout);
+        mNavigationAdapter = new NavigationAdapter(MainActivity.this, new ArrayList<Info>());
 
-        mNavListView.setAdapter(mNavInfoAdapter);
+        mNavigationRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
+        mNavigationRecyclerView.setHasFixedSize(true);
+
+        mNavigationRecyclerView.setAdapter(mNavigationAdapter);
 
         mProgramContentAdapter = new ContentAdapter(MainActivity.this,
                 new ArrayList<Info>());
@@ -168,9 +166,9 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        mNavListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mNavigationAdapter.setNavigationAdapterItemClickHandler(new NavigationAdapter.NavigationAdapterItemClickHandler() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onNavigationAdapterItemClick(Info info, int i) {
                 if (mActiveItem != i) {
                     mActiveItem = i;
 
@@ -187,7 +185,6 @@ public class MainActivity extends AppCompatActivity
 
                 mEmptyTextView.setVisibility(View.GONE);
 
-                Info info = (Info) adapterView.getItemAtPosition(i);
                 setTitle(info.getTitle());
                 Bundle bundle = new Bundle();
                 bundle.putString("URL", info.getUrl());
@@ -215,7 +212,7 @@ public class MainActivity extends AppCompatActivity
     void initViews() {
         mDrawerLayout = findViewById(R.id.drawer_layout_main_activity);
         mEmptyTextView = findViewById(R.id.empty_text_view_main);
-        mNavListView = findViewById(R.id.nav_list_main_activity);
+        mNavigationRecyclerView = findViewById(R.id.main_recycler_view_navigation);
         mProgramRecyclerView = findViewById(R.id.main_recycler_view_content);
         mProgressBar = findViewById(R.id.progress_bar_main);
     }
@@ -253,12 +250,13 @@ public class MainActivity extends AppCompatActivity
             int loaderId = loader.getId();
 //            logd("On load finished: " + loaderId);
             if (loaderId == NAV_LOADER_ID) {
-                mNavInfoAdapter.clear();
-                mNavInfoAdapter.addAll(indexJsonResponse.getInfoList());
+                mNavigationAdapter.clear();
+                mNavigationAdapter.addAll(indexJsonResponse.getInfoList());
 
 //                logd("Selecting Item for first Time.");
-                mNavListView.performItemClick(mNavListView.getChildAt(mActiveItem), mActiveItem, mNavListView.getAdapter().getItemId(mActiveItem));
-                mNavListView.setItemChecked(mActiveItem, true);
+                // TODO: Implement Tint Effect on Item Selected
+//                mNavListView.performItemClick(mNavListView.getChildAt(mActiveItem), mActiveItem, mNavListView.getAdapter().getItemId(mActiveItem));
+//                mNavListView.setItemChecked(mActiveItem, true);
             } else {
                 mSucceeded = true;
                 mProgramContentAdapter.clear();
@@ -275,7 +273,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<IndexJsonResponse> loader) {
         if (loader.getId() == NAV_LOADER_ID) {
-            mNavInfoAdapter.clear();
+            mNavigationAdapter.clear();
         } else {
             mProgramContentAdapter.clear();
         }

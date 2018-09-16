@@ -85,8 +85,10 @@ public class FetchUtil {
             String line = bufferedReader.readLine();
             while (line != null) {
 //                line = line.replaceAll("\t", "\t\t");
+                //TODO: Temporary Solution to add padding with white spaces
+                stringBuilder.append(" ");
                 stringBuilder.append(line);
-                stringBuilder.append("\n");
+                stringBuilder.append(" \n");
                 line = bufferedReader.readLine();
             }
         }

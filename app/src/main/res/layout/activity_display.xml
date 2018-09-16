@@ -4,14 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
+
+    android:clipToPadding="false"
     tools:context="com.nagpal.shivam.vtucslab.Activity.DisplayActivity">
 
     <com.nagpal.shivam.pageview.PageView
         android:id="@+id/display_page_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:includeFontPadding="true"
         android:lineSpacingExtra="2dp"
-        android:padding="8dp"
         android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
