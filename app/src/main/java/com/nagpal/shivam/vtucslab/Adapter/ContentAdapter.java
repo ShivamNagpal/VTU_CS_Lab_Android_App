@@ -1,15 +1,16 @@
 package com.nagpal.shivam.vtucslab.Adapter;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.nagpal.shivam.vtucslab.R;
 import com.nagpal.shivam.vtucslab.Utility.Info;
+import com.nagpal.shivam.vtucslab.databinding.LayoutContentTileBinding;
 
 import java.util.ArrayList;
 
@@ -42,15 +43,16 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
     @NonNull
     @Override
     public ContentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.layout_content_tile, parent, false);
-        return new ContentViewHolder(view);
+//        View view = LayoutInflater.from(mContext).inflate(R.layout.layout_content_tile, parent, false);
+        LayoutContentTileBinding binding =  DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_content_tile, parent, false);
+        return new ContentViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ContentViewHolder holder, int position) {
         Info info = mInfoArrayList.get(position);
-        holder.mNumber.setText(String.valueOf(position + 1));
-        holder.mTitle.setText(info.getTitle());
+        holder.mBinding.programSerialOrder.setText(String.valueOf(position + 1));
+        holder.mBinding.programTitle.setText(info.getTitle());
     }
 
     @Override
@@ -63,14 +65,16 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
     }
 
     class ContentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView mNumber;
-        TextView mTitle;
+//        TextView mNumber;
+//        TextView mTitle;
+        LayoutContentTileBinding mBinding;
 
-        ContentViewHolder(View itemView) {
-            super(itemView);
-            mNumber = itemView.findViewById(R.id.layout_content_text_view_number);
-            mTitle = itemView.findViewById(R.id.layout_content_text_view_title);
-            itemView.setOnClickListener(this);
+        ContentViewHolder(LayoutContentTileBinding binding) {
+            super(binding.getRoot());
+//            mNumber = itemView.findViewById(R.id.program_serial_order);
+//            mTitle = itemView.findViewById(R.id.program_title);
+            mBinding = binding;
+            binding.getRoot().setOnClickListener(this);
         }
 
         @Override
