@@ -16,11 +16,8 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nagpal.shivam.pageview.PageView;
 import com.nagpal.shivam.vtucslab.Loader.RawStreamLoader;
 import com.nagpal.shivam.vtucslab.R;
 import com.nagpal.shivam.vtucslab.Utility.ConstantVariables;
@@ -34,9 +31,9 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
 
     //    private TextView displayTextView;
-    private PageView mDisplayPageView;
-    private TextView mEmptyTextView;
-    private ProgressBar mProgressBar;
+//    private PageView mDisplayPageView;
+//    private TextView mEmptyTextView;
+//    private ProgressBar mProgressBar;
 
     private Boolean mSucceeded = false;
     private String mUrl;
@@ -113,20 +110,24 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
         if (networkInfo != null && networkInfo.isConnected()) {
             loaderManager.initLoader(LOADER_ID, null, DisplayActivity.this);
         } else {
-            mProgressBar.setVisibility(View.GONE);
-            mEmptyTextView.setVisibility(View.VISIBLE);
-            mEmptyTextView.setText(R.string.no_internet_connection);
+//            mProgressBar.setVisibility(View.GONE);
+            mBinding.progressBarDisplay.setVisibility(View.GONE);
+//            mEmptyTextView.setVisibility(View.VISIBLE);
+            mBinding.emptyTextViewDisplay.setVisibility(View.VISIBLE);
+//            mEmptyTextView.setText(R.string.no_internet_connection);
+            mBinding.emptyTextViewDisplay.setText(R.string.no_internet_connection);
             mSucceeded = false;
         }
     }
 
     private void initViews() {
-        mDisplayPageView = findViewById(R.id.display_page_view);
+//        mDisplayPageView = findViewById(R.id.display_page_view);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mDisplayPageView.setLetterSpacing(0.1f);
+//            mDisplayPageView.setLetterSpacing(0.1f);
+            mBinding.displayPageView.setLetterSpacing(0.1f);
         }
-        mEmptyTextView = findViewById(R.id.empty_text_view_display);
-        mProgressBar = findViewById(R.id.progress_bar_display);
+//        mEmptyTextView = findViewById(R.id.empty_text_view_display);
+//        mProgressBar = findViewById(R.id.progress_bar_display);
     }
 
     @Override
@@ -136,7 +137,8 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public void onLoadFinished(Loader<String> loader, String s) {
-        mProgressBar.setVisibility(View.GONE);
+//        mProgressBar.setVisibility(View.GONE);
+        mBinding.progressBarDisplay.setVisibility(View.GONE);
         if (TextUtils.isEmpty(s)) {
             Toast.makeText(DisplayActivity.this, getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
             mSucceeded = false;
@@ -147,14 +149,16 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
         mCode = s;
         s = s.replaceAll("\t", "\t\t");
 //        displayTextView.setText(s);
-        mDisplayPageView.setText(s);
+//        mDisplayPageView.setText(s);
+        mBinding.displayPageView.setText(s);
         invalidateOptionsMenu();
     }
 
     @Override
     public void onLoaderReset(Loader<String> loader) {
 //        displayTextView.setText(null);
-        mDisplayPageView.setText(null);
+//        mDisplayPageView.setText(null);
+        mBinding.displayPageView.setText(null);
     }
 
     @Override
