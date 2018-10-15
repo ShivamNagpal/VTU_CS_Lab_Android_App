@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.Loader;
+import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -23,6 +24,7 @@ import com.nagpal.shivam.pageview.PageView;
 import com.nagpal.shivam.vtucslab.Loader.RawStreamLoader;
 import com.nagpal.shivam.vtucslab.R;
 import com.nagpal.shivam.vtucslab.Utility.ConstantVariables;
+import com.nagpal.shivam.vtucslab.databinding.ActivityDisplayBinding;
 
 public class DisplayActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
 
@@ -40,6 +42,8 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     private String mUrl;
     private String mTitle;
     private String mCode;
+
+    private ActivityDisplayBinding mBinding;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -77,7 +81,8 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_display);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_display);
+//        setContentView(R.layout.activity_display);
 //        logd("OnCreate Called");
         ActionBar actionBar = getSupportActionBar();
 
@@ -116,7 +121,6 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     }
 
     private void initViews() {
-//        displayTextView = findViewById(R.id.display_text_view);
         mDisplayPageView = findViewById(R.id.display_page_view);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mDisplayPageView.setLetterSpacing(0.1f);
