@@ -13,7 +13,7 @@
         android:clipToPadding="false"
         android:paddingBottom="6dp"
         android:paddingTop="6dp"
-        tools:listitem="@layout/layout_content_tile" />
+        tools:listitem="@layout/layout_card_se_ssp_sf" />
 
     <TextView
         android:id="@+id/empty_text_view_main"

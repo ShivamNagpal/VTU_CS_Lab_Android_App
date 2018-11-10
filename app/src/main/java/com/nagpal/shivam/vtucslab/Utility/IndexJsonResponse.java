@@ -1,7 +1,6 @@
 package com.nagpal.shivam.vtucslab.Utility;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class IndexJsonResponse {
     private ArrayList<Info> infoList = new ArrayList<>();

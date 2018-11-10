@@ -24,7 +24,7 @@
                 android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/program_serial_order"
+                    android:id="@+id/serial_order"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_background_number"
@@ -47,7 +47,7 @@
                     android:textSize="24sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/program_serial_order"
+                    app:layout_constraintStart_toEndOf="@+id/serial_order"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="TextView" />
 

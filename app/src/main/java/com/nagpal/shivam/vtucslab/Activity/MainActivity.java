@@ -28,22 +28,22 @@ import android.widget.Toast;
 import com.nagpal.shivam.vtucslab.Adapter.ContentAdapter;
 import com.nagpal.shivam.vtucslab.Adapter.NavigationAdapter;
 import com.nagpal.shivam.vtucslab.Loader.InfoLoader;
+import com.nagpal.shivam.vtucslab.Model.LabExperiment;
+import com.nagpal.shivam.vtucslab.Model.LabResponse;
+import com.nagpal.shivam.vtucslab.Model.Laboratory;
 import com.nagpal.shivam.vtucslab.R;
-import com.nagpal.shivam.vtucslab.Utility.ConstantVariables;
-import com.nagpal.shivam.vtucslab.Utility.IndexJsonResponse;
-import com.nagpal.shivam.vtucslab.Utility.Info;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<IndexJsonResponse> {
+        implements LoaderManager.LoaderCallbacks<LabResponse>, NavigationAdapter.NavigationAdapterItemClickHandler, ContentAdapter.ItemClickHandler {
 
     private static final String ACTIVE_ITEM_KEY = "active_item_key";
     private static final String SUCCEEDED_KEY = "succeeded_key";
     private static final int NAV_LOADER_ID = 1;
     private static final int REPO_LOADER_ID = 2;
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    private static final String URL = "https://raw.githubusercontent.com/VTU-CS-LAB/Init/master/root.json";
+    private static final String URL = "https://raw.githubusercontent.com/vtucs/Index_v3/master/index.json";
 
     private int mActiveItem;
 
@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity
     private TextView mEmptyTextView;
     private DrawerLayout mDrawerLayout;
     private SharedPreferences mSharedPreferences;
+    private LoaderManager mLoaderManager;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -133,15 +134,14 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mNavigationAdapter = new NavigationAdapter(MainActivity.this, new ArrayList<Info>());
+        mNavigationAdapter = new NavigationAdapter(MainActivity.this, new ArrayList<Laboratory>());
 
         mNavigationRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
         mNavigationRecyclerView.setHasFixedSize(true);
 
         mNavigationRecyclerView.setAdapter(mNavigationAdapter);
 
-        mProgramContentAdapter = new ContentAdapter(MainActivity.this,
-                new ArrayList<Info>());
+        mProgramContentAdapter = new ContentAdapter(MainActivity.this, new ArrayList<LabExperiment>());
 
         mProgramRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false));
         mProgramRecyclerView.setHasFixedSize(true);
@@ -150,15 +150,15 @@ public class MainActivity extends AppCompatActivity
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
-        final LoaderManager loaderManager = getLoaderManager();
+        mLoaderManager = getLoaderManager();
 
         if (!mSucceeded) {
 //            logd("Destroying Navigation Loader.");
-            loaderManager.destroyLoader(NAV_LOADER_ID);
+            mLoaderManager.destroyLoader(NAV_LOADER_ID);
         }
 
         if (networkInfo != null && networkInfo.isConnected()) {
-            loaderManager.initLoader(NAV_LOADER_ID, null, MainActivity.this);
+            mLoaderManager.initLoader(NAV_LOADER_ID, null, MainActivity.this);
         } else {
             mProgressBar.setVisibility(View.GONE);
             mSucceeded = false;
@@ -166,42 +166,9 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        mNavigationAdapter.setNavigationAdapterItemClickHandler(new NavigationAdapter.NavigationAdapterItemClickHandler() {
-            @Override
-            public void onNavigationAdapterItemClick(Info info, int i) {
-                if (mActiveItem != i) {
-                    mActiveItem = i;
+        mNavigationAdapter.setNavigationAdapterItemClickHandler(this);
 
-                    SharedPreferences.Editor editor = mSharedPreferences.edit();
-                    editor.putInt(ACTIVE_ITEM_KEY, mActiveItem);
-                    editor.apply();
-
-                    loaderManager.destroyLoader(REPO_LOADER_ID);
-                }
-
-                if (!mSucceeded) {
-                    loaderManager.destroyLoader(REPO_LOADER_ID);
-                }
-
-                mEmptyTextView.setVisibility(View.GONE);
-
-                setTitle(info.getTitle());
-                Bundle bundle = new Bundle();
-                bundle.putString("URL", info.getUrl());
-                loaderManager.initLoader(REPO_LOADER_ID, bundle, MainActivity.this);
-                mDrawerLayout.closeDrawer(Gravity.START);
-            }
-        });
-
-        mProgramContentAdapter.setItemClickHandler(new ContentAdapter.ItemClickHandler() {
-            @Override
-            public void onClick(Info info, int position) {
-                Intent intent = new Intent(MainActivity.this, DisplayActivity.class);
-                intent.putExtra(ConstantVariables.title_intent_tag, info.getTitle());
-                intent.putExtra(ConstantVariables.url_intent_tag, info.getUrl());
-                startActivity(intent);
-            }
-        });
+        mProgramContentAdapter.setItemClickHandler(this);
 
     }
 
@@ -218,7 +185,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public Loader<IndexJsonResponse> onCreateLoader(int i, Bundle bundle) {
+    public Loader<LabResponse> onCreateLoader(int i, Bundle bundle) {
 //        logd("OnCreateLoader:  " + i);
         if (i == NAV_LOADER_ID) {
             return new InfoLoader(MainActivity.this, URL);
@@ -228,30 +195,30 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoadFinished(Loader<IndexJsonResponse> loader, IndexJsonResponse indexJsonResponse) {
+    public void onLoadFinished(Loader<LabResponse> loader, LabResponse labResponse) {
 
         mProgressBar.setVisibility(View.GONE);
 
 
-        if (indexJsonResponse == null) {
+        if (labResponse == null) {
 //            logd("First error");
             mSucceeded = false;
             Toast.makeText(MainActivity.this, getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
             return;
         }
 
-        if (indexJsonResponse.getValid()) {
-            if (indexJsonResponse.getInfoList().isEmpty()) {
-//                logd("Second Error");
-                mSucceeded = false;
-                Toast.makeText(MainActivity.this, getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
-                return;
-            }
+        if (labResponse.isValid()) {
+//            if (labResponse.getInfoList().isEmpty()) {
+////                logd("Second Error");
+//                mSucceeded = false;
+//                Toast.makeText(MainActivity.this, getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
+//                return;
+//            }
             int loaderId = loader.getId();
 //            logd("On load finished: " + loaderId);
             if (loaderId == NAV_LOADER_ID) {
                 mNavigationAdapter.clear();
-                mNavigationAdapter.addAll(indexJsonResponse.getInfoList());
+                mNavigationAdapter.addAll(labResponse.getLaboratories());
 
 //                logd("Selecting Item for first Time.");
                 // TODO: Implement Tint Effect on Item Selected
@@ -260,18 +227,18 @@ public class MainActivity extends AppCompatActivity
             } else {
                 mSucceeded = true;
                 mProgramContentAdapter.clear();
-                mProgramContentAdapter.addAll(indexJsonResponse.getInfoList());
-                mLinkToRepo = indexJsonResponse.getLinkToRepo();
+                mProgramContentAdapter.addAll(labResponse.getLabExperiments());
+//                mLinkToRepo = labResponse.getLinkToRepo();
                 invalidateOptionsMenu();
             }
         } else {
             mSucceeded = false;
-            showErrorMessage(indexJsonResponse.getInvalidationMessage());
+            showErrorMessage(labResponse.getInvalidationMessage());
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<IndexJsonResponse> loader) {
+    public void onLoaderReset(Loader<LabResponse> loader) {
         if (loader.getId() == NAV_LOADER_ID) {
             mNavigationAdapter.clear();
         } else {
@@ -301,5 +268,38 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onNavigationAdapterItemClick(Laboratory laboratory, int i) {
+        if (mActiveItem != i) {
+            mActiveItem = i;
+
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            editor.putInt(ACTIVE_ITEM_KEY, mActiveItem);
+            editor.apply();
+
+            mLoaderManager.destroyLoader(REPO_LOADER_ID);
+        }
+
+        if (!mSucceeded) {
+            mLoaderManager.destroyLoader(REPO_LOADER_ID);
+        }
+
+        mEmptyTextView.setVisibility(View.GONE);
+
+        setTitle(laboratory.getName());
+        Bundle bundle = new Bundle();
+        bundle.putString("URL", laboratory.getUrl());
+        mLoaderManager.initLoader(REPO_LOADER_ID, bundle, MainActivity.this);
+        mDrawerLayout.closeDrawer(Gravity.START);
+    }
+
+    @Override
+    public void onContentFileClick(LabExperiment labExperiment, int position) {
+        Intent intent = new Intent(MainActivity.this, DisplayActivity.class);
+//        intent.putExtra(ConstantVariables.title_intent_tag, info.getTitle());
+//        intent.putExtra(ConstantVariables.url_intent_tag, info.getUrl());
+        startActivity(intent);
     }
 }

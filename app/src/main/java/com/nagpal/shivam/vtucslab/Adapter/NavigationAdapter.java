@@ -8,30 +8,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.nagpal.shivam.vtucslab.Model.Laboratory;
 import com.nagpal.shivam.vtucslab.R;
-import com.nagpal.shivam.vtucslab.Utility.Info;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.NavigationViewHolder> {
 
     private Context mContext;
-    private ArrayList<Info> mInfoArrayList;
+    private ArrayList<Laboratory> mLaboratoryArrayList;
     private NavigationAdapterItemClickHandler mNavigationAdapterItemClickHandler;
 
-    public NavigationAdapter(@NonNull Context context, @NonNull ArrayList<Info> infoArrayList) {
+    public NavigationAdapter(@NonNull Context context, @NonNull ArrayList<Laboratory> laboratoryArrayList) {
         mContext = context;
-        mInfoArrayList = infoArrayList;
+        mLaboratoryArrayList = laboratoryArrayList;
     }
 
-    public void addAll(ArrayList<Info> infoArrayList) {
-        int i = mInfoArrayList.size();
-        mInfoArrayList.addAll(infoArrayList);
-        notifyItemRangeInserted(i, infoArrayList.size());
+    public void addAll(ArrayList<Laboratory> laboratoryArrayList) {
+        int i = mLaboratoryArrayList.size();
+        mLaboratoryArrayList.addAll(laboratoryArrayList);
+        notifyItemRangeInserted(i, laboratoryArrayList.size());
+    }
+
+    public void addAll(Laboratory[] laboratories) {
+        int i = mLaboratoryArrayList.size();
+        mLaboratoryArrayList.addAll(Arrays.asList(laboratories));
+        notifyItemRangeInserted(i, laboratories.length);
     }
 
     public void clear() {
-        mInfoArrayList.clear();
+        mLaboratoryArrayList.clear();
         notifyDataSetChanged();
     }
 
@@ -48,13 +55,17 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
 
     @Override
     public void onBindViewHolder(@NonNull NavigationViewHolder holder, int position) {
-        Info info = mInfoArrayList.get(position);
-        holder.mTextView.setText(info.getTitle());
+        Laboratory laboratory = mLaboratoryArrayList.get(position);
+        holder.mTextView.setText(laboratory.getName());
     }
 
     @Override
     public int getItemCount() {
-        return mInfoArrayList.size();
+        return mLaboratoryArrayList.size();
+    }
+
+    public interface NavigationAdapterItemClickHandler {
+        void onNavigationAdapterItemClick(Laboratory laboratory, int i);
     }
 
     class NavigationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -70,12 +81,8 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
         public void onClick(View view) {
             if (mNavigationAdapterItemClickHandler != null) {
                 int i = getAdapterPosition();
-                mNavigationAdapterItemClickHandler.onNavigationAdapterItemClick(mInfoArrayList.get(i), i);
+                mNavigationAdapterItemClickHandler.onNavigationAdapterItemClick(mLaboratoryArrayList.get(i), i);
             }
         }
-    }
-
-    public interface NavigationAdapterItemClickHandler {
-        void onNavigationAdapterItemClick(Info info, int i);
     }
 }
