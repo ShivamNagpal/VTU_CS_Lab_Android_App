@@ -6,6 +6,10 @@ public class LabResponse {
     private String invalidationMessage;
     private Laboratory[] laboratories;
     private LabExperiment[] labExperiments;
+    private String github_raw_content;
+    private String organization;
+    private String repository;
+    private String branch;
 
     public String getContext() {
         return context;
@@ -47,5 +51,37 @@ public class LabResponse {
     public LabResponse setLaboratories(Laboratory[] laboratories) {
         this.laboratories = laboratories;
         return this;
+    }
+
+    public String getGithub_raw_content() {
+        return github_raw_content;
+    }
+
+    public void setGithub_raw_content(String github_raw_content) {
+        this.github_raw_content = github_raw_content;
+    }
+
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+    public String getRepository() {
+        return repository;
+    }
+
+    public void setRepository(String repository) {
+        this.repository = repository;
+    }
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
     }
 }

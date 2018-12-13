@@ -56,7 +56,10 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
     @Override
     public void onBindViewHolder(@NonNull NavigationViewHolder holder, int position) {
         Laboratory laboratory = mLaboratoryArrayList.get(position);
-        holder.mTextView.setText(laboratory.getName());
+        String fileName = laboratory.getFileName();
+        String[] parts = fileName.split("\\.");
+        laboratory.setTitle(parts[0].replace('_', ' '));
+        holder.mTextView.setText(laboratory.getTitle());
     }
 
     @Override

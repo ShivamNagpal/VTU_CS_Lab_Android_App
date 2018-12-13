@@ -30,7 +30,10 @@ public class MultipleSubPartAdapter extends RecyclerView.Adapter<MultipleSubPart
     @Override
     public void onBindViewHolder(@NonNull SubPartViewHolder subPartViewHolder, int i) {
         subPartViewHolder.mBinding.serialOrder.setText(mSubParts[i].getSubSerialOrder());
-        subPartViewHolder.mBinding.programTitle.setText(mSubParts[i].getContentFiles()[0].getTitle());
+        String[] parts = mSubParts[i].getContentFiles()[0].getFileName().split("\\.");
+        if (parts.length >= 2) {
+            subPartViewHolder.mBinding.programTitle.setText(parts[parts.length - 2]);
+        }
     }
 
     @Override

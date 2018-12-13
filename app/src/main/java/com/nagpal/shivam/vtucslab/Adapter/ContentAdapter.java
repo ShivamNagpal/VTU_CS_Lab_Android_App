@@ -76,7 +76,10 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (holder instanceof SspSfViewHolder) {
             SspSfViewHolder sspSfViewHolder = (SspSfViewHolder) holder;
             sspSfViewHolder.mBinding.serialOrder.setText(labExperiment.getSerialOrder());
-            sspSfViewHolder.mBinding.programTitle.setText(labExperiment.getLabExperimentSubParts()[0].getContentFiles()[0].getTitle());
+            String[] parts = labExperiment.getLabExperimentSubParts()[0].getContentFiles()[0].getFileName().split("\\.");
+            if (parts.length >= 2) {
+                sspSfViewHolder.mBinding.programTitle.setText(parts[parts.length-2]);
+            }
         } else if (holder instanceof MspSfViewHolder) {
             MspSfViewHolder mspSfViewHolder = (MspSfViewHolder) holder;
             mspSfViewHolder.mBinding.serialOrder.setText(labExperiment.getSerialOrder());

@@ -1,25 +1,22 @@
 package com.nagpal.shivam.vtucslab.Model;
 
 public class Laboratory {
-    private String name;
-    private String url;
+    private String title;
+    private String fileName;
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public Laboratory setName(String name) {
-        this.name = name;
-        return this;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getUrl() {
-        return url;
+    public String getFileName() {
+        return fileName;
     }
 
-    public Laboratory setUrl(String url) {
-        this.url = url;
-        return this;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
-
 }

@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity
     private static final int NAV_LOADER_ID = 1;
     private static final int REPO_LOADER_ID = 2;
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    private static final String URL = "https://raw.githubusercontent.com/vtucs/Index_v3/master/index.json";
+    private static final String URL = "https://raw.githubusercontent.com/vtucs/Index_v3/master/Index_v3.json";
 
     private int mActiveItem;
 
@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout mDrawerLayout;
     private SharedPreferences mSharedPreferences;
     private LoaderManager mLoaderManager;
+    private String mLaboratoryBaseUrl;
+    private String mProgramBaseUrl;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -217,14 +219,23 @@ public class MainActivity extends AppCompatActivity
             int loaderId = loader.getId();
 //            logd("On load finished: " + loaderId);
             if (loaderId == NAV_LOADER_ID) {
+                mLaboratoryBaseUrl = labResponse.getGithub_raw_content() + "/" +
+                        labResponse.getOrganization() + "/" +
+                        labResponse.getRepository() + "/" +
+                        labResponse.getBranch();
                 mNavigationAdapter.clear();
                 mNavigationAdapter.addAll(labResponse.getLaboratories());
+
 
 //                logd("Selecting Item for first Time.");
                 // TODO: Implement Tint Effect on Item Selected
 //                mNavListView.performItemClick(mNavListView.getChildAt(mActiveItem), mActiveItem, mNavListView.getAdapter().getItemId(mActiveItem));
 //                mNavListView.setItemChecked(mActiveItem, true);
             } else {
+                mProgramBaseUrl = labResponse.getGithub_raw_content() + "/" +
+                        labResponse.getOrganization() + "/" +
+                        labResponse.getRepository() + "/" +
+                        labResponse.getBranch();
                 mSucceeded = true;
                 mProgramContentAdapter.clear();
                 mProgramContentAdapter.addAll(labResponse.getLabExperiments());
@@ -288,9 +299,11 @@ public class MainActivity extends AppCompatActivity
 
         mEmptyTextView.setVisibility(View.GONE);
 
-        setTitle(laboratory.getName());
+        setTitle(laboratory.getTitle());
         Bundle bundle = new Bundle();
-        bundle.putString("URL", laboratory.getUrl());
+        String url = mLaboratoryBaseUrl + "/" + laboratory.getFileName();
+
+        bundle.putString("URL", url);
         mLoaderManager.initLoader(REPO_LOADER_ID, bundle, MainActivity.this);
         mDrawerLayout.closeDrawer(Gravity.START);
     }
