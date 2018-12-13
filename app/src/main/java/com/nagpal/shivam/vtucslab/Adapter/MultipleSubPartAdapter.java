@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.nagpal.shivam.vtucslab.Model.LabExperimentSubPart;
 import com.nagpal.shivam.vtucslab.R;
-import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleSubPartBinding;
+import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleSubPartsWithoutFilesBinding;
 
 public class MultipleSubPartAdapter extends RecyclerView.Adapter<MultipleSubPartAdapter.SubPartViewHolder> {
     private Context mContext;
@@ -23,7 +23,7 @@ public class MultipleSubPartAdapter extends RecyclerView.Adapter<MultipleSubPart
     @NonNull
     @Override
     public SubPartViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        LayoutCardSingleSubPartBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_card_single_sub_part, null, false);
+        LayoutCardSingleSubPartsWithoutFilesBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_card_single_sub_parts_without_files, null, false);
         return new SubPartViewHolder(binding);
     }
 
@@ -38,13 +38,16 @@ public class MultipleSubPartAdapter extends RecyclerView.Adapter<MultipleSubPart
 
     @Override
     public int getItemCount() {
-        return mSubParts.length;
+        if (mSubParts != null) {
+            return mSubParts.length;
+        }
+        return 0;
     }
 
     class SubPartViewHolder extends RecyclerView.ViewHolder {
-        LayoutCardSingleSubPartBinding mBinding;
+        LayoutCardSingleSubPartsWithoutFilesBinding mBinding;
 
-        public SubPartViewHolder(LayoutCardSingleSubPartBinding binding) {
+        SubPartViewHolder(LayoutCardSingleSubPartsWithoutFilesBinding binding) {
             super(binding.getRoot());
             mBinding = binding;
         }
