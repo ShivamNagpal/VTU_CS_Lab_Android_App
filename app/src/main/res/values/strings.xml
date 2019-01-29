@@ -10,4 +10,6 @@
     <string name="refresh">Refresh</string>
     <string name="content_index">Content Index</string>
     <string name="back_button">Back Button</string>
+    <string name="repository">Repository</string>
+    <string name="exit">Exit</string>
 </resources>
