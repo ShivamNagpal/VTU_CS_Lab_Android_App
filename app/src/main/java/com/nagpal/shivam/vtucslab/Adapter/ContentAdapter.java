@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.nagpal.shivam.vtucslab.Model.ContentFile;
 import com.nagpal.shivam.vtucslab.Model.LabExperiment;
 import com.nagpal.shivam.vtucslab.Model.LabExperimentSubPart;
 import com.nagpal.shivam.vtucslab.R;
@@ -88,12 +89,12 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else if (holder instanceof MspSfViewHolder) {
             MspSfViewHolder mspSfViewHolder = (MspSfViewHolder) holder;
             mspSfViewHolder.mBinding.serialOrder.setText(processSerialOrder(labExperiment.getSerialOrder()));
-            MultipleSubPartAdapter adapter = new MultipleSubPartAdapter(mContext, labExperiment.getLabExperimentSubParts());
+            MultipleSubPartAdapter adapter = new MultipleSubPartAdapter(mContext, labExperiment.getLabExperimentSubParts(), mItemClickHandler);
             mspSfViewHolder.mBinding.subPartContainer.setAdapter(adapter);
         } else if (holder instanceof SspMfViewHolder) {
             SspMfViewHolder sspMfViewHolder = (SspMfViewHolder) holder;
             sspMfViewHolder.mBinding.serialOrder.setText(processSerialOrder(labExperiment.getSerialOrder()));
-            MultipleFileAdapter adapter = new MultipleFileAdapter(mContext, labExperiment.getLabExperimentSubParts()[0].getContentFiles());
+            MultipleFileAdapter adapter = new MultipleFileAdapter(mContext, labExperiment.getLabExperimentSubParts()[0].getContentFiles(), mItemClickHandler);
             sspMfViewHolder.mBinding.filesContainer.setAdapter(adapter);
         }
     }
@@ -123,7 +124,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public interface ItemClickHandler {
-        void onContentFileClick(LabExperiment labExperiment, int position);
+        void onContentFileClick(ContentFile file);
     }
 
     private String processSerialOrder(String order) {
@@ -148,7 +149,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public void onClick(View view) {
             if (mItemClickHandler != null) {
                 int position = getAdapterPosition();
-                mItemClickHandler.onContentFileClick(mLabExperimentArrayList.get(position), position);
+                ContentFile contentFile = mLabExperimentArrayList.get(position).getLabExperimentSubParts()[0].getContentFiles()[0];
+                mItemClickHandler.onContentFileClick(contentFile);
             }
         }
     }

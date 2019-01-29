@@ -5,8 +5,10 @@ import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
+import com.nagpal.shivam.vtucslab.Model.ContentFile;
 import com.nagpal.shivam.vtucslab.Model.LabExperimentSubPart;
 import com.nagpal.shivam.vtucslab.R;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleSubPartsWithoutFilesBinding;
@@ -14,10 +16,12 @@ import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleSubPartsWithoutFil
 public class MultipleSubPartAdapter extends RecyclerView.Adapter<MultipleSubPartAdapter.SubPartViewHolder> {
     private Context mContext;
     private LabExperimentSubPart[] mSubParts;
+    private ContentAdapter.ItemClickHandler mItemClickHandler;
 
-    public MultipleSubPartAdapter(Context context, LabExperimentSubPart[] subParts) {
+    public MultipleSubPartAdapter(Context context, LabExperimentSubPart[] subParts, ContentAdapter.ItemClickHandler itemClickHandler) {
         mContext = context;
         mSubParts = subParts;
+        mItemClickHandler = itemClickHandler;
     }
 
     @NonNull
@@ -44,12 +48,23 @@ public class MultipleSubPartAdapter extends RecyclerView.Adapter<MultipleSubPart
         return 0;
     }
 
-    class SubPartViewHolder extends RecyclerView.ViewHolder {
+    class SubPartViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
         LayoutCardSingleSubPartsWithoutFilesBinding mBinding;
 
         SubPartViewHolder(LayoutCardSingleSubPartsWithoutFilesBinding binding) {
             super(binding.getRoot());
             mBinding = binding;
+            binding.getRoot().setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mItemClickHandler != null) {
+                int position = getAdapterPosition();
+                ContentFile contentFile = mSubParts[position].getContentFiles()[0];
+                mItemClickHandler.onContentFileClick(contentFile);
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.nagpal.shivam.vtucslab.Model.ContentFile;
@@ -14,10 +15,12 @@ import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleFilesWithoutSubPar
 public class MultipleFileAdapter extends RecyclerView.Adapter<MultipleFileAdapter.ContentFileViewHolder> {
     private Context mContext;
     private ContentFile[] mContentFiles;
+    private ContentAdapter.ItemClickHandler mItemClickHandler;
 
-    public MultipleFileAdapter(Context context, ContentFile[] contentFiles) {
+    public MultipleFileAdapter(Context context, ContentFile[] contentFiles, ContentAdapter.ItemClickHandler itemClickHandler) {
         mContext = context;
         mContentFiles = contentFiles;
+        mItemClickHandler = itemClickHandler;
     }
 
     @NonNull
@@ -44,12 +47,23 @@ public class MultipleFileAdapter extends RecyclerView.Adapter<MultipleFileAdapte
         }
     }
 
-    class ContentFileViewHolder extends RecyclerView.ViewHolder {
+    class ContentFileViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
         LayoutCardSingleFilesWithoutSubPartsBinding mBinding;
 
         ContentFileViewHolder(LayoutCardSingleFilesWithoutSubPartsBinding binding) {
             super(binding.getRoot());
             mBinding = binding;
+            binding.getRoot().setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (mItemClickHandler != null) {
+                int position = getAdapterPosition();
+                ContentFile file = mContentFiles[position];
+                mItemClickHandler.onContentFileClick(file);
+            }
         }
     }
 }

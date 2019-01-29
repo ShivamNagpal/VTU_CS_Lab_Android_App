@@ -28,10 +28,12 @@ import android.widget.Toast;
 import com.nagpal.shivam.vtucslab.Adapter.ContentAdapter;
 import com.nagpal.shivam.vtucslab.Adapter.NavigationAdapter;
 import com.nagpal.shivam.vtucslab.Loader.InfoLoader;
+import com.nagpal.shivam.vtucslab.Model.ContentFile;
 import com.nagpal.shivam.vtucslab.Model.LabExperiment;
 import com.nagpal.shivam.vtucslab.Model.LabResponse;
 import com.nagpal.shivam.vtucslab.Model.Laboratory;
 import com.nagpal.shivam.vtucslab.R;
+import com.nagpal.shivam.vtucslab.Utility.ConstantVariables;
 
 import java.util.ArrayList;
 
@@ -309,10 +311,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onContentFileClick(LabExperiment labExperiment, int position) {
+    public void onContentFileClick(ContentFile file) {
         Intent intent = new Intent(MainActivity.this, DisplayActivity.class);
-//        intent.putExtra(ConstantVariables.title_intent_tag, info.getTitle());
-//        intent.putExtra(ConstantVariables.url_intent_tag, info.getUrl());
+        intent.putExtra(ConstantVariables.title_intent_tag, file.getFileName());
+        intent.putExtra(ConstantVariables.url_intent_tag, mProgramBaseUrl + "/" + file.getFileName());
         startActivity(intent);
     }
 }
