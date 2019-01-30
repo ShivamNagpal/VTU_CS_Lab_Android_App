@@ -1,10 +1,13 @@
 package com.nagpal.shivam.vtucslab.Activity;
 
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -36,6 +39,7 @@ public class RepositoryActivity
         NavigationAdapter.NavigationAdapterItemClickHandler {
 
     private static final int NAV_LOADER_ID = 1;
+    private static final String SUCCEEDED_KEY = "succeeded_key";
     private static final String URL = "https://raw.githubusercontent.com/vtucs/Index_v3/master/Index_v3.json";
 
     private DrawerLayout mDrawerLayout;
@@ -59,14 +63,20 @@ public class RepositoryActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        boolean flag = false;
         switch (menuItem.getItemId()) {
             case R.id.menu_item_repository:
-                return true;
+                flag = true;
+                break;
             case R.id.menu_item_exit:
                 exitApplication();
-                return true;
+                flag = true;
+                break;
         }
-        return false;
+        if (flag) {
+            closeNavigationDrawer();
+        }
+        return flag;
     }
 
     @Override
@@ -75,6 +85,10 @@ public class RepositoryActivity
         setContentView(R.layout.activity_repository);
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+
+        if (savedInstanceState != null) {
+            mSucceeded = savedInstanceState.getBoolean(SUCCEEDED_KEY, false);
+        }
 
         initAndSetupViews();
 
@@ -109,6 +123,7 @@ public class RepositoryActivity
 
         mNavigationView = findViewById(R.id.activity_repository_navigation_view);
         mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.getMenu().getItem(0).setChecked(true);
 
         mHeaderView = mNavigationView.getHeaderView(0);
 
@@ -146,7 +161,12 @@ public class RepositoryActivity
 
     private void exitApplication() {
         this.finishAffinity();
-        System.exit(0);
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                System.exit(0);
+            }
+        }, 1000);
     }
 
     private void setupRepositoryAdapter() {
@@ -191,7 +211,16 @@ public class RepositoryActivity
 
     @Override
     public void onNavigationAdapterItemClick(Laboratory laboratory, int i) {
+        Intent intent = new Intent(RepositoryActivity.this, ProgramActivity.class);
+        intent.putExtra(ProgramActivity.INTENT_LABORATORY, laboratory);
+        intent.putExtra(ProgramActivity.INTENT_LABORATORY_BASE_URL, mLaboratoryBaseUrl);
+        startActivity(intent);
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(SUCCEEDED_KEY, mSucceeded);
+        super.onSaveInstanceState(outState);
     }
 
     private void showErrorMessage(String error) {

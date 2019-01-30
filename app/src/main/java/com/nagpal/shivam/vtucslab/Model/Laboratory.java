@@ -1,6 +1,8 @@
 package com.nagpal.shivam.vtucslab.Model;
 
-public class Laboratory {
+import java.io.Serializable;
+
+public class Laboratory implements Serializable {
     private String title;
     private String fileName;
 
