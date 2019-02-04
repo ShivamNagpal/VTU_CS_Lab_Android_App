@@ -49,7 +49,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
     @NonNull
     @Override
     public NavigationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.text_view_layout, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.layout_card_repository, parent, false);
         return new NavigationViewHolder(view);
     }
 

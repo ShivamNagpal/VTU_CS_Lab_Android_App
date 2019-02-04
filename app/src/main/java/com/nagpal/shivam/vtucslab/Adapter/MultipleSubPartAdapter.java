@@ -27,7 +27,7 @@ public class MultipleSubPartAdapter extends RecyclerView.Adapter<MultipleSubPart
     @NonNull
     @Override
     public SubPartViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        LayoutCardSingleSubPartsWithoutFilesBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_card_single_sub_parts_without_files, null, false);
+        LayoutCardSingleSubPartsWithoutFilesBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_card_single_sub_parts_without_files, viewGroup, false);
         return new SubPartViewHolder(binding);
     }
 

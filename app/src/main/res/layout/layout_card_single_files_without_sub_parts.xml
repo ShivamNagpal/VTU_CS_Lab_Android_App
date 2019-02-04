@@ -4,37 +4,44 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <android.support.constraint.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp">
+        android:foreground="?attr/selectableItemBackground">
 
-        <ImageView
-            android:id="@+id/bullet"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:gravity="center"
-
-            android:scaleType="center"
-            android:src="@drawable/shape_background_content_file"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/program_title"
-            android:layout_width="wrap_content"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/bullet"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="TextView" />
+            android:padding="8dp">
 
-    </android.support.constraint.ConstraintLayout>
+            <ImageView
+                android:id="@+id/bullet"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:gravity="center"
+
+                android:scaleType="center"
+                android:src="@drawable/shape_background_content_file"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/program_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/bullet"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="TextView" />
+
+        </android.support.constraint.ConstraintLayout>
+    </FrameLayout>
+
 
 </layout>
