@@ -9,18 +9,33 @@
         android:clipToPadding="false"
         tools:context="com.nagpal.shivam.vtucslab.Activity.DisplayActivity">
 
-        <com.nagpal.shivam.pageview.PageView
-            android:id="@+id/display_page_view"
+         <ScrollView
+            android:id="@+id/vertical_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:lineSpacingExtra="2dp"
-            android:padding="8dp"
-            android:textColor="@android:color/black"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:zoomFactor="5.0" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <HorizontalScrollView
+                android:id="@+id/horizontal_scroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true">
+
+                <TextView
+                    android:id="@+id/display_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:lineSpacingExtra="2dp"
+                    android:padding="8dp"
+                    android:textColor="@android:color/black"
+                    android:textIsSelectable="true" />
+            </HorizontalScrollView>
+        </ScrollView>
+
 
         <TextView
             android:id="@+id/empty_text_view_display"

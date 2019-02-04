@@ -10,6 +10,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,9 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
     private static final int LOADER_ID = 1;
     private static final String SUCCEEDED_KEY = "succeeded_key";
+    private static final String SCROLL_X_KEY = "scroll_x_key";
+    private static final String SCROLL_Y_KEY = "scroll_y_key";
+
     private static final String LOG_TAG = DisplayActivity.class.getSimpleName();
 
 
@@ -41,7 +45,10 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     private String mTitle;
     private String mCode;
 
+
     private ActivityDisplayBinding mBinding;
+    private int mScrollX;
+    private int mScrollY;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,6 +95,8 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
         if (savedInstanceState != null) {
             mSucceeded = savedInstanceState.getBoolean(SUCCEEDED_KEY, false);
+            mScrollX = savedInstanceState.getInt(SCROLL_X_KEY, 0);
+            mScrollY = savedInstanceState.getInt(SCROLL_Y_KEY, 0);
         }
 
         Intent intent = getIntent();
@@ -125,11 +134,68 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 //        mDisplayPageView = findViewById(R.id.display_page_view);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            mDisplayPageView.setLetterSpacing(0.1f);
-            mBinding.displayPageView.setLetterSpacing(0.1f);
+            mBinding.displayTextView.setLetterSpacing(0.1f);
         }
 //        mEmptyTextView = findViewById(R.id.empty_text_view_display);
 //        mProgressBar = findViewById(R.id.progress_bar_display);
+
+        //setupScrolling();
     }
+
+//    private void setupScrolling() {
+//        mBinding.horizontalScroll.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                return false;
+//            }
+//        });
+//        mBinding.verticalScroll.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                return false;
+//            }
+//        });
+//        mBinding.displayTextView.setOnTouchListener(new View.OnTouchListener() {
+//            private float prevX, prevY, curX, curY;
+//            private boolean handled = false;
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                Log.v("Ontouch Called", "");
+//                mBinding.verticalScroll.requestDisallowInterceptTouchEvent(true);
+//                mBinding.horizontalScroll.requestDisallowInterceptTouchEvent(true);
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        handled = false;
+//                        prevX = event.getX();
+//                        prevY = event.getY();
+//                        Log.v("Action Down", prevX + " " + prevY);
+//                        break;
+//                    case MotionEvent.ACTION_MOVE:
+//                        handled = true;
+//                                                curX = event.getX();
+//                        curY = event.getY();
+//                        int dy = (int) (prevY - curY);
+//                        int dx = (int) (prevX - curX);
+//
+//                        prevX = curX;
+//                        prevY = curY;
+//
+//
+//                        Log.v("Action Move Cur", curX + " " + curY);
+////                        Log.v("Action Move Delta", dx + " " + dy);
+//
+//                        mBinding.verticalScroll.scrollBy(0, dy);
+//                        mBinding.horizontalScroll.scrollBy(dx, 0);
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        Log.v("Action Up", event.getX() + " " + event.getY());
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
+//    }
 
     @Override
     public Loader<String> onCreateLoader(int i, Bundle bundle) {
@@ -151,7 +217,14 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
         s = s.replaceAll("\t", "\t\t");
 //        displayTextView.setText(s);
 //        mDisplayPageView.setText(s);
-        mBinding.displayPageView.setText(s);
+        mBinding.displayTextView.setText(s);
+        new Handler(getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mBinding.horizontalScroll.setScrollX(mScrollX);
+                mBinding.verticalScroll.setScrollY(mScrollY);
+            }
+        }, 500);
         invalidateOptionsMenu();
     }
 
@@ -159,12 +232,14 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     public void onLoaderReset(Loader<String> loader) {
 //        displayTextView.setText(null);
 //        mDisplayPageView.setText(null);
-        mBinding.displayPageView.setText(null);
+        mBinding.displayTextView.setText(null);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(SUCCEEDED_KEY, mSucceeded);
+        outState.putInt(SCROLL_X_KEY, mBinding.horizontalScroll.getScrollX());
+        outState.putInt(SCROLL_Y_KEY, mBinding.verticalScroll.getScrollY());
         super.onSaveInstanceState(outState);
     }
 
