@@ -16,10 +16,9 @@
 
             <ImageView
                 android:id="@+id/bullet"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:gravity="center"
-
                 android:scaleType="center"
                 android:src="@drawable/shape_background_content_file"
                 app:layout_constraintBottom_toBottomOf="parent"
