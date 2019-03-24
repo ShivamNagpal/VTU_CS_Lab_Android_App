@@ -7,8 +7,8 @@ android {
         applicationId "com.nagpal.shivam.vtucslab"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 3
-        versionName "2.5"
+        versionCode 4
+        versionName "4.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
