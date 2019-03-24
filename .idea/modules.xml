@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/VTU_CS_Lab_Android_App.iml" filepath="$PROJECT_DIR$/VTU_CS_Lab_Android_App.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/vtu-cs-lab-android-app.iml" filepath="$PROJECT_DIR$/vtu-cs-lab-android-app.iml" />
     </modules>
   </component>
 </project>
