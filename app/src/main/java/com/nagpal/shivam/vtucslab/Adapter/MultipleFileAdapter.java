@@ -2,6 +2,7 @@ package com.nagpal.shivam.vtucslab.Adapter;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,16 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nagpal.shivam.vtucslab.Model.ContentFile;
-import com.nagpal.shivam.vtucslab.R;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleFilesWithoutSubPartsBinding;
 
 public class MultipleFileAdapter extends RecyclerView.Adapter<MultipleFileAdapter.ContentFileViewHolder> {
     private Context mContext;
     private ContentFile[] mContentFiles;
     private ContentAdapter.ItemClickHandler mItemClickHandler;
+    @LayoutRes
+    private int mLayoutId;
 
-    public MultipleFileAdapter(Context context, ContentFile[] contentFiles, ContentAdapter.ItemClickHandler itemClickHandler) {
+    public MultipleFileAdapter(Context context, @LayoutRes int layoutId, ContentFile[] contentFiles, ContentAdapter.ItemClickHandler itemClickHandler) {
         mContext = context;
+        mLayoutId = layoutId;
         mContentFiles = contentFiles;
         mItemClickHandler = itemClickHandler;
     }
@@ -26,7 +29,7 @@ public class MultipleFileAdapter extends RecyclerView.Adapter<MultipleFileAdapte
     @NonNull
     @Override
     public ContentFileViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        LayoutCardSingleFilesWithoutSubPartsBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_card_single_files_without_sub_parts, viewGroup, false);
+        LayoutCardSingleFilesWithoutSubPartsBinding binding = DataBindingUtil.inflate(LayoutInflater.from(mContext), mLayoutId, viewGroup, false);
         return new ContentFileViewHolder(binding);
     }
 

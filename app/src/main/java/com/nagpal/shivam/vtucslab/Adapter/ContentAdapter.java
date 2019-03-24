@@ -13,7 +13,7 @@ import com.nagpal.shivam.vtucslab.Model.ContentFile;
 import com.nagpal.shivam.vtucslab.Model.LabExperiment;
 import com.nagpal.shivam.vtucslab.Model.LabExperimentSubPart;
 import com.nagpal.shivam.vtucslab.R;
-import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeMspSfBinding;
+import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeMspBinding;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeSspMfBinding;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeSspSfBinding;
 
@@ -66,11 +66,14 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 LayoutCardSeSspSfBinding sspSfBinding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_card_se_ssp_sf, parent, false);
                 return new SspSfViewHolder(sspSfBinding);
             case VIEW_TYPE_MSP_SF:
-                LayoutCardSeMspSfBinding mspSfBinding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_card_se_msp_sf, parent, false);
+                LayoutCardSeMspBinding mspSfBinding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_card_se_msp, parent, false);
                 return new MspSfViewHolder(mspSfBinding);
             case VIEW_TYPE_SSP_MF:
                 LayoutCardSeSspMfBinding sspMfBinding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_card_se_ssp_mf, parent, false);
                 return new SspMfViewHolder(sspMfBinding);
+            case VIEW_TYPE_MSP_MF:
+                LayoutCardSeMspBinding seMspBinding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_card_se_msp, parent, false);
+                return new MspMfViewHolder(seMspBinding);
             default:
                 return new InvalidViewHolder(new View(mContext));
 
@@ -90,13 +93,18 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else if (holder instanceof MspSfViewHolder) {
             MspSfViewHolder mspSfViewHolder = (MspSfViewHolder) holder;
             mspSfViewHolder.mBinding.serialOrder.setText(processSerialOrder(labExperiment.getSerialOrder()));
-            MultipleSubPartAdapter adapter = new MultipleSubPartAdapter(mContext, labExperiment.getLabExperimentSubParts(), mItemClickHandler);
+            MultipleSubPartAdapter adapter = new MultipleSubPartAdapter(mContext, labExperiment.getLabExperimentSubParts(), false, mItemClickHandler);
             mspSfViewHolder.mBinding.subPartContainer.setAdapter(adapter);
         } else if (holder instanceof SspMfViewHolder) {
             SspMfViewHolder sspMfViewHolder = (SspMfViewHolder) holder;
             sspMfViewHolder.mBinding.serialOrder.setText(processSerialOrder(labExperiment.getSerialOrder()));
-            MultipleFileAdapter adapter = new MultipleFileAdapter(mContext, labExperiment.getLabExperimentSubParts()[0].getContentFiles(), mItemClickHandler);
+            MultipleFileAdapter adapter = new MultipleFileAdapter(mContext, R.layout.layout_card_single_files_without_sub_parts, labExperiment.getLabExperimentSubParts()[0].getContentFiles(), mItemClickHandler);
             sspMfViewHolder.mBinding.filesContainer.setAdapter(adapter);
+        } else if (holder instanceof MspMfViewHolder) {
+            MspMfViewHolder mspMfViewHolder = (MspMfViewHolder) holder;
+            mspMfViewHolder.mBinding.serialOrder.setText(processSerialOrder(labExperiment.getSerialOrder()));
+            MultipleSubPartAdapter adapter = new MultipleSubPartAdapter(mContext, labExperiment.getLabExperimentSubParts(), true, mItemClickHandler);
+            mspMfViewHolder.mBinding.subPartContainer.setAdapter(adapter);
         }
     }
 
@@ -159,9 +167,9 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     class MspSfViewHolder extends RecyclerView.ViewHolder {
-        LayoutCardSeMspSfBinding mBinding;
+        LayoutCardSeMspBinding mBinding;
 
-        MspSfViewHolder(LayoutCardSeMspSfBinding binding) {
+        MspSfViewHolder(LayoutCardSeMspBinding binding) {
             super(binding.getRoot());
             mBinding = binding;
             mBinding.subPartContainer.setLayoutManager(new LinearLayoutManager(mContext));
@@ -177,6 +185,17 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mBinding = binding;
             mBinding.filesContainer.setLayoutManager(new LinearLayoutManager(mContext));
             mBinding.filesContainer.setHasFixedSize(true);
+        }
+    }
+
+    class MspMfViewHolder extends RecyclerView.ViewHolder {
+        LayoutCardSeMspBinding mBinding;
+
+        MspMfViewHolder(LayoutCardSeMspBinding binding) {
+            super(binding.getRoot());
+            mBinding = binding;
+            mBinding.subPartContainer.setLayoutManager(new LinearLayoutManager(mContext));
+            mBinding.subPartContainer.setHasFixedSize(true);
         }
     }
 
