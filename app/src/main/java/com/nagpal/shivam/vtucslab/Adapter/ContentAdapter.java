@@ -26,6 +26,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int VIEW_TYPE_MSP_SF = 1;
     private static final int VIEW_TYPE_SSP_MF = 2;
     private static final int VIEW_TYPE_MSP_MF = 3;
+    private static final int VIEW_TYPE_INVALID = -1;
     private Context mContext;
     private ArrayList<LabExperiment> mLabExperimentArrayList;
     private ItemClickHandler mItemClickHandler;
@@ -71,7 +72,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 LayoutCardSeSspMfBinding sspMfBinding = DataBindingUtil.inflate(LayoutInflater.from(mContext), R.layout.layout_card_se_ssp_mf, parent, false);
                 return new SspMfViewHolder(sspMfBinding);
             default:
-                return null;
+                return new InvalidViewHolder(new View(mContext));
 
         }
     }
@@ -119,8 +120,10 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return VIEW_TYPE_MSP_SF;
         else if (labExperimentSubParts.length == 1 && contentFileLength > 1)
             return VIEW_TYPE_SSP_MF;
-        else
+        else if (labExperimentSubParts.length > 1 && contentFileLength > 1)
             return VIEW_TYPE_MSP_MF;
+        else
+            return VIEW_TYPE_INVALID;
     }
 
     public interface ItemClickHandler {
@@ -174,6 +177,12 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mBinding = binding;
             mBinding.filesContainer.setLayoutManager(new LinearLayoutManager(mContext));
             mBinding.filesContainer.setHasFixedSize(true);
+        }
+    }
+
+    class InvalidViewHolder extends RecyclerView.ViewHolder {
+        InvalidViewHolder(@NonNull View itemView) {
+            super(itemView);
         }
     }
 }

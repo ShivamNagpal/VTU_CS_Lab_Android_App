@@ -41,6 +41,7 @@ public class RepositoryActivity
     private static final int NAV_LOADER_ID = 1;
     private static final String SUCCEEDED_KEY = "succeeded_key";
     private static final String URL = "https://raw.githubusercontent.com/vtucs/Index_v3/master/Index_v3.json";
+//    private static final String URL = "https://raw.githubusercontent.com/vtucs/Test_Index/master/TestIndex.json";
 
     private DrawerLayout mDrawerLayout;
     private LoaderManager mLoaderManager;
