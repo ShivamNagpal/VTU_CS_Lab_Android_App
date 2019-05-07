@@ -62,3 +62,4 @@ freeline/
 freeline_project_description.json
 
 .DS_Store
+.idea
