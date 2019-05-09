@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.nagpal.shivam.vtucslab.Model.ContentFile;
 import com.nagpal.shivam.vtucslab.Model.LabExperimentSubPart;
 import com.nagpal.shivam.vtucslab.R;
+import com.nagpal.shivam.vtucslab.Utility.StaticMethods;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleSubPartsWithFilesBinding;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleSubPartsWithoutFilesBinding;
 
@@ -48,7 +49,7 @@ public class MultipleSubPartAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             subPartWithoutFilesViewHolder.mBinding.serialOrder.setText(mSubParts[i].getSubSerialOrder());
             String[] parts = mSubParts[i].getContentFiles()[0].getFileName().split("\\.");
             if (parts.length >= 2) {
-                subPartWithoutFilesViewHolder.mBinding.programTitle.setText(parts[parts.length - 2]);
+                subPartWithoutFilesViewHolder.mBinding.programTitle.setText(StaticMethods.formatProgramName(parts[parts.length - 2]));
             }
         } else if (holder instanceof SubPartWithFilesViewHolder) {
             SubPartWithFilesViewHolder subPartWithFilesViewHolder = (SubPartWithFilesViewHolder) holder;

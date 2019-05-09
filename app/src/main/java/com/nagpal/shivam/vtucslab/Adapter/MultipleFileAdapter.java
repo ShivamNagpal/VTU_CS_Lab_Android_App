@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nagpal.shivam.vtucslab.Model.ContentFile;
+import com.nagpal.shivam.vtucslab.Utility.StaticMethods;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleFilesWithoutSubPartsBinding;
 
 public class MultipleFileAdapter extends RecyclerView.Adapter<MultipleFileAdapter.ContentFileViewHolder> {
@@ -37,7 +38,7 @@ public class MultipleFileAdapter extends RecyclerView.Adapter<MultipleFileAdapte
     public void onBindViewHolder(@NonNull ContentFileViewHolder contentFileViewHolder, int i) {
         String[] parts = mContentFiles[i].getFileName().split("\\.");
         if (parts.length >= 2) {
-            contentFileViewHolder.mBinding.programTitle.setText(parts[parts.length - 2]);
+            contentFileViewHolder.mBinding.programTitle.setText(StaticMethods.formatProgramName((parts[parts.length - 2])));
         }
     }
 

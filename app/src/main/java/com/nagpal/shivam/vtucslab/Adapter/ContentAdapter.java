@@ -13,6 +13,7 @@ import com.nagpal.shivam.vtucslab.Model.ContentFile;
 import com.nagpal.shivam.vtucslab.Model.LabExperiment;
 import com.nagpal.shivam.vtucslab.Model.LabExperimentSubPart;
 import com.nagpal.shivam.vtucslab.R;
+import com.nagpal.shivam.vtucslab.Utility.StaticMethods;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeMspBinding;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeSspMfBinding;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeSspSfBinding;
@@ -88,7 +89,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             sspSfViewHolder.mBinding.serialOrder.setText(processSerialOrder(labExperiment.getSerialOrder()));
             String[] parts = labExperiment.getLabExperimentSubParts()[0].getContentFiles()[0].getFileName().split("\\.");
             if (parts.length >= 2) {
-                sspSfViewHolder.mBinding.programTitle.setText(parts[parts.length - 2]);
+                sspSfViewHolder.mBinding.programTitle.setText(StaticMethods.formatProgramName(parts[parts.length - 2]));
             }
         } else if (holder instanceof MspSfViewHolder) {
             MspSfViewHolder mspSfViewHolder = (MspSfViewHolder) holder;
@@ -134,10 +135,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return VIEW_TYPE_INVALID;
     }
 
-    public interface ItemClickHandler {
-        void onContentFileClick(ContentFile file);
-    }
-
     private String processSerialOrder(String order) {
         try {
             int i = Integer.parseInt(order);
@@ -145,6 +142,10 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } catch (NumberFormatException e) {
             return order;
         }
+    }
+
+    public interface ItemClickHandler {
+        void onContentFileClick(ContentFile file);
     }
 
     class SspSfViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
