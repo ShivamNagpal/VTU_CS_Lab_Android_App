@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/main_menu_item_refresh"
-        android:title="@string/refresh" />
-
-    <item
-        android:id="@+id/menu_item_git_repo_main_activity"
-        android:enabled="false"
-        android:title="@string/git_repository" />
-
-    <item
-        android:id="@+id/menu_item_rate_app_main_activity"
-        android:title="@string/rate_this_app" />
+        android:id="@+id/main_menu_item_privacy"
+        android:title="@string/privacy_policy" />
 
 </menu>
