@@ -1,8 +1,6 @@
 package com.nagpal.shivam.vtucslab.Activity;
 
-import android.app.LoaderManager;
 import android.content.Intent;
-import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -11,6 +9,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -115,7 +115,7 @@ public class RepositoryActivity
     private void loadRepositories() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
-        mLoaderManager = getLoaderManager();
+        mLoaderManager = LoaderManager.getInstance(this);
 
         if (!mSucceeded) {
             mLoaderManager.destroyLoader(NAV_LOADER_ID);
