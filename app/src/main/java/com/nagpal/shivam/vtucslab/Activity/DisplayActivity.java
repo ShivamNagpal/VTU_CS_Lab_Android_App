@@ -1,24 +1,25 @@
 package com.nagpal.shivam.vtucslab.Activity;
 
-import android.app.LoaderManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
-import android.content.Loader;
-import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
+import androidx.databinding.DataBindingUtil;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 
 import com.nagpal.shivam.vtucslab.Loader.RawStreamLoader;
 import com.nagpal.shivam.vtucslab.R;
@@ -111,7 +112,7 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
-        LoaderManager loaderManager = getLoaderManager();
+        LoaderManager loaderManager = LoaderManager.getInstance(this);
 
         if (!mSucceeded) {
             loaderManager.destroyLoader(LOADER_ID);

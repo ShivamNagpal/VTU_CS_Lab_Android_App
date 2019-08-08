@@ -1,8 +1,10 @@
 package com.nagpal.shivam.vtucslab.Loader;
 
-import android.content.AsyncTaskLoader;
+
 import android.content.Context;
 import android.text.TextUtils;
+
+import androidx.loader.content.AsyncTaskLoader;
 
 import com.google.gson.Gson;
 import com.nagpal.shivam.vtucslab.Model.LabResponse;

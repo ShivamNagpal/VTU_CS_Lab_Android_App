@@ -1,7 +1,8 @@
 package com.nagpal.shivam.vtucslab.Loader;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
+
+import androidx.loader.content.AsyncTaskLoader;
 
 import com.nagpal.shivam.vtucslab.Utility.FetchUtil;
 
