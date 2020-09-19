@@ -3,7 +3,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion '30.0.0'
+    buildToolsVersion '30.0.2'
     defaultConfig {
         applicationId "com.nagpal.shivam.vtucslab"
         minSdkVersion 19
@@ -26,25 +26,25 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'com.google.android.material:material:1.2.1'
 
 //    GSON
     implementation 'com.google.code.gson:gson:2.8.5'
 
 //    Firebase SDK
-    implementation('com.google.firebase:firebase-core:17.4.3') {
+    implementation('com.google.firebase:firebase-core:17.5.0') {
         exclude module: 'support-v4'
     }
-    implementation('com.google.firebase:firebase-messaging:20.2.1') {
+    implementation('com.google.firebase:firebase-messaging:20.2.4') {
         exclude module: 'support-v4'
     }
-    implementation 'com.google.firebase:firebase-crashlytics:17.1.0'
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.1'
 
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
