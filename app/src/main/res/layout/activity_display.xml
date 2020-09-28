@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         android:clipChildren="false"
         android:clipToPadding="false"
-        tools:context="com.nagpal.shivam.vtucslab.Activity.DisplayActivity">
+        tools:context="com.nagpal.shivam.vtucslab.activities.DisplayActivity">
 
         <ScrollView
             android:id="@+id/vertical_scroll"

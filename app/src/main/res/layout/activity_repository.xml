@@ -5,7 +5,7 @@
     android:id="@+id/activity_repository_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.nagpal.shivam.vtucslab.Activity.RepositoryActivity"
+    tools:context="com.nagpal.shivam.vtucslab.activities.RepositoryActivity"
     tools:openDrawer="start">
 
     <include layout="@layout/coordinator_repository" />

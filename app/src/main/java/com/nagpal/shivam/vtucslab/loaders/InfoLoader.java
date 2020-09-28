@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtucslab.Loader;
+package com.nagpal.shivam.vtucslab.loaders;
 
 
 import android.content.Context;
@@ -7,8 +7,8 @@ import android.text.TextUtils;
 import androidx.loader.content.AsyncTaskLoader;
 
 import com.google.gson.Gson;
-import com.nagpal.shivam.vtucslab.Model.LabResponse;
-import com.nagpal.shivam.vtucslab.Utility.FetchUtil;
+import com.nagpal.shivam.vtucslab.models.LabResponse;
+import com.nagpal.shivam.vtucslab.utils.FetchUtil;
 
 public class InfoLoader extends AsyncTaskLoader<LabResponse> {
     private String mUrl;

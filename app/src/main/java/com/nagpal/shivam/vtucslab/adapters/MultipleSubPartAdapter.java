@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtucslab.Adapter;
+package com.nagpal.shivam.vtucslab.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,10 +10,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nagpal.shivam.vtucslab.Model.ContentFile;
-import com.nagpal.shivam.vtucslab.Model.LabExperimentSubPart;
+import com.nagpal.shivam.vtucslab.models.ContentFile;
+import com.nagpal.shivam.vtucslab.models.LabExperimentSubPart;
 import com.nagpal.shivam.vtucslab.R;
-import com.nagpal.shivam.vtucslab.Utility.StaticMethods;
+import com.nagpal.shivam.vtucslab.utils.StaticMethods;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleSubPartsWithFilesBinding;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleSubPartsWithoutFilesBinding;
 
