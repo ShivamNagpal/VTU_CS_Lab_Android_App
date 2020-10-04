@@ -7,7 +7,7 @@ android {
     buildToolsVersion '30.0.2'
     defaultConfig {
         applicationId "com.nagpal.shivam.vtucslab"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode 7
         versionName "6.1"
@@ -32,9 +32,6 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'com.google.android.material:material:1.2.1'
 
-//    GSON
-    implementation 'com.google.code.gson:gson:2.8.5'
-
 //    Firebase SDK
     implementation('com.google.firebase:firebase-core:17.5.0') {
         exclude module: 'support-v4'
@@ -51,6 +48,12 @@ dependencies {
     def nav_version = "2.3.0"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    def retrofit_version = "2.9.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
