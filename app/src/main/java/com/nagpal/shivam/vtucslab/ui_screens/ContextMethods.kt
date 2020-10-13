@@ -5,7 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 
 fun isInternetAvailable(context: Context): Boolean {
-    var result = false
+    val result: Boolean
     val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val networkCapabilities = connectivityManager.activeNetwork ?: return false
