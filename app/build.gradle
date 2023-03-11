@@ -10,6 +10,7 @@ android {
         versionCode 7
         versionName "6.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -29,6 +30,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.material:material:1.8.0'
+    implementation "androidx.multidex:multidex:2.0.1"
 
 //    GSON
     implementation 'com.google.code.gson:gson:2.8.9'
