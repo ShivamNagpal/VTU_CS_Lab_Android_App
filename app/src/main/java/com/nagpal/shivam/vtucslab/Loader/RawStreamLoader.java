@@ -7,8 +7,7 @@ import androidx.loader.content.AsyncTaskLoader;
 import com.nagpal.shivam.vtucslab.Utility.FetchUtil;
 
 public class RawStreamLoader extends AsyncTaskLoader<String> {
-    private static final String RAW_STREAM_LOADER = "raw_stream_loader";
-    private String mUrl;
+    private final String mUrl;
     private String fetchedData;
 
     // TODO: Implement Local Data Saving.

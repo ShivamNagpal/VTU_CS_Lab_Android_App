@@ -11,7 +11,7 @@ import com.nagpal.shivam.vtucslab.Model.LabResponse;
 import com.nagpal.shivam.vtucslab.Utility.FetchUtil;
 
 public class InfoLoader extends AsyncTaskLoader<LabResponse> {
-    private String mUrl;
+    private final String mUrl;
     private LabResponse mLabResponse;
 
     public InfoLoader(Context context, String url) {
@@ -44,7 +44,6 @@ public class InfoLoader extends AsyncTaskLoader<LabResponse> {
             return null;
         }
         Gson gson = new Gson();
-        LabResponse labResponse = gson.fromJson(jsonResponse, LabResponse.class);
-        return labResponse;
+        return gson.fromJson(jsonResponse, LabResponse.class);
     }
 }

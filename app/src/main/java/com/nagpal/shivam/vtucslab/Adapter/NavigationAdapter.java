@@ -1,5 +1,6 @@
 package com.nagpal.shivam.vtucslab.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,19 +18,13 @@ import java.util.Arrays;
 
 public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.NavigationViewHolder> {
 
-    private Context mContext;
-    private ArrayList<Laboratory> mLaboratoryArrayList;
+    private final Context mContext;
+    private final ArrayList<Laboratory> mLaboratoryArrayList;
     private NavigationAdapterItemClickHandler mNavigationAdapterItemClickHandler;
 
     public NavigationAdapter(@NonNull Context context, @NonNull ArrayList<Laboratory> laboratoryArrayList) {
         mContext = context;
         mLaboratoryArrayList = laboratoryArrayList;
-    }
-
-    public void addAll(ArrayList<Laboratory> laboratoryArrayList) {
-        int i = mLaboratoryArrayList.size();
-        mLaboratoryArrayList.addAll(laboratoryArrayList);
-        notifyItemRangeInserted(i, laboratoryArrayList.size());
     }
 
     public void addAll(Laboratory[] laboratories) {
@@ -38,6 +33,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Na
         notifyItemRangeInserted(i, laboratories.length);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void clear() {
         mLaboratoryArrayList.clear();
         notifyDataSetChanged();

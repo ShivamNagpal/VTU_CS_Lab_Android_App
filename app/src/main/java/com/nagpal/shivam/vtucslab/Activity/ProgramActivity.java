@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 import androidx.loader.app.LoaderManager;
@@ -21,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.nagpal.shivam.vtucslab.Adapter.ContentAdapter;
 import com.nagpal.shivam.vtucslab.Loader.InfoLoader;
 import com.nagpal.shivam.vtucslab.Model.ContentFile;
-import com.nagpal.shivam.vtucslab.Model.LabExperiment;
 import com.nagpal.shivam.vtucslab.Model.LabResponse;
 import com.nagpal.shivam.vtucslab.Model.Laboratory;
 import com.nagpal.shivam.vtucslab.R;
@@ -46,7 +46,6 @@ public class ProgramActivity
     private TextView mEmptyTextView;
     private boolean mSucceeded;
     private String mProgramBaseUrl;
-    private LoaderManager mLoaderManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +65,9 @@ public class ProgramActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(ProgramActivity.this);
-                return true;
-
+        if (item.getItemId() == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(ProgramActivity.this);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -86,7 +83,7 @@ public class ProgramActivity
     }
 
     private void setupProgramAdapter() {
-        mProgramAdapter = new ContentAdapter(ProgramActivity.this, new ArrayList<LabExperiment>());
+        mProgramAdapter = new ContentAdapter(ProgramActivity.this, new ArrayList<>());
         mProgramRecyclerView.setAdapter(mProgramAdapter);
         mProgramAdapter.setItemClickHandler(this);
     }
@@ -99,10 +96,10 @@ public class ProgramActivity
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
-        mLoaderManager = LoaderManager.getInstance(this);
+        LoaderManager loaderManager = LoaderManager.getInstance(this);
 
         if (!mSucceeded) {
-            mLoaderManager.destroyLoader(REPO_LOADER_ID);
+            loaderManager.destroyLoader(REPO_LOADER_ID);
         }
 
         mEmptyTextView.setVisibility(View.GONE);
@@ -113,7 +110,7 @@ public class ProgramActivity
             String url = laboratoryBaseUrl + "/" + laboratory.getFileName();
 
             bundle.putString("URL", url);
-            mLoaderManager.initLoader(REPO_LOADER_ID, bundle, ProgramActivity.this);
+            loaderManager.initLoader(REPO_LOADER_ID, bundle, ProgramActivity.this);
         } else {
             mProgressBar.setVisibility(View.GONE);
             mSucceeded = false;
@@ -121,13 +118,15 @@ public class ProgramActivity
         }
     }
 
+    @NonNull
     @Override
     public Loader<LabResponse> onCreateLoader(int id, Bundle args) {
+        assert args != null;
         return new InfoLoader(ProgramActivity.this, args.getString("URL"));
     }
 
     @Override
-    public void onLoadFinished(Loader<LabResponse> loader, LabResponse labResponse) {
+    public void onLoadFinished(@NonNull Loader<LabResponse> loader, LabResponse labResponse) {
         mProgressBar.setVisibility(View.GONE);
 
         if (labResponse == null) {
@@ -151,7 +150,7 @@ public class ProgramActivity
     }
 
     @Override
-    public void onLoaderReset(Loader<LabResponse> loader) {
+    public void onLoaderReset(@NonNull Loader<LabResponse> loader) {
         mProgramAdapter.clear();
     }
 

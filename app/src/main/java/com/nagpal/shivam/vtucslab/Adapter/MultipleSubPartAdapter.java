@@ -18,10 +18,10 @@ import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleSubPartsWithFilesB
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleSubPartsWithoutFilesBinding;
 
 public class MultipleSubPartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private Context mContext;
-    private LabExperimentSubPart[] mSubParts;
-    private boolean mContainsMultipleFiles;
-    private ContentAdapter.ItemClickHandler mItemClickHandler;
+    private final Context mContext;
+    private final LabExperimentSubPart[] mSubParts;
+    private final boolean mContainsMultipleFiles;
+    private final ContentAdapter.ItemClickHandler mItemClickHandler;
 
     public MultipleSubPartAdapter(Context context, LabExperimentSubPart[] subParts, boolean containsMultipleFiles, ContentAdapter.ItemClickHandler itemClickHandler) {
         mContext = context;

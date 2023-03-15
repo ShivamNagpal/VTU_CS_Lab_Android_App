@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
@@ -33,12 +34,8 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     private static final String SCROLL_X_KEY = "scroll_x_key";
     private static final String SCROLL_Y_KEY = "scroll_y_key";
 
-    private static final String LOG_TAG = DisplayActivity.class.getSimpleName();
-
-
     private Boolean mSucceeded = false;
     private String mUrl;
-    private String mTitle;
     private String mCode;
 
 
@@ -58,23 +55,21 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(DisplayActivity.this);
-                return true;
-
-            case R.id.display_menu_item_refresh:
-                recreate();
-                return true;
-
-            case R.id.menu_item_copy_display_activity:
-                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                ClipData clipData = new ClipData(ClipData.newPlainText("Code", mCode));
-                if (clipboardManager != null) {
-                    clipboardManager.setPrimaryClip(clipData);
-                    Toast.makeText(DisplayActivity.this, "Code copied to Clipboard.", Toast.LENGTH_SHORT).show();
-                }
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(DisplayActivity.this);
+            return true;
+        } else if (itemId == R.id.display_menu_item_refresh) {
+            recreate();
+            return true;
+        } else if (itemId == R.id.menu_item_copy_display_activity) {
+            ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+            ClipData clipData = new ClipData(ClipData.newPlainText("Code", mCode));
+            if (clipboardManager != null) {
+                clipboardManager.setPrimaryClip(clipData);
+                Toast.makeText(DisplayActivity.this, "Code copied to Clipboard.", Toast.LENGTH_SHORT).show();
+            }
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -94,14 +89,14 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
         }
 
         Intent intent = getIntent();
-        mTitle = intent.getStringExtra(ConstantVariables.title_intent_tag);
-        mUrl = intent.getStringExtra(ConstantVariables.url_intent_tag);
 
+        mUrl = intent.getStringExtra(ConstantVariables.url_intent_tag);
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        DisplayActivity.this.setTitle(mTitle);
+        String title = intent.getStringExtra(ConstantVariables.title_intent_tag);
+        DisplayActivity.this.setTitle(title);
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
@@ -127,13 +122,14 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
         }
     }
 
+    @NonNull
     @Override
     public Loader<String> onCreateLoader(int i, Bundle bundle) {
         return new RawStreamLoader(DisplayActivity.this, mUrl);
     }
 
     @Override
-    public void onLoadFinished(Loader<String> loader, String s) {
+    public void onLoadFinished(@NonNull Loader<String> loader, String s) {
         mBinding.progressBarDisplay.setVisibility(View.GONE);
         if (TextUtils.isEmpty(s)) {
             Toast.makeText(DisplayActivity.this, getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
@@ -145,18 +141,15 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
         mCode = s;
         s = s.replaceAll("\t", "\t\t");
         mBinding.displayTextView.setText(s);
-        new Handler(getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mBinding.horizontalScroll.setScrollX(mScrollX);
-                mBinding.verticalScroll.setScrollY(mScrollY);
-            }
+        new Handler(getMainLooper()).postDelayed(() -> {
+            mBinding.horizontalScroll.setScrollX(mScrollX);
+            mBinding.verticalScroll.setScrollY(mScrollY);
         }, 500);
         invalidateOptionsMenu();
     }
 
     @Override
-    public void onLoaderReset(Loader<String> loader) {
+    public void onLoaderReset(@NonNull Loader<String> loader) {
         mBinding.displayTextView.setText(null);
     }
 
