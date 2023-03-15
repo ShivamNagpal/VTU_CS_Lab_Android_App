@@ -11,13 +11,10 @@ public class RawStreamLoader extends AsyncTaskLoader<String> {
     private String mUrl;
     private String fetchedData;
 
-    //    private SharedPreferences sharedPreferences;
-// TODO: Implement Local Data Saving.
+    // TODO: Implement Local Data Saving.
     public RawStreamLoader(Context context, String url) {
         super(context);
         mUrl = url;
-//        sharedPreferences = context.getSharedPreferences(RAW_STREAM_LOADER, Context.MODE_PRIVATE);
-//        fetchedData = sharedPreferences.getString(mUrl, null);
     }
 
     @Override
@@ -32,10 +29,6 @@ public class RawStreamLoader extends AsyncTaskLoader<String> {
     @Override
     public String loadInBackground() {
         fetchedData = FetchUtil.fetchData(mUrl);
-//        TODO: If fetched data is not null.
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putString(mUrl, fetchedData);
-//        editor.apply();
         return fetchedData;
     }
 }

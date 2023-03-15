@@ -144,8 +144,6 @@ public class ProgramActivity
             mSucceeded = true;
             mProgramAdapter.clear();
             mProgramAdapter.addAll(labResponse.getLabExperiments());
-//                mLinkToRepo = labResponse.getLinkToRepo();
-//            invalidateOptionsMenu();
         } else {
             mSucceeded = false;
             showErrorMessage(labResponse.getInvalidationMessage());

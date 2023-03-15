@@ -36,11 +36,6 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     private static final String LOG_TAG = DisplayActivity.class.getSimpleName();
 
 
-    //    private TextView displayTextView;
-//    private PageView mDisplayPageView;
-//    private TextView mEmptyTextView;
-//    private ProgressBar mProgressBar;
-
     private Boolean mSucceeded = false;
     private String mUrl;
     private String mTitle;
@@ -88,8 +83,6 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_display);
-//        setContentView(R.layout.activity_display);
-//        logd("OnCreate Called");
         ActionBar actionBar = getSupportActionBar();
 
         initViews();
@@ -121,82 +114,18 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
         if (networkInfo != null && networkInfo.isConnected()) {
             loaderManager.initLoader(LOADER_ID, null, DisplayActivity.this);
         } else {
-//            mProgressBar.setVisibility(View.GONE);
             mBinding.progressBarDisplay.setVisibility(View.GONE);
-//            mEmptyTextView.setVisibility(View.VISIBLE);
             mBinding.emptyTextViewDisplay.setVisibility(View.VISIBLE);
-//            mEmptyTextView.setText(R.string.no_internet_connection);
             mBinding.emptyTextViewDisplay.setText(R.string.no_internet_connection);
             mSucceeded = false;
         }
     }
 
     private void initViews() {
-//        mDisplayPageView = findViewById(R.id.display_page_view);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            mDisplayPageView.setLetterSpacing(0.1f);
             mBinding.displayTextView.setLetterSpacing(0.1f);
         }
-//        mEmptyTextView = findViewById(R.id.empty_text_view_display);
-//        mProgressBar = findViewById(R.id.progress_bar_display);
-
-        //setupScrolling();
     }
-
-//    private void setupScrolling() {
-//        mBinding.horizontalScroll.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                return false;
-//            }
-//        });
-//        mBinding.verticalScroll.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                return false;
-//            }
-//        });
-//        mBinding.displayTextView.setOnTouchListener(new View.OnTouchListener() {
-//            private float prevX, prevY, curX, curY;
-//            private boolean handled = false;
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                Log.v("Ontouch Called", "");
-//                mBinding.verticalScroll.requestDisallowInterceptTouchEvent(true);
-//                mBinding.horizontalScroll.requestDisallowInterceptTouchEvent(true);
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        handled = false;
-//                        prevX = event.getX();
-//                        prevY = event.getY();
-//                        Log.v("Action Down", prevX + " " + prevY);
-//                        break;
-//                    case MotionEvent.ACTION_MOVE:
-//                        handled = true;
-//                                                curX = event.getX();
-//                        curY = event.getY();
-//                        int dy = (int) (prevY - curY);
-//                        int dx = (int) (prevX - curX);
-//
-//                        prevX = curX;
-//                        prevY = curY;
-//
-//
-//                        Log.v("Action Move Cur", curX + " " + curY);
-////                        Log.v("Action Move Delta", dx + " " + dy);
-//
-//                        mBinding.verticalScroll.scrollBy(0, dy);
-//                        mBinding.horizontalScroll.scrollBy(dx, 0);
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        Log.v("Action Up", event.getX() + " " + event.getY());
-//                        break;
-//                }
-//                return true;
-//            }
-//        });
-//    }
 
     @Override
     public Loader<String> onCreateLoader(int i, Bundle bundle) {
@@ -205,7 +134,6 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public void onLoadFinished(Loader<String> loader, String s) {
-//        mProgressBar.setVisibility(View.GONE);
         mBinding.progressBarDisplay.setVisibility(View.GONE);
         if (TextUtils.isEmpty(s)) {
             Toast.makeText(DisplayActivity.this, getString(R.string.error_occurred), Toast.LENGTH_LONG).show();
@@ -216,8 +144,6 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
         mSucceeded = true;
         mCode = s;
         s = s.replaceAll("\t", "\t\t");
-//        displayTextView.setText(s);
-//        mDisplayPageView.setText(s);
         mBinding.displayTextView.setText(s);
         new Handler(getMainLooper()).postDelayed(new Runnable() {
             @Override
@@ -231,8 +157,6 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
     @Override
     public void onLoaderReset(Loader<String> loader) {
-//        displayTextView.setText(null);
-//        mDisplayPageView.setText(null);
         mBinding.displayTextView.setText(null);
     }
 
@@ -243,8 +167,4 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
         outState.putInt(SCROLL_Y_KEY, mBinding.verticalScroll.getScrollY());
         super.onSaveInstanceState(outState);
     }
-
-//    private void logd(String str) {
-//        Log.d(LOG_TAG, str);
-//    }
 }
