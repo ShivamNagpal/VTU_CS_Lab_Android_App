@@ -1,5 +1,6 @@
-package com.nagpal.shivam.vtucslab.Adapter;
+package com.nagpal.shivam.vtucslab.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,14 +11,14 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nagpal.shivam.vtucslab.Model.ContentFile;
-import com.nagpal.shivam.vtucslab.Model.LabExperiment;
-import com.nagpal.shivam.vtucslab.Model.LabExperimentSubPart;
 import com.nagpal.shivam.vtucslab.R;
-import com.nagpal.shivam.vtucslab.Utility.StaticMethods;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeMspBinding;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeSspMfBinding;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeSspSfBinding;
+import com.nagpal.shivam.vtucslab.models.ContentFile;
+import com.nagpal.shivam.vtucslab.models.LabExperiment;
+import com.nagpal.shivam.vtucslab.models.LabExperimentSubPart;
+import com.nagpal.shivam.vtucslab.utilities.StaticMethods;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,8 +30,8 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int VIEW_TYPE_SSP_MF = 2;
     private static final int VIEW_TYPE_MSP_MF = 3;
     private static final int VIEW_TYPE_INVALID = -1;
-    private Context mContext;
-    private ArrayList<LabExperiment> mLabExperimentArrayList;
+    private final Context mContext;
+    private final ArrayList<LabExperiment> mLabExperimentArrayList;
     private ItemClickHandler mItemClickHandler;
 
     public ContentAdapter(Context context, ArrayList<LabExperiment> labExperimentArrayList) {
@@ -42,12 +43,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mItemClickHandler = itemClickHandler;
     }
 
-    public void addAll(ArrayList<LabExperiment> labExperimentArrayList) {
-        int i = mLabExperimentArrayList.size();
-        mLabExperimentArrayList.addAll(labExperimentArrayList);
-        notifyItemRangeInserted(i, labExperimentArrayList.size());
-    }
-
     public void addAll(@NonNull LabExperiment[] labExperiments) {
         int i = mLabExperimentArrayList.size();
         mLabExperimentArrayList.addAll(Arrays.asList(labExperiments));
@@ -55,6 +50,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     public void clear() {
         mLabExperimentArrayList.clear();
         notifyDataSetChanged();
@@ -120,17 +116,16 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         LabExperiment experiment = mLabExperimentArrayList.get(position);
         int contentFileLength = 1;
         LabExperimentSubPart[] labExperimentSubParts = experiment.getLabExperimentSubParts();
-        for (int i = 0, labExperimentSubPartsLength = labExperimentSubParts.length; i < labExperimentSubPartsLength; i++) {
-            LabExperimentSubPart subPart = labExperimentSubParts[i];
+        for (LabExperimentSubPart subPart : labExperimentSubParts) {
             contentFileLength = Math.max(contentFileLength, subPart.getContentFiles().length);
         }
         if (labExperimentSubParts.length == 1 && contentFileLength == 1)
             return VIEW_TYPE_SSP_SF;
         else if (labExperimentSubParts.length > 1 && contentFileLength == 1)
             return VIEW_TYPE_MSP_SF;
-        else if (labExperimentSubParts.length == 1 && contentFileLength > 1)
+        else if (labExperimentSubParts.length == 1)
             return VIEW_TYPE_SSP_MF;
-        else if (labExperimentSubParts.length > 1 && contentFileLength > 1)
+        else if (labExperimentSubParts.length > 1)
             return VIEW_TYPE_MSP_MF;
         else
             return VIEW_TYPE_INVALID;
@@ -147,6 +142,12 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public interface ItemClickHandler {
         void onContentFileClick(ContentFile file);
+    }
+
+    static class InvalidViewHolder extends RecyclerView.ViewHolder {
+        InvalidViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
     }
 
     class SspSfViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -198,12 +199,6 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mBinding = binding;
             mBinding.subPartContainer.setLayoutManager(new LinearLayoutManager(mContext));
             mBinding.subPartContainer.setHasFixedSize(true);
-        }
-    }
-
-    class InvalidViewHolder extends RecyclerView.ViewHolder {
-        InvalidViewHolder(@NonNull View itemView) {
-            super(itemView);
         }
     }
 }

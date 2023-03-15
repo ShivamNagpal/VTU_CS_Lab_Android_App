@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtucslab.Utility;
+package com.nagpal.shivam.vtucslab.utilities;
 
 public class ConstantVariables {
     public static final String title_intent_tag = "title";

@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtucslab.Activity;
+package com.nagpal.shivam.vtucslab.activities;
 
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
@@ -27,11 +27,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
-import com.nagpal.shivam.vtucslab.Adapter.NavigationAdapter;
-import com.nagpal.shivam.vtucslab.Loader.InfoLoader;
-import com.nagpal.shivam.vtucslab.Model.LabResponse;
-import com.nagpal.shivam.vtucslab.Model.Laboratory;
 import com.nagpal.shivam.vtucslab.R;
+import com.nagpal.shivam.vtucslab.adapters.NavigationAdapter;
+import com.nagpal.shivam.vtucslab.loaders.InfoLoader;
+import com.nagpal.shivam.vtucslab.models.LabResponse;
+import com.nagpal.shivam.vtucslab.models.Laboratory;
 
 import java.util.ArrayList;
 
@@ -44,17 +44,12 @@ public class RepositoryActivity
     private static final int NAV_LOADER_ID = 1;
     private static final String SUCCEEDED_KEY = "succeeded_key";
     private static final String URL = "https://raw.githubusercontent.com/vtucs/Index_v3/master/Index_v3.json";
-//    private static final String URL = "https://raw.githubusercontent.com/vtucs/Test_Index/master/TestIndex.json";
-
     private DrawerLayout mDrawerLayout;
-    private LoaderManager mLoaderManager;
     private NavigationAdapter mRepositoryAdapter;
-    private NavigationView mNavigationView;
     private ProgressBar mProgressBar;
     private RecyclerView mRepositoryRecyclerView;
     private TextView mEmptyTextView;
     private Toolbar mToolbar;
-    private View mHeaderView;
     private boolean mSucceeded;
     private String mLaboratoryBaseUrl;
 
@@ -66,12 +61,11 @@ public class RepositoryActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.main_menu_item_privacy:
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("https://github.com/ShivamNagpal/Privacy_Policies/blob/master/VTU_CS_LAB_MANUAL.md"));
-                startActivity(intent);
-                return true;
+        if (item.getItemId() == R.id.main_menu_item_privacy) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("https://github.com/ShivamNagpal/Privacy_Policies/blob/master/VTU_CS_LAB_MANUAL.md"));
+            startActivity(intent);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -80,14 +74,12 @@ public class RepositoryActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         boolean flag = false;
-        switch (menuItem.getItemId()) {
-            case R.id.menu_item_repository:
-                flag = true;
-                break;
-            case R.id.menu_item_exit:
-                exitApplication();
-                flag = true;
-                break;
+        int itemId = menuItem.getItemId();
+        if (itemId == R.id.menu_item_repository) {
+            flag = true;
+        } else if (itemId == R.id.menu_item_exit) {
+            exitApplication();
+            flag = true;
         }
         if (flag) {
             closeNavigationDrawer();
@@ -116,14 +108,14 @@ public class RepositoryActivity
     private void loadRepositories() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
-        mLoaderManager = LoaderManager.getInstance(this);
+        LoaderManager loaderManager = LoaderManager.getInstance(this);
 
         if (!mSucceeded) {
-            mLoaderManager.destroyLoader(NAV_LOADER_ID);
+            loaderManager.destroyLoader(NAV_LOADER_ID);
         }
 
         if (networkInfo != null && networkInfo.isConnected()) {
-            mLoaderManager.initLoader(NAV_LOADER_ID, null, RepositoryActivity.this);
+            loaderManager.initLoader(NAV_LOADER_ID, null, RepositoryActivity.this);
         } else {
             mProgressBar.setVisibility(View.GONE);
             mSucceeded = false;
@@ -137,19 +129,14 @@ public class RepositoryActivity
         mDrawerLayout = findViewById(R.id.activity_repository_drawer_layout);
         setUpDrawerToggle();
 
-        mNavigationView = findViewById(R.id.activity_repository_navigation_view);
-        mNavigationView.setNavigationItemSelectedListener(this);
-        mNavigationView.getMenu().getItem(0).setChecked(true);
+        NavigationView navigationView = findViewById(R.id.activity_repository_navigation_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.getMenu().getItem(0).setChecked(true);
 
-        mHeaderView = mNavigationView.getHeaderView(0);
+        View headerView = navigationView.getHeaderView(0);
 
-        ImageButton navigationDrawerBackButton = mHeaderView.findViewById(R.id.activity_repository_image_button_close_drawer);
-        navigationDrawerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeNavigationDrawer();
-            }
-        });
+        ImageButton navigationDrawerBackButton = headerView.findViewById(R.id.activity_repository_image_button_close_drawer);
+        navigationDrawerBackButton.setOnClickListener(view -> closeNavigationDrawer());
 
         mRepositoryRecyclerView = findViewById(R.id.activity_repository_recycler_view_repository);
         mRepositoryRecyclerView.setLayoutManager(new LinearLayoutManager(RepositoryActivity.this, LinearLayoutManager.VERTICAL, false));
@@ -172,24 +159,20 @@ public class RepositoryActivity
     }
 
     private void closeNavigationDrawer() {
-        mDrawerLayout.closeDrawer(Gravity.START, true);
+        mDrawerLayout.closeDrawer(GravityCompat.START, true);
     }
 
     private void exitApplication() {
         this.finishAffinity();
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                System.exit(0);
-            }
-        }, 1000);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> System.exit(0), 1000);
     }
 
     private void setupRepositoryAdapter() {
-        mRepositoryAdapter = new NavigationAdapter(RepositoryActivity.this, new ArrayList<Laboratory>());
+        mRepositoryAdapter = new NavigationAdapter(RepositoryActivity.this, new ArrayList<>());
         mRepositoryRecyclerView.setAdapter(mRepositoryAdapter);
     }
 
+    @NonNull
     @Override
     public Loader<LabResponse> onCreateLoader(int id, Bundle args) {
         return new InfoLoader(RepositoryActivity.this, URL);
@@ -197,7 +180,7 @@ public class RepositoryActivity
     }
 
     @Override
-    public void onLoadFinished(Loader<LabResponse> loader, LabResponse labResponse) {
+    public void onLoadFinished(@NonNull Loader<LabResponse> loader, LabResponse labResponse) {
         mProgressBar.setVisibility(View.GONE);
 
         if (labResponse == null) {
@@ -221,7 +204,7 @@ public class RepositoryActivity
     }
 
     @Override
-    public void onLoaderReset(Loader<LabResponse> loader) {
+    public void onLoaderReset(@NonNull Loader<LabResponse> loader) {
         mRepositoryAdapter.clear();
     }
 

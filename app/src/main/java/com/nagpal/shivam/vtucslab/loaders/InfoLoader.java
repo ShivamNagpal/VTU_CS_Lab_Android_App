@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtucslab.Loader;
+package com.nagpal.shivam.vtucslab.loaders;
 
 
 import android.content.Context;
@@ -7,11 +7,11 @@ import android.text.TextUtils;
 import androidx.loader.content.AsyncTaskLoader;
 
 import com.google.gson.Gson;
-import com.nagpal.shivam.vtucslab.Model.LabResponse;
-import com.nagpal.shivam.vtucslab.Utility.FetchUtil;
+import com.nagpal.shivam.vtucslab.models.LabResponse;
+import com.nagpal.shivam.vtucslab.utilities.FetchUtil;
 
 public class InfoLoader extends AsyncTaskLoader<LabResponse> {
-    private String mUrl;
+    private final String mUrl;
     private LabResponse mLabResponse;
 
     public InfoLoader(Context context, String url) {
@@ -44,7 +44,6 @@ public class InfoLoader extends AsyncTaskLoader<LabResponse> {
             return null;
         }
         Gson gson = new Gson();
-        LabResponse labResponse = gson.fromJson(jsonResponse, LabResponse.class);
-        return labResponse;
+        return gson.fromJson(jsonResponse, LabResponse.class);
     }
 }

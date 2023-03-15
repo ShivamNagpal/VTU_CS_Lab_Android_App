@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtucslab.Adapter;
+package com.nagpal.shivam.vtucslab.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,16 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nagpal.shivam.vtucslab.Model.ContentFile;
-import com.nagpal.shivam.vtucslab.Utility.StaticMethods;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleFilesWithoutSubPartsBinding;
+import com.nagpal.shivam.vtucslab.models.ContentFile;
+import com.nagpal.shivam.vtucslab.utilities.StaticMethods;
 
 public class MultipleFileAdapter extends RecyclerView.Adapter<MultipleFileAdapter.ContentFileViewHolder> {
-    private Context mContext;
-    private ContentFile[] mContentFiles;
-    private ContentAdapter.ItemClickHandler mItemClickHandler;
+    private final Context mContext;
+    private final ContentFile[] mContentFiles;
+    private final ContentAdapter.ItemClickHandler mItemClickHandler;
     @LayoutRes
-    private int mLayoutId;
+    private final int mLayoutId;
 
     public MultipleFileAdapter(Context context, @LayoutRes int layoutId, ContentFile[] contentFiles, ContentAdapter.ItemClickHandler itemClickHandler) {
         mContext = context;

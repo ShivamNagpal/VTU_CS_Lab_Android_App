@@ -1,4 +1,6 @@
-package com.nagpal.shivam.vtucslab.Utility;
+package com.nagpal.shivam.vtucslab.utilities;
+
+import static java.net.HttpURLConnection.HTTP_OK;
 
 import android.util.Log;
 
@@ -9,9 +11,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
-
-import static java.net.HttpURLConnection.HTTP_OK;
+import java.nio.charset.StandardCharsets;
 
 public class FetchUtil {
 
@@ -80,11 +80,10 @@ public class FetchUtil {
     private static String readFromStream(InputStream inputStream) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         if (inputStream != null) {
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String line = bufferedReader.readLine();
             while (line != null) {
-//                line = line.replaceAll("\t", "\t\t");
                 //TODO: Temporary Solution to add padding with white spaces
                 stringBuilder.append(" ");
                 stringBuilder.append(line);

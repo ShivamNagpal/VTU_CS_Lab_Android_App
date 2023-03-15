@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtucslab.Utility;
+package com.nagpal.shivam.vtucslab.utilities;
 
 public class StaticMethods {
 
