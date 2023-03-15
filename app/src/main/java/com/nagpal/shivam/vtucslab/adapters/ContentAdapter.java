@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtucslab.Adapter;
+package com.nagpal.shivam.vtucslab.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,14 +11,14 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nagpal.shivam.vtucslab.Model.ContentFile;
-import com.nagpal.shivam.vtucslab.Model.LabExperiment;
-import com.nagpal.shivam.vtucslab.Model.LabExperimentSubPart;
 import com.nagpal.shivam.vtucslab.R;
-import com.nagpal.shivam.vtucslab.Utility.StaticMethods;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeMspBinding;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeSspMfBinding;
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeSspSfBinding;
+import com.nagpal.shivam.vtucslab.models.ContentFile;
+import com.nagpal.shivam.vtucslab.models.LabExperiment;
+import com.nagpal.shivam.vtucslab.models.LabExperimentSubPart;
+import com.nagpal.shivam.vtucslab.utilities.StaticMethods;
 
 import java.util.ArrayList;
 import java.util.Arrays;

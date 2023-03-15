@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtucslab.Activity;
+package com.nagpal.shivam.vtucslab.activities;
 
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -27,11 +27,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
-import com.nagpal.shivam.vtucslab.Adapter.NavigationAdapter;
-import com.nagpal.shivam.vtucslab.Loader.InfoLoader;
-import com.nagpal.shivam.vtucslab.Model.LabResponse;
-import com.nagpal.shivam.vtucslab.Model.Laboratory;
 import com.nagpal.shivam.vtucslab.R;
+import com.nagpal.shivam.vtucslab.adapters.NavigationAdapter;
+import com.nagpal.shivam.vtucslab.loaders.InfoLoader;
+import com.nagpal.shivam.vtucslab.models.LabResponse;
+import com.nagpal.shivam.vtucslab.models.Laboratory;
 
 import java.util.ArrayList;
 

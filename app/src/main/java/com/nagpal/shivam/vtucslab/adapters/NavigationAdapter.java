@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtucslab.Adapter;
+package com.nagpal.shivam.vtucslab.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,8 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nagpal.shivam.vtucslab.Model.Laboratory;
 import com.nagpal.shivam.vtucslab.R;
+import com.nagpal.shivam.vtucslab.models.Laboratory;
 
 import java.util.ArrayList;
 import java.util.Arrays;

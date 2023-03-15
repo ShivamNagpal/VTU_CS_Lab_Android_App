@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtucslab.Activity;
+package com.nagpal.shivam.vtucslab.activities;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -22,10 +22,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 
-import com.nagpal.shivam.vtucslab.Loader.RawStreamLoader;
 import com.nagpal.shivam.vtucslab.R;
-import com.nagpal.shivam.vtucslab.Utility.ConstantVariables;
 import com.nagpal.shivam.vtucslab.databinding.ActivityDisplayBinding;
+import com.nagpal.shivam.vtucslab.loaders.RawStreamLoader;
+import com.nagpal.shivam.vtucslab.utilities.ConstantVariables;
 
 public class DisplayActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
 

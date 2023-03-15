@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtucslab.Model;
+package com.nagpal.shivam.vtucslab.models;
 
 public class LabResponse {
     private String context;

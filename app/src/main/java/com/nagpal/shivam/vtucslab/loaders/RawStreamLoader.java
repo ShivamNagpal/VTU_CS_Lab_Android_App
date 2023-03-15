@@ -1,10 +1,10 @@
-package com.nagpal.shivam.vtucslab.Loader;
+package com.nagpal.shivam.vtucslab.loaders;
 
 import android.content.Context;
 
 import androidx.loader.content.AsyncTaskLoader;
 
-import com.nagpal.shivam.vtucslab.Utility.FetchUtil;
+import com.nagpal.shivam.vtucslab.utilities.FetchUtil;
 
 public class RawStreamLoader extends AsyncTaskLoader<String> {
     private final String mUrl;

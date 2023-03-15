@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtucslab.Utility;
+package com.nagpal.shivam.vtucslab.utilities;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 

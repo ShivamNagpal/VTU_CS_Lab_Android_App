@@ -1,4 +1,4 @@
-package com.nagpal.shivam.vtucslab.Activity;
+package com.nagpal.shivam.vtucslab.activities;
 
 
 import android.content.Intent;
@@ -19,13 +19,13 @@ import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.nagpal.shivam.vtucslab.Adapter.ContentAdapter;
-import com.nagpal.shivam.vtucslab.Loader.InfoLoader;
-import com.nagpal.shivam.vtucslab.Model.ContentFile;
-import com.nagpal.shivam.vtucslab.Model.LabResponse;
-import com.nagpal.shivam.vtucslab.Model.Laboratory;
 import com.nagpal.shivam.vtucslab.R;
-import com.nagpal.shivam.vtucslab.Utility.ConstantVariables;
+import com.nagpal.shivam.vtucslab.adapters.ContentAdapter;
+import com.nagpal.shivam.vtucslab.loaders.InfoLoader;
+import com.nagpal.shivam.vtucslab.models.ContentFile;
+import com.nagpal.shivam.vtucslab.models.LabResponse;
+import com.nagpal.shivam.vtucslab.models.Laboratory;
+import com.nagpal.shivam.vtucslab.utilities.ConstantVariables;
 
 import java.util.ArrayList;
 
