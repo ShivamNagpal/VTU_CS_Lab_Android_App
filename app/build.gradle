@@ -19,7 +19,8 @@ android {
         }
     }
     buildFeatures {
-        dataBinding true
+        dataBinding true // TODO: Remove DataBinding post cleanup
+        viewBinding true
     }
     namespace 'com.nagpal.shivam.vtucslab'
 }

@@ -8,7 +8,9 @@
     tools:context="com.nagpal.shivam.vtucslab.activities.MainActivity"
     tools:openDrawer="start">
 
-    <include layout="@layout/coordinator_main" />
+    <include
+        android:id="@+id/coordinator"
+        layout="@layout/coordinator_main" />
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
