@@ -26,6 +26,7 @@ android {
 
 dependencies {
     def retrofitVersion = '2.9.0'
+    def navigationVersion = "2.5.3"
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation platform('com.google.firebase:firebase-bom:31.2.3')
@@ -36,18 +37,21 @@ dependencies {
     implementation 'com.google.android.material:material:1.8.0'
     implementation "androidx.multidex:multidex:2.0.1"
 
-//    GSON
+    // Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+
+    // GSON
     implementation 'com.google.code.gson:gson:2.8.9'
 
-//    Firebase SDK
+    // Firebase SDK
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
-// Retrofit
-
-    implementation 'com.squareup.retrofit2:retrofit:' + retrofitVersion
-    implementation 'com.squareup.retrofit2:converter-gson:' + retrofitVersion
-    implementation 'com.squareup.retrofit2:converter-scalars:' + retrofitVersion
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofitVersion"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test:runner:1.5.2'
