@@ -28,6 +28,7 @@ dependencies {
     def retrofitVersion = '2.9.0'
 
     implementation 'androidx.core:core-ktx:1.9.0'
+    implementation platform('com.google.firebase:firebase-bom:31.2.3')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -39,13 +40,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.9'
 
 //    Firebase SDK
-    implementation('com.google.firebase:firebase-core:21.1.1') {
-        exclude module: 'support-v4'
-    }
-    implementation('com.google.firebase:firebase-messaging:23.1.2') {
-        exclude module: 'support-v4'
-    }
-    implementation 'com.google.firebase:firebase-crashlytics:18.3.5'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
 // Retrofit
 
