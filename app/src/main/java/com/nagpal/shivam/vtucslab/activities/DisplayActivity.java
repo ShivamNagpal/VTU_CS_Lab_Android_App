@@ -25,7 +25,7 @@ import androidx.loader.content.Loader;
 import com.nagpal.shivam.vtucslab.R;
 import com.nagpal.shivam.vtucslab.databinding.ActivityDisplayBinding;
 import com.nagpal.shivam.vtucslab.loaders.RawStreamLoader;
-import com.nagpal.shivam.vtucslab.utilities.ConstantVariables;
+import com.nagpal.shivam.vtucslab.utilities.Constants;
 
 public class DisplayActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
 
@@ -90,12 +90,12 @@ public class DisplayActivity extends AppCompatActivity implements LoaderManager.
 
         Intent intent = getIntent();
 
-        mUrl = intent.getStringExtra(ConstantVariables.url_intent_tag);
+        mUrl = intent.getStringExtra(Constants.URL_INTENT_TAG);
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        String title = intent.getStringExtra(ConstantVariables.title_intent_tag);
+        String title = intent.getStringExtra(Constants.TITLE_INTENT_TAG);
         DisplayActivity.this.setTitle(title);
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);

@@ -2,13 +2,15 @@ package com.nagpal.shivam.vtucslab.loaders;
 
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import androidx.loader.content.AsyncTaskLoader;
 
-import com.google.gson.Gson;
 import com.nagpal.shivam.vtucslab.models.LabResponse;
-import com.nagpal.shivam.vtucslab.utilities.FetchUtil;
+import com.nagpal.shivam.vtucslab.services.VtuCsLabService;
+
+import java.io.IOException;
+
+import retrofit2.Call;
 
 public class InfoLoader extends AsyncTaskLoader<LabResponse> {
     private final String mUrl;
@@ -34,16 +36,13 @@ public class InfoLoader extends AsyncTaskLoader<LabResponse> {
         if (mUrl == null) {
             return null;
         }
-        String jsonResponse = FetchUtil.fetchData(mUrl);
-        mLabResponse = extractFeaturesFromJson(jsonResponse);
-        return mLabResponse;
-    }
-
-    private LabResponse extractFeaturesFromJson(String jsonResponse) {
-        if (TextUtils.isEmpty(jsonResponse)) {
+        VtuCsLabService vtuCSLabService = VtuCsLabService.Companion.getInstance();
+        Call<LabResponse> labResponseCall = vtuCSLabService.getLabResponse(mUrl);
+        try {
+            mLabResponse = labResponseCall.execute().body();
+            return mLabResponse;
+        } catch (IOException e) {
             return null;
         }
-        Gson gson = new Gson();
-        return gson.fromJson(jsonResponse, LabResponse.class);
     }
 }
