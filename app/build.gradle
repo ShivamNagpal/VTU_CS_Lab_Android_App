@@ -25,6 +25,9 @@ android {
 }
 
 dependencies {
+    def retrofitVersion = '2.9.0'
+
+    implementation 'androidx.core:core-ktx:1.9.0'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -43,6 +46,12 @@ dependencies {
         exclude module: 'support-v4'
     }
     implementation 'com.google.firebase:firebase-crashlytics:18.3.5'
+
+// Retrofit
+
+    implementation 'com.squareup.retrofit2:retrofit:' + retrofitVersion
+    implementation 'com.squareup.retrofit2:converter-gson:' + retrofitVersion
+    implementation 'com.squareup.retrofit2:converter-scalars:' + retrofitVersion
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test:runner:1.5.2'

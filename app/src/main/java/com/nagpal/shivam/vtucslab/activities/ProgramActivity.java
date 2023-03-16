@@ -25,7 +25,7 @@ import com.nagpal.shivam.vtucslab.loaders.InfoLoader;
 import com.nagpal.shivam.vtucslab.models.ContentFile;
 import com.nagpal.shivam.vtucslab.models.LabResponse;
 import com.nagpal.shivam.vtucslab.models.Laboratory;
-import com.nagpal.shivam.vtucslab.utilities.ConstantVariables;
+import com.nagpal.shivam.vtucslab.utilities.Constants;
 
 import java.util.ArrayList;
 
@@ -163,8 +163,8 @@ public class ProgramActivity
     @Override
     public void onContentFileClick(ContentFile file) {
         Intent intent = new Intent(ProgramActivity.this, DisplayActivity.class);
-        intent.putExtra(ConstantVariables.title_intent_tag, file.getFileName());
-        intent.putExtra(ConstantVariables.url_intent_tag, mProgramBaseUrl + "/" + file.getFileName());
+        intent.putExtra(Constants.TITLE_INTENT_TAG, file.getFileName());
+        intent.putExtra(Constants.URL_INTENT_TAG, mProgramBaseUrl + "/" + file.getFileName());
         startActivity(intent);
     }
 

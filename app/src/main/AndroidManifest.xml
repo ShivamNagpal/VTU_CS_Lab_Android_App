@@ -21,9 +21,9 @@
 
         <activity
             android:name=".activities.RepositoryActivity"
+            android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:exported="true">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
