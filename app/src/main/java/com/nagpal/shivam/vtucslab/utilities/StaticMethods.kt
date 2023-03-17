@@ -12,7 +12,7 @@ object StaticMethods {
 
     fun getRetrofitBuilder(): Retrofit.Builder {
         return Retrofit.Builder()
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
     }
 }
