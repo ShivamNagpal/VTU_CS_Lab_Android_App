@@ -6,7 +6,7 @@ import android.os.Looper
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
-import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -49,12 +49,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
 
-        val drawerBackPressedCallback = object : OnBackPressedCallback(false) {
-            override fun handleOnBackPressed() {
-                closeNavigationDrawer()
-            }
+        val drawerBackPressedCallback = onBackPressedDispatcher.addCallback(this, false) {
+            closeNavigationDrawer()
         }
-        onBackPressedDispatcher.addCallback(this, drawerBackPressedCallback)
         binding.drawerLayout.addDrawerListener(object : DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
             }
