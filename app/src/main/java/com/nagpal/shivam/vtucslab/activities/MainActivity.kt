@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageButton
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
 import com.google.android.material.navigation.NavigationView
 import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.databinding.ActivityMainBinding
@@ -45,6 +48,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
+
+        val drawerBackPressedCallback = object : OnBackPressedCallback(false) {
+            override fun handleOnBackPressed() {
+                closeNavigationDrawer()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, drawerBackPressedCallback)
+        binding.drawerLayout.addDrawerListener(object : DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+                drawerBackPressedCallback.isEnabled = true
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                drawerBackPressedCallback.isEnabled = false
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {
+            }
+        })
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
