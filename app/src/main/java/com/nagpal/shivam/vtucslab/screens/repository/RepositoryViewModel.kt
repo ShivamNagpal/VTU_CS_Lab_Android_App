@@ -1,10 +1,13 @@
 package com.nagpal.shivam.vtucslab.screens.repository
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import com.nagpal.shivam.vtucslab.VTUCSLabApplication
 import com.nagpal.shivam.vtucslab.models.LabResponse
 import com.nagpal.shivam.vtucslab.services.VtuCsLabService
 import com.nagpal.shivam.vtucslab.ui.state.LabResponseState
 import com.nagpal.shivam.vtucslab.utilities.Constants
+import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,14 +18,18 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class RepositoryViewModel : ViewModel() {
+class RepositoryViewModel(app: Application) : AndroidViewModel(app) {
     private val initialState = LabResponseState(Stages.LOADING, null, null)
-    private val _uiState =
-        MutableStateFlow(initialState)
+    private val _uiState = MutableStateFlow(initialState)
+    private val application = getApplication<VTUCSLabApplication>()
     val uiState: StateFlow<LabResponseState> = _uiState.asStateFlow()
 
     fun loadRepositories() {
         if (_uiState.value.stage == Stages.SUCCEEDED) {
+            return
+        }
+        if (!NetworkUtils.isNetworkConnected(application)) {
+            _uiState.update { LabResponseState(Stages.FAILED, null, Constants.NO_ACTIVE_NETWORK) }
             return
         }
         _uiState.update { initialState }

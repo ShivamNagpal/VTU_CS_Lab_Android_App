@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.*
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +23,7 @@ class RepositoryFragment : Fragment() {
     private lateinit var navigationAdapter: NavigationAdapter
 
     private val binding get() = _binding!!
-    private val viewModel: RepositoryViewModel by viewModels()
+    private lateinit var viewModel: RepositoryViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +33,8 @@ class RepositoryFragment : Fragment() {
         setupMenuProvider()
         setupViews()
         setupRepositoryAdapter()
+
+        viewModel = ViewModelProvider(this)[RepositoryViewModel::class.java]
 
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -53,7 +55,11 @@ class RepositoryFragment : Fragment() {
                             }
                         }
                         Stages.FAILED -> {
-                            showErrorMessage(getString(R.string.error_occurred))
+                            if (it.message == Constants.NO_ACTIVE_NETWORK) {
+                                showErrorMessage(getString(R.string.no_internet_connection))
+                            } else {
+                                showErrorMessage(getString(R.string.error_occurred))
+                            }
                         }
                     }
                 }
