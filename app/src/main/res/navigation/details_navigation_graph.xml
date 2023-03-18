@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/details_navigation_graph"
+    app:startDestination="@id/programFragment">
+
+    <fragment
+        android:id="@+id/programFragment"
+        android:name="com.nagpal.shivam.vtucslab.screens.programs.ProgramFragment"
+        android:label="fragment_program"
+        tools:layout="@layout/fragment_program">
+        <argument
+            android:name="baseUrl"
+            app:argType="string" />
+        <argument
+            android:name="fileName"
+            app:argType="string" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </fragment>
+</navigation>
