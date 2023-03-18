@@ -8,5 +8,24 @@
         android:id="@+id/repositoryFragment"
         android:name="com.nagpal.shivam.vtucslab.screens.repository.RepositoryFragment"
         android:label="fragment_repository"
-        tools:layout="@layout/fragment_repository" />
+        tools:layout="@layout/fragment_repository">
+        <action
+            android:id="@+id/action_repositoryFragment_to_detailsActivity"
+            app:destination="@id/detailsActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/detailsActivity"
+        android:name="com.nagpal.shivam.vtucslab.activities.DetailsActivity"
+        android:label="activity_details"
+        tools:layout="@layout/activity_details">
+        <argument
+            android:name="baseUrl"
+            app:argType="string" />
+        <argument
+            android:name="fileName"
+            app:argType="string" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </activity>
 </navigation>

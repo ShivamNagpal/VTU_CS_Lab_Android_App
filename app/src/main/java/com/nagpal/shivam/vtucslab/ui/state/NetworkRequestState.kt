@@ -6,4 +6,5 @@ data class LabResponseState(
     val stage: String,
     val labResponse: LabResponse?,
     val message: String?,
+    val baseUrl: String?
 )

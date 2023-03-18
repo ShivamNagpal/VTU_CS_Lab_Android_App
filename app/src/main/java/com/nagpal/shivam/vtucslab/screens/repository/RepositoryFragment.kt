@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.adapters.NavigationAdapter
@@ -86,6 +87,15 @@ class RepositoryFragment : Fragment() {
 
     private fun setupRepositoryAdapter() {
         navigationAdapter = NavigationAdapter(requireContext(), ArrayList())
+        navigationAdapter.setNavigationAdapterItemClickHandler { laboratory, _ ->
+            val actionRepositoryFragmentToDetailsActivity =
+                RepositoryFragmentDirections.actionRepositoryFragmentToDetailsActivity(
+                    viewModel.uiState.value.baseUrl!!,
+                    laboratory.fileName,
+                    laboratory.title
+                )
+            findNavController().navigate(actionRepositoryFragmentToDetailsActivity)
+        }
         binding.repositoryRecyclerView.adapter = navigationAdapter
     }
 
