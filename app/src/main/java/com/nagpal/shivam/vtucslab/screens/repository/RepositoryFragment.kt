@@ -82,7 +82,7 @@ class RepositoryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.loadRepositories()
+        viewModel.loadContent(Constants.INDEX_REPOSITORY_URL)
     }
 
     private fun setupRepositoryAdapter() {

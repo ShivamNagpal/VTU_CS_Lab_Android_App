@@ -1,6 +1,7 @@
 package com.nagpal.shivam.vtucslab.activities
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
@@ -17,6 +18,8 @@ class DetailsActivity : AppCompatActivity() {
         binding = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.navigation_host_fragment) as NavHostFragment
 
@@ -29,5 +32,13 @@ class DetailsActivity : AppCompatActivity() {
             R.navigation.details_navigation_graph,
             programFragmentArgs.toBundle()
         )
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            this.onBackPressedDispatcher.onBackPressed()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
