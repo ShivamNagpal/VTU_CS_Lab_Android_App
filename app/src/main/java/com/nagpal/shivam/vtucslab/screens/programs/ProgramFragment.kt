@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nagpal.shivam.vtucslab.R
@@ -80,6 +81,15 @@ class ProgramFragment : Fragment() {
 
     private fun setupRepositoryAdapter() {
         contentAdapter = ContentAdapter(requireContext(), ArrayList())
+        contentAdapter.setItemClickHandler {
+            val actionProgramFragmentToContentActivity =
+                ProgramFragmentDirections.actionProgramFragmentToContentActivity(
+                    viewModel.uiState.value.baseUrl!!,
+                    it.fileName,
+                    it.fileName
+                )
+            findNavController().navigate(actionProgramFragmentToContentActivity)
+        }
         binding.recyclerView.adapter = contentAdapter
     }
 
