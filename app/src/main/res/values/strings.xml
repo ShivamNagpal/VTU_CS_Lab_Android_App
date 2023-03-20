@@ -14,4 +14,5 @@
     <string name="repository">Repository</string>
     <string name="exit">Exit</string>
     <string name="privacy_policy">Privacy Policy</string>
+    <string name="code_copied_to_clipboard">Code copied to Clipboard.</string>
 </resources>

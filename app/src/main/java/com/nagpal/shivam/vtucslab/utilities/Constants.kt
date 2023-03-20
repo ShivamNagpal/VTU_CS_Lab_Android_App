@@ -9,4 +9,5 @@ object Constants {
     const val INDEX_REPOSITORY_URL =
         "https://raw.githubusercontent.com/vtucs/Index_v3/master/Index_v3.json"
     const val NO_ACTIVE_NETWORK = "NO_ACTIVE_NETWORK"
+    const val LABEL_CODE = "Code"
 }
