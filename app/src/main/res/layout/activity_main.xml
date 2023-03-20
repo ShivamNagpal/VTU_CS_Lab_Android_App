@@ -5,20 +5,26 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context="com.nagpal.shivam.vtucslab.activities.MainActivity"
     tools:openDrawer="start">
 
-    <include
-        android:id="@+id/coordinator"
-        layout="@layout/coordinator_main" />
+    <!-- Make the main NavHostFragment clickable and focusable to avoid the drawer peek issue -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/navigation_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/main_navigation_graph" />
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/header_main"
-        app:menu="@menu/menu_navigation_drawer">
-
-    </com.google.android.material.navigation.NavigationView>
+        android:fitsSystemWindows="true"
+        app:menu="@menu/menu_main_navigation_drawer" />
 </androidx.drawerlayout.widget.DrawerLayout>
