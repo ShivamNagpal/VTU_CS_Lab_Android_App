@@ -17,8 +17,8 @@ interface VtuCsLabService {
     companion object {
         val instance: VtuCsLabService by lazy {
             val retrofit = StaticMethods.getRetrofitBuilder()
-                    .baseUrl(Constants.GITHUB_RAW_BASE_URL)
-                    .build()
+                .baseUrl(Constants.GITHUB_RAW_BASE_URL)
+                .build()
             return@lazy retrofit.create(VtuCsLabService::class.java)
         }
     }
