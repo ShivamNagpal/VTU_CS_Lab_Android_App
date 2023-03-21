@@ -38,8 +38,6 @@ class DisplayFragment : Fragment() {
 
         viewModel = ViewModelProvider(this)[DisplayViewModel::class.java]
 
-        requireActivity().title = displayFragmentArgs.title
-
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
@@ -114,7 +112,7 @@ class DisplayFragment : Fragment() {
                     else -> false
                 }
             }
-        })
+        }, viewLifecycleOwner)
     }
 
     override fun onResume() {

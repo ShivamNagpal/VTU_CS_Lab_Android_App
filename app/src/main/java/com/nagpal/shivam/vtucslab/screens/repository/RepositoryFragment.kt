@@ -37,7 +37,6 @@ class RepositoryFragment : Fragment() {
 
         viewModel = ViewModelProvider(this)[RepositoryViewModel::class.java]
 
-
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
@@ -88,13 +87,13 @@ class RepositoryFragment : Fragment() {
     private fun setupRepositoryAdapter() {
         navigationAdapter = NavigationAdapter(requireContext(), ArrayList())
         navigationAdapter.setNavigationAdapterItemClickHandler { laboratory, _ ->
-            val actionRepositoryFragmentToDetailsActivity =
-                RepositoryFragmentDirections.actionRepositoryFragmentToDetailsActivity(
+            val actionRepositoryFragmentToProgramFragment =
+                RepositoryFragmentDirections.actionRepositoryFragmentToProgramFragment(
                     viewModel.uiState.value.baseUrl!!,
                     laboratory.fileName,
                     laboratory.title
                 )
-            findNavController().navigate(actionRepositoryFragmentToDetailsActivity)
+            findNavController().navigate(actionRepositoryFragmentToProgramFragment)
         }
         binding.repositoryRecyclerView.adapter = navigationAdapter
     }
@@ -116,7 +115,7 @@ class RepositoryFragment : Fragment() {
                     else -> false
                 }
             }
-        })
+        }, viewLifecycleOwner)
     }
 
     override fun onDestroyView() {

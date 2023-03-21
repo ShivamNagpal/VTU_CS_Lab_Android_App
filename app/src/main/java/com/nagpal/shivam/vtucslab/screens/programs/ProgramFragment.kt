@@ -39,9 +39,6 @@ class ProgramFragment : Fragment() {
 
         viewModel = ViewModelProvider(this)[ProgramViewModel::class.java]
 
-        requireActivity().title = programFragmentArgs.title
-
-
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
@@ -82,13 +79,13 @@ class ProgramFragment : Fragment() {
     private fun setupRepositoryAdapter() {
         contentAdapter = ContentAdapter(requireContext(), ArrayList())
         contentAdapter.setItemClickHandler {
-            val actionProgramFragmentToContentActivity =
-                ProgramFragmentDirections.actionProgramFragmentToContentActivity(
+            val actionProgramFragmentToDisplayFragment =
+                ProgramFragmentDirections.actionProgramFragmentToDisplayFragment(
                     viewModel.uiState.value.baseUrl!!,
                     it.fileName,
                     it.fileName
                 )
-            findNavController().navigate(actionProgramFragmentToContentActivity)
+            findNavController().navigate(actionProgramFragmentToDisplayFragment)
         }
         binding.recyclerView.adapter = contentAdapter
     }

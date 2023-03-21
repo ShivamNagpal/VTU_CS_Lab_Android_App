@@ -10,14 +10,14 @@
         android:label="@string/app_name"
         tools:layout="@layout/fragment_repository">
         <action
-            android:id="@+id/action_repositoryFragment_to_detailsActivity"
-            app:destination="@id/detailsActivity" />
+            android:id="@+id/action_repositoryFragment_to_programFragment"
+            app:destination="@id/programFragment" />
     </fragment>
-    <activity
-        android:id="@+id/detailsActivity"
-        android:name="com.nagpal.shivam.vtucslab.activities.DetailsActivity"
-        android:label="activity_details"
-        tools:layout="@layout/activity_details">
+    <fragment
+        android:id="@+id/programFragment"
+        android:name="com.nagpal.shivam.vtucslab.screens.programs.ProgramFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_program">
         <argument
             android:name="baseUrl"
             app:argType="string" />
@@ -27,5 +27,24 @@
         <argument
             android:name="title"
             app:argType="string" />
-    </activity>
+        <action
+            android:id="@+id/action_programFragment_to_displayFragment"
+            app:destination="@id/displayFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/displayFragment"
+        android:name="com.nagpal.shivam.vtucslab.screens.display.DisplayFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_display">
+        <argument
+            android:name="baseUrl"
+            app:argType="string" />
+        <argument
+            android:name="fileName"
+            app:argType="string" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </fragment>
 </navigation>

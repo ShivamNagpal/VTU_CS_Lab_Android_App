@@ -10,6 +10,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+import androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_UNLOCKED
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
@@ -87,6 +89,16 @@ class MainActivity : AppCompatActivity() {
             override fun onDrawerStateChanged(newState: Int) {
             }
         })
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (appBarConfiguration.topLevelDestinations.contains(destination.id)) {
+                binding.drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED, GravityCompat.START)
+            } else {
+                binding.drawerLayout.setDrawerLockMode(
+                    LOCK_MODE_LOCKED_CLOSED,
+                    GravityCompat.START
+                )
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
