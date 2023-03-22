@@ -4,11 +4,10 @@
     tools:showIn="navigation_view">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/menu_item_repository"
+            android:id="@+id/repositoryFragment"
             android:title="@string/repository" />
         <item
             android:id="@+id/menu_item_exit"
             android:title="@string/exit" />
     </group>
-
 </menu>

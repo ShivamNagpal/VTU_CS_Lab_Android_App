@@ -27,30 +27,5 @@
         <meta-data
             android:name="google_analytics_adid_collection_enabled"
             android:value="false" />
-
-        <activity
-            android:name=".activities.RepositoryActivity"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity
-            android:name=".activities.ProgramActivity"
-            android:launchMode="singleTask"
-            android:parentActivityName=".activities.RepositoryActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.RepositoryActivity" />
-        </activity>
-
-        <activity
-            android:name=".activities.DisplayActivity"
-            android:parentActivityName=".activities.ProgramActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.ProgramActivity" />
-        </activity>
-
     </application>
-
 </manifest>

@@ -101,7 +101,7 @@ class RepositoryFragment : Fragment() {
     private fun setupMenuProvider() {
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_main_activity, menu)
+                menuInflater.inflate(R.menu.menu_main_fragment, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
