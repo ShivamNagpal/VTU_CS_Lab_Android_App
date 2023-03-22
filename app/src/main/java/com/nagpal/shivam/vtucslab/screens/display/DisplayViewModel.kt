@@ -14,16 +14,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-data class DisplayResponseState(
-    val stage: String,
-    val response: String?,
-    val message: String?,
-)
-
 class DisplayViewModel(app: Application) : AndroidViewModel(app) {
     var scrollX = 0
     var scrollY = 0
-    private val initialState = DisplayResponseState(Stages.LOADING, null, null)
+    private val initialState = DisplayState(Stages.LOADING, null, null)
 
     private val _uiState = MutableStateFlow(initialState)
     val uiState = _uiState.asStateFlow()
@@ -36,7 +30,7 @@ class DisplayViewModel(app: Application) : AndroidViewModel(app) {
         }
         if (!NetworkUtils.isNetworkConnected(application)) {
             _uiState.update {
-                DisplayResponseState(
+                DisplayState(
                     Stages.FAILED,
                     null,
                     Constants.NO_ACTIVE_NETWORK,
@@ -50,7 +44,7 @@ class DisplayViewModel(app: Application) : AndroidViewModel(app) {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     _uiState.update {
                         val stringResponse = response.body()!!.replace("\t", "\t\t")
-                        DisplayResponseState(
+                        DisplayState(
                             Stages.SUCCEEDED,
                             stringResponse,
                             null,
@@ -60,7 +54,7 @@ class DisplayViewModel(app: Application) : AndroidViewModel(app) {
 
                 override fun onFailure(call: Call<String>, t: Throwable) {
                     _uiState.update {
-                        DisplayResponseState(Stages.FAILED, null, null)
+                        DisplayState(Stages.FAILED, null, null)
                     }
                 }
             })

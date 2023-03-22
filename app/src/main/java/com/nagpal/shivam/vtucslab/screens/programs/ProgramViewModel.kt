@@ -1,6 +1,67 @@
 package com.nagpal.shivam.vtucslab.screens.programs
 
 import android.app.Application
-import com.nagpal.shivam.vtucslab.screens.LabResponseViewModel
+import androidx.lifecycle.AndroidViewModel
+import com.nagpal.shivam.vtucslab.VTUCSLabApplication
+import com.nagpal.shivam.vtucslab.models.LaboratoryExperimentResponse
+import com.nagpal.shivam.vtucslab.services.VtuCsLabService
+import com.nagpal.shivam.vtucslab.utilities.Constants
+import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
+import com.nagpal.shivam.vtucslab.utilities.Stages
+import com.nagpal.shivam.vtucslab.utilities.StaticMethods
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class ProgramViewModel(app: Application) : LabResponseViewModel(app)
+class ProgramViewModel(app: Application) : AndroidViewModel(app) {
+    private val initialState = ProgramState(Stages.LOADING, null, null, null)
+    private val _uiState = MutableStateFlow(initialState)
+    private val application = this.getApplication<VTUCSLabApplication>()
+    val uiState: StateFlow<ProgramState> = _uiState.asStateFlow()
+
+    fun loadContent(url: String) {
+        if (_uiState.value.stage == Stages.SUCCEEDED) {
+            return
+        }
+        if (!NetworkUtils.isNetworkConnected(application)) {
+            _uiState.update {
+                ProgramState(
+                    Stages.FAILED,
+                    null,
+                    Constants.NO_ACTIVE_NETWORK,
+                    null
+                )
+            }
+            return
+        }
+        _uiState.update { initialState }
+        VtuCsLabService.instance.getLaboratoryExperimentsResponse(url)
+            .enqueue(object : Callback<LaboratoryExperimentResponse> {
+                override fun onResponse(
+                    call: Call<LaboratoryExperimentResponse>,
+                    response: Response<LaboratoryExperimentResponse>
+                ) {
+                    _uiState.update {
+                        val labResponse = response.body()!!
+                        ProgramState(
+                            Stages.SUCCEEDED,
+                            labResponse,
+                            null,
+                            StaticMethods.getBaseURL(labResponse)
+                        )
+                    }
+                }
+
+                override fun onFailure(call: Call<LaboratoryExperimentResponse>, t: Throwable) {
+                    _uiState.update {
+                        ProgramState(Stages.FAILED, null, null, null)
+                    }
+                }
+            })
+    }
+
+}
