@@ -78,7 +78,7 @@ class DisplayFragment : Fragment() {
     private fun setupMenuProvider() {
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_display_activity, menu)
+                menuInflater.inflate(R.menu.menu_display_fragment, menu)
                 if (viewModel.uiState.value.stage == Stages.SUCCEEDED) {
                     menu.findItem(R.id.menu_item_copy_display_activity).isEnabled = true
                 }
