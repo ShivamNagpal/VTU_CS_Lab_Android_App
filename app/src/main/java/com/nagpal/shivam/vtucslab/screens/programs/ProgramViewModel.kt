@@ -2,20 +2,19 @@ package com.nagpal.shivam.vtucslab.screens.programs
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.nagpal.shivam.vtucslab.VTUCSLabApplication
-import com.nagpal.shivam.vtucslab.models.LaboratoryExperimentResponse
 import com.nagpal.shivam.vtucslab.services.VtuCsLabService
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import com.nagpal.shivam.vtucslab.utilities.StaticMethods
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
 
 class ProgramViewModel(app: Application) : AndroidViewModel(app) {
     private val initialState = ProgramState(Stages.LOADING, null, null, null)
@@ -39,12 +38,10 @@ class ProgramViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         _uiState.update { initialState }
-        VtuCsLabService.instance.getLaboratoryExperimentsResponse(url)
-            .enqueue(object : Callback<LaboratoryExperimentResponse> {
-                override fun onResponse(
-                    call: Call<LaboratoryExperimentResponse>,
-                    response: Response<LaboratoryExperimentResponse>
-                ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = VtuCsLabService.instance.getLaboratoryExperimentsResponse(url)
+                if (response.isSuccessful) {
                     _uiState.update {
                         val labResponse = response.body()!!
                         ProgramState(
@@ -54,14 +51,12 @@ class ProgramViewModel(app: Application) : AndroidViewModel(app) {
                             StaticMethods.getBaseURL(labResponse)
                         )
                     }
+                } else {
+                    _uiState.update { ProgramState(Stages.FAILED, null, null, null) }
                 }
-
-                override fun onFailure(call: Call<LaboratoryExperimentResponse>, t: Throwable) {
-                    _uiState.update {
-                        ProgramState(Stages.FAILED, null, null, null)
-                    }
-                }
-            })
+            } catch (throwable: Throwable) {
+                _uiState.update { ProgramState(Stages.FAILED, null, null, null) }
+            }
+        }
     }
-
 }
