@@ -1,12 +1,21 @@
 package com.nagpal.shivam.vtucslab.utilities
 
-import com.nagpal.shivam.vtucslab.models.LabResponse
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.json.JsonMapper
+import com.nagpal.shivam.vtucslab.models.LaboratoryExperimentResponse
+import com.nagpal.shivam.vtucslab.models.LaboratoryResponse
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 object StaticMethods {
-    @JvmStatic
+
+    private val jsonMapper: JsonMapper by lazy {
+        com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder()
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .build()
+    }
+
     fun formatProgramName(programName: String): String {
         return programName.replace('_', ' ')
     }
@@ -14,10 +23,14 @@ object StaticMethods {
     fun getRetrofitBuilder(): Retrofit.Builder {
         return Retrofit.Builder()
             .addConverterFactory(ScalarsConverterFactory.create())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(JacksonConverterFactory.create(jsonMapper))
     }
 
-    fun getBaseURL(labResponse: LabResponse): String {
-        return "${labResponse.github_raw_content}/${labResponse.organization}/${labResponse.repository}/${labResponse.branch}"
+    fun getBaseURL(labResponse: LaboratoryResponse): String {
+        return "${labResponse.githubRawContent}/${labResponse.organization}/${labResponse.repository}/${labResponse.branch}"
+    }
+
+    fun getBaseURL(laboratoryExperimentResponse: LaboratoryExperimentResponse): String {
+        return "${laboratoryExperimentResponse.githubRawContent}/${laboratoryExperimentResponse.organization}/${laboratoryExperimentResponse.repository}/${laboratoryExperimentResponse.branch}"
     }
 }

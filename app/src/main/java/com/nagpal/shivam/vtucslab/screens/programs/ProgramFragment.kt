@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.adapters.ContentAdapter
 import com.nagpal.shivam.vtucslab.databinding.FragmentProgramBinding
+import com.nagpal.shivam.vtucslab.models.ContentFile
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
@@ -49,11 +50,11 @@ class ProgramFragment : Fragment() {
                             binding.progressBar.visibility = View.VISIBLE
                         }
                         Stages.SUCCEEDED -> {
-                            if (it.labResponse!!.isValid) {
+                            if (it.laboratoryExperimentResponse!!.isValid) {
                                 contentAdapter.clear()
-                                contentAdapter.addAll(it.labResponse.labExperiments)
+                                contentAdapter.addAll(it.laboratoryExperimentResponse.labExperiments)
                             } else {
-                                showErrorMessage(it.labResponse.invalidationMessage)
+                                showErrorMessage(it.laboratoryExperimentResponse.invalidationMessage)
                             }
                         }
                         Stages.FAILED -> {
@@ -71,22 +72,26 @@ class ProgramFragment : Fragment() {
         return binding.root
     }
 
-    private fun showErrorMessage(message: String) {
+    // TODO: Duplicate: Move to a static method
+    private fun showErrorMessage(message: String?) {
         binding.emptyTextView.visibility = View.VISIBLE
         binding.emptyTextView.text = message
     }
 
     private fun setupRepositoryAdapter() {
         contentAdapter = ContentAdapter(requireContext(), ArrayList())
-        contentAdapter.setItemClickHandler {
-            val actionProgramFragmentToDisplayFragment =
-                ProgramFragmentDirections.actionProgramFragmentToDisplayFragment(
-                    viewModel.uiState.value.baseUrl!!,
-                    it.fileName,
-                    it.fileName
-                )
-            findNavController().navigate(actionProgramFragmentToDisplayFragment)
-        }
+        contentAdapter.setItemClickHandler(object : ContentAdapter.ItemClickHandler {
+            override fun onContentFileClick(file: ContentFile) {
+                val actionProgramFragmentToDisplayFragment =
+                    ProgramFragmentDirections.actionProgramFragmentToDisplayFragment(
+                        viewModel.uiState.value.baseUrl!!,
+                        file.fileName,
+                        file.fileName
+                    )
+                findNavController().navigate(actionProgramFragmentToDisplayFragment)
+            }
+
+        })
         binding.recyclerView.adapter = contentAdapter
     }
 

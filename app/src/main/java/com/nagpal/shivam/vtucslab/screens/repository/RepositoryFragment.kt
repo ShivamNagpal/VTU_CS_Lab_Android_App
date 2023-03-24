@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.adapters.NavigationAdapter
 import com.nagpal.shivam.vtucslab.databinding.FragmentRepositoryBinding
+import com.nagpal.shivam.vtucslab.models.Laboratory
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
@@ -47,11 +48,11 @@ class RepositoryFragment : Fragment() {
                             binding.progressBar.visibility = View.VISIBLE
                         }
                         Stages.SUCCEEDED -> {
-                            if (it.labResponse!!.isValid) {
+                            if (it.laboratoryResponse!!.isValid) {
                                 navigationAdapter.clear()
-                                navigationAdapter.addAll(it.labResponse.laboratories)
+                                navigationAdapter.addAll(it.laboratoryResponse.laboratories)
                             } else {
-                                showErrorMessage(it.labResponse.invalidationMessage)
+                                showErrorMessage(it.laboratoryResponse.invalidationMessage)
                             }
                         }
                         Stages.FAILED -> {
@@ -68,7 +69,8 @@ class RepositoryFragment : Fragment() {
         return binding.root
     }
 
-    private fun showErrorMessage(message: String) {
+    // TODO: Duplicate: Move to a static method
+    private fun showErrorMessage(message: String?) {
         binding.emptyTextView.visibility = View.VISIBLE
         binding.emptyTextView.text = message
     }
@@ -86,15 +88,19 @@ class RepositoryFragment : Fragment() {
 
     private fun setupRepositoryAdapter() {
         navigationAdapter = NavigationAdapter(requireContext(), ArrayList())
-        navigationAdapter.setNavigationAdapterItemClickHandler { laboratory, _ ->
-            val actionRepositoryFragmentToProgramFragment =
-                RepositoryFragmentDirections.actionRepositoryFragmentToProgramFragment(
-                    viewModel.uiState.value.baseUrl!!,
-                    laboratory.fileName,
-                    laboratory.title
-                )
-            findNavController().navigate(actionRepositoryFragmentToProgramFragment)
-        }
+        navigationAdapter.setNavigationAdapterItemClickHandler(object :
+            NavigationAdapter.NavigationAdapterItemClickHandler {
+            override fun onNavigationAdapterItemClick(laboratory: Laboratory, i: Int) {
+                val actionRepositoryFragmentToProgramFragment =
+                    RepositoryFragmentDirections.actionRepositoryFragmentToProgramFragment(
+                        viewModel.uiState.value.baseUrl!!,
+                        laboratory.fileName,
+                        laboratory.title.orEmpty(),
+                    )
+                findNavController().navigate(actionRepositoryFragmentToProgramFragment)
+            }
+
+        })
         binding.repositoryRecyclerView.adapter = navigationAdapter
     }
 
