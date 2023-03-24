@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.adapters.NavigationAdapter.NavigationViewHolder
 import com.nagpal.shivam.vtucslab.models.Laboratory
-import java.util.*
 
 class NavigationAdapter(
     private val context: Context,

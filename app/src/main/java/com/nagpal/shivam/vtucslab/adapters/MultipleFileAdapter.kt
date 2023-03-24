@@ -4,8 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.nagpal.shivam.vtucslab.adapters.ContentAdapter.ItemClickHandler
 import com.nagpal.shivam.vtucslab.adapters.MultipleFileAdapter.ContentFileViewHolder
@@ -15,13 +13,12 @@ import com.nagpal.shivam.vtucslab.utilities.StaticMethods.formatProgramName
 
 class MultipleFileAdapter(
     private val context: Context,
-    @field:LayoutRes @param:LayoutRes private val layoutId: Int,
     private val contentFiles: List<ContentFile>,
     private val itemClickHandler: ItemClickHandler?
 ) : RecyclerView.Adapter<ContentFileViewHolder>() {
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ContentFileViewHolder {
-        val binding = DataBindingUtil.inflate<LayoutCardSingleFilesWithoutSubPartsBinding>(
-            LayoutInflater.from(context), layoutId, viewGroup, false
+        val binding = LayoutCardSingleFilesWithoutSubPartsBinding.inflate(
+            LayoutInflater.from(context), viewGroup, false
         )
         return ContentFileViewHolder(binding)
     }

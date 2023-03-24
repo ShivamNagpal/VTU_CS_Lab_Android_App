@@ -5,17 +5,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeMspBinding
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeSspMfBinding
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSeSspSfBinding
 import com.nagpal.shivam.vtucslab.models.ContentFile
 import com.nagpal.shivam.vtucslab.models.LabExperiment
 import com.nagpal.shivam.vtucslab.utilities.StaticMethods.formatProgramName
-import java.util.*
 
 class ContentAdapter(
     private val context: Context,
@@ -42,9 +39,8 @@ class ContentAdapter(
         return when (viewType) {
             VIEW_TYPE_SSP_SF -> {
                 val sspSfBinding =
-                    DataBindingUtil.inflate<LayoutCardSeSspSfBinding>(
+                    LayoutCardSeSspSfBinding.inflate(
                         LayoutInflater.from(context),
-                        R.layout.layout_card_se_ssp_sf,
                         parent,
                         false
                     )
@@ -52,9 +48,8 @@ class ContentAdapter(
             }
             VIEW_TYPE_MSP_SF -> {
                 val mspSfBinding =
-                    DataBindingUtil.inflate<LayoutCardSeMspBinding>(
+                    LayoutCardSeMspBinding.inflate(
                         LayoutInflater.from(context),
-                        R.layout.layout_card_se_msp,
                         parent,
                         false
                     )
@@ -62,9 +57,8 @@ class ContentAdapter(
             }
             VIEW_TYPE_SSP_MF -> {
                 val sspMfBinding =
-                    DataBindingUtil.inflate<LayoutCardSeSspMfBinding>(
+                    LayoutCardSeSspMfBinding.inflate(
                         LayoutInflater.from(context),
-                        R.layout.layout_card_se_ssp_mf,
                         parent,
                         false
                     )
@@ -72,9 +66,8 @@ class ContentAdapter(
             }
             VIEW_TYPE_MSP_MF -> {
                 val seMspBinding =
-                    DataBindingUtil.inflate<LayoutCardSeMspBinding>(
+                    LayoutCardSeMspBinding.inflate(
                         LayoutInflater.from(context),
-                        R.layout.layout_card_se_msp,
                         parent,
                         false
                     )
@@ -112,7 +105,6 @@ class ContentAdapter(
                 holder.binding.serialOrder.text = serialOrder
                 val adapter = MultipleFileAdapter(
                     context,
-                    R.layout.layout_card_single_files_without_sub_parts,
                     labExperiment.labExperimentSubParts[0].contentFiles,
                     itemClickHandler
                 )
