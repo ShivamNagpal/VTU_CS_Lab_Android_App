@@ -4,10 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.adapters.ContentAdapter.ItemClickHandler
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleSubPartsWithFilesBinding
 import com.nagpal.shivam.vtucslab.databinding.LayoutCardSingleSubPartsWithoutFilesBinding
@@ -23,18 +21,16 @@ class MultipleSubPartAdapter(
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): RecyclerView.ViewHolder {
         return if (!containsMultipleFiles) {
             val binding =
-                DataBindingUtil.inflate<LayoutCardSingleSubPartsWithoutFilesBinding>(
+                LayoutCardSingleSubPartsWithoutFilesBinding.inflate(
                     LayoutInflater.from(context),
-                    R.layout.layout_card_single_sub_parts_without_files,
                     viewGroup,
                     false
                 )
             SubPartWithoutFilesViewHolder(binding)
         } else {
             val binding =
-                DataBindingUtil.inflate<LayoutCardSingleSubPartsWithFilesBinding>(
+                LayoutCardSingleSubPartsWithFilesBinding.inflate(
                     LayoutInflater.from(context),
-                    R.layout.layout_card_single_sub_parts_with_files,
                     viewGroup,
                     false
                 )
@@ -58,7 +54,6 @@ class MultipleSubPartAdapter(
                 holder.binding.serialOrder.text = subParts[i].subSerialOrder
                 val adapter = MultipleFileAdapter(
                     context,
-                    R.layout.layout_card_single_files_without_sub_parts,
                     subParts[i].contentFiles,
                     itemClickHandler
                 )
