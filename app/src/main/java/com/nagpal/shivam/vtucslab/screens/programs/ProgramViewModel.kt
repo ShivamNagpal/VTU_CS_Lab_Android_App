@@ -4,6 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.nagpal.shivam.vtucslab.VTUCSLabApplication
+import com.nagpal.shivam.vtucslab.retrofit.ApiResult.*
+import com.nagpal.shivam.vtucslab.retrofit.handleApi
+import com.nagpal.shivam.vtucslab.retrofit.logNetworkResultError
+import com.nagpal.shivam.vtucslab.retrofit.logNetworkResultException
 import com.nagpal.shivam.vtucslab.services.VtuCsLabService
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
@@ -15,6 +19,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+private val LOG_TAG: String = ProgramViewModel::class.java.name
 
 class ProgramViewModel(app: Application) : AndroidViewModel(app) {
     private val initialState = ProgramState(Stages.LOADING, null, null, null)
@@ -39,11 +45,13 @@ class ProgramViewModel(app: Application) : AndroidViewModel(app) {
         }
         _uiState.update { initialState }
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val response = VtuCsLabService.instance.getLaboratoryExperimentsResponse(url)
-                if (response.isSuccessful) {
+            val networkResult =
+                handleApi { VtuCsLabService.instance.getLaboratoryExperimentsResponse(url) }
+
+            when (networkResult) {
+                is ApiSuccess -> {
                     _uiState.update {
-                        val labResponse = response.body()!!
+                        val labResponse = networkResult.data
                         ProgramState(
                             Stages.SUCCEEDED,
                             labResponse,
@@ -51,12 +59,20 @@ class ProgramViewModel(app: Application) : AndroidViewModel(app) {
                             StaticMethods.getBaseURL(labResponse)
                         )
                     }
-                } else {
-                    _uiState.update { ProgramState(Stages.FAILED, null, null, null) }
                 }
-            } catch (throwable: Throwable) {
-                _uiState.update { ProgramState(Stages.FAILED, null, null, null) }
+                is ApiError -> {
+                    logNetworkResultError(LOG_TAG, url, networkResult)
+                    updateStateAsFailed()
+                }
+                is ApiException -> {
+                    logNetworkResultException(LOG_TAG, url, networkResult)
+                    updateStateAsFailed()
+                }
             }
         }
+    }
+
+    private fun updateStateAsFailed() {
+        _uiState.update { ProgramState(Stages.FAILED, null, null, null) }
     }
 }
