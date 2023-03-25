@@ -2,17 +2,24 @@ package com.nagpal.shivam.vtucslab.screens.display
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.nagpal.shivam.vtucslab.VTUCSLabApplication
+import com.nagpal.shivam.vtucslab.retrofit.onError
+import com.nagpal.shivam.vtucslab.retrofit.onException
+import com.nagpal.shivam.vtucslab.retrofit.onSuccess
 import com.nagpal.shivam.vtucslab.services.VtuCsLabService
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
 import com.nagpal.shivam.vtucslab.utilities.Stages
+import com.nagpal.shivam.vtucslab.utilities.StaticMethods.logNetworkResultError
+import com.nagpal.shivam.vtucslab.utilities.StaticMethods.logNetworkResultException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
+
+private val LOG_TAG: String = DisplayViewModel::class.java.name
 
 class DisplayViewModel(app: Application) : AndroidViewModel(app) {
     var scrollX = 0
@@ -39,25 +46,27 @@ class DisplayViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         _uiState.update { initialState }
-        VtuCsLabService.instance.fetchRawResponse(url)
-            .enqueue(object : Callback<String> {
-                override fun onResponse(call: Call<String>, response: Response<String>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            VtuCsLabService.instance.fetchRawResponse(url)
+                .onSuccess { data ->
                     _uiState.update {
-                        val stringResponse = response.body()!!.replace("\t", "\t\t")
-                        DisplayState(
-                            Stages.SUCCEEDED,
-                            stringResponse,
-                            null,
-                        )
+                        val stringResponse = data.replace("\t", "\t\t")
+                        DisplayState(Stages.SUCCEEDED, stringResponse, null)
                     }
                 }
+                .onError { code, message ->
+                    logNetworkResultError(LOG_TAG, url, code, message)
+                    updateStateAsFailed()
+                }
+                .onException { throwable ->
+                    logNetworkResultException(LOG_TAG, url, throwable)
+                    updateStateAsFailed()
+                }
+        }
+    }
 
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    _uiState.update {
-                        DisplayState(Stages.FAILED, null, null)
-                    }
-                }
-            })
+    private fun updateStateAsFailed() {
+        _uiState.update { DisplayState(Stages.FAILED, null, null) }
     }
 
     fun resetState() {

@@ -2,20 +2,26 @@ package com.nagpal.shivam.vtucslab.screens.repository
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.nagpal.shivam.vtucslab.VTUCSLabApplication
-import com.nagpal.shivam.vtucslab.models.LaboratoryResponse
+import com.nagpal.shivam.vtucslab.retrofit.onError
+import com.nagpal.shivam.vtucslab.retrofit.onException
+import com.nagpal.shivam.vtucslab.retrofit.onSuccess
 import com.nagpal.shivam.vtucslab.services.VtuCsLabService
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import com.nagpal.shivam.vtucslab.utilities.StaticMethods
+import com.nagpal.shivam.vtucslab.utilities.StaticMethods.logNetworkResultError
+import com.nagpal.shivam.vtucslab.utilities.StaticMethods.logNetworkResultException
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
+
+private val LOG_TAG: String = RepositoryViewModel::class.java.name
 
 class RepositoryViewModel(app: Application) : AndroidViewModel(app) {
     private val initialState = RepositoryState(Stages.LOADING, null, null, null)
@@ -39,29 +45,30 @@ class RepositoryViewModel(app: Application) : AndroidViewModel(app) {
             return
         }
         _uiState.update { initialState }
-        VtuCsLabService.instance.getLaboratoryResponse(url)
-            .enqueue(object : Callback<LaboratoryResponse> {
-                override fun onResponse(
-                    call: Call<LaboratoryResponse>,
-                    response: Response<LaboratoryResponse>
-                ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            VtuCsLabService.instance.getLaboratoryResponse(url)
+                .onSuccess { data ->
                     _uiState.update {
-                        val labResponse = response.body()!!
                         RepositoryState(
                             Stages.SUCCEEDED,
-                            labResponse,
+                            data,
                             null,
-                            StaticMethods.getBaseURL(labResponse)
+                            StaticMethods.getBaseURL(data)
                         )
                     }
                 }
-
-                override fun onFailure(call: Call<LaboratoryResponse>, t: Throwable) {
-                    _uiState.update {
-                        RepositoryState(Stages.FAILED, null, null, null)
-                    }
+                .onError { code, message ->
+                    logNetworkResultError(LOG_TAG, url, code, message)
+                    updateStateAsFailed()
                 }
-            })
+                .onException { throwable ->
+                    logNetworkResultException(LOG_TAG, url, throwable)
+                    updateStateAsFailed()
+                }
+        }
     }
 
+    private fun updateStateAsFailed() {
+        _uiState.update { RepositoryState(Stages.FAILED, null, null, null) }
+    }
 }
