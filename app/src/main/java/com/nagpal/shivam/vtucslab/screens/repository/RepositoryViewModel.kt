@@ -4,9 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.nagpal.shivam.vtucslab.VTUCSLabApplication
-import com.nagpal.shivam.vtucslab.retrofit.onError
-import com.nagpal.shivam.vtucslab.retrofit.onException
-import com.nagpal.shivam.vtucslab.retrofit.onSuccess
+import com.nagpal.shivam.vtucslab.retrofit.ApiResult.*
 import com.nagpal.shivam.vtucslab.services.VtuCsLabService
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
@@ -46,25 +44,26 @@ class RepositoryViewModel(app: Application) : AndroidViewModel(app) {
         }
         _uiState.update { initialState }
         viewModelScope.launch(Dispatchers.IO) {
-            VtuCsLabService.instance.getLaboratoryResponse(url)
-                .onSuccess { data ->
+            when (val apiResult = VtuCsLabService.instance.getLaboratoryResponse(url)) {
+                is ApiSuccess -> {
                     _uiState.update {
                         RepositoryState(
                             Stages.SUCCEEDED,
-                            data,
+                            apiResult.data,
                             null,
-                            StaticMethods.getBaseURL(data)
+                            StaticMethods.getBaseURL(apiResult.data)
                         )
                     }
                 }
-                .onError { code, message ->
-                    logNetworkResultError(LOG_TAG, url, code, message)
+                is ApiError -> {
+                    logNetworkResultError(LOG_TAG, url, apiResult.code, apiResult.message)
                     updateStateAsFailed()
                 }
-                .onException { throwable ->
-                    logNetworkResultException(LOG_TAG, url, throwable)
+                is ApiException -> {
+                    logNetworkResultException(LOG_TAG, url, apiResult.throwable)
                     updateStateAsFailed()
                 }
+            }
         }
     }
 
