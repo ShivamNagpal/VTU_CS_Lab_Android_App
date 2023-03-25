@@ -5,8 +5,8 @@ import com.nagpal.shivam.vtucslab.retrofit.ApiResult.*
 import retrofit2.HttpException
 import retrofit2.Response
 
-suspend fun <T : Any> handleApi(
-    execute: suspend () -> Response<T>
+fun <T : Any> handleApiResult(
+    execute: () -> Response<T>
 ): ApiResult<T> {
     return try {
         val response = execute()

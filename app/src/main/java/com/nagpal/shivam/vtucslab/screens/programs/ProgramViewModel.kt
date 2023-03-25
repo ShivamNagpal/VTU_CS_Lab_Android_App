@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.nagpal.shivam.vtucslab.VTUCSLabApplication
 import com.nagpal.shivam.vtucslab.retrofit.ApiResult.*
-import com.nagpal.shivam.vtucslab.retrofit.handleApi
 import com.nagpal.shivam.vtucslab.retrofit.logNetworkResultError
 import com.nagpal.shivam.vtucslab.retrofit.logNetworkResultException
 import com.nagpal.shivam.vtucslab.services.VtuCsLabService
@@ -45,10 +44,8 @@ class ProgramViewModel(app: Application) : AndroidViewModel(app) {
         }
         _uiState.update { initialState }
         viewModelScope.launch(Dispatchers.IO) {
-            val networkResult =
-                handleApi { VtuCsLabService.instance.getLaboratoryExperimentsResponse(url) }
-
-            when (networkResult) {
+            when (val networkResult =
+                VtuCsLabService.instance.getLaboratoryExperimentsResponse(url)) {
                 is ApiSuccess -> {
                     _uiState.update {
                         val labResponse = networkResult.data
