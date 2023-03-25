@@ -3,6 +3,7 @@ package com.nagpal.shivam.vtucslab.services
 import com.nagpal.shivam.vtucslab.models.LaboratoryExperimentResponse
 import com.nagpal.shivam.vtucslab.models.LaboratoryResponse
 import com.nagpal.shivam.vtucslab.retrofit.ApiResult
+import com.nagpal.shivam.vtucslab.retrofit.getRetrofitBuilder
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.StaticMethods
 import retrofit2.http.GET
@@ -21,7 +22,7 @@ interface VtuCsLabService {
 
     companion object {
         val instance: VtuCsLabService by lazy {
-            val retrofit = StaticMethods.getRetrofitBuilder()
+            val retrofit = getRetrofitBuilder()
                 .baseUrl(Constants.GITHUB_RAW_BASE_URL)
                 .build()
             return@lazy retrofit.create(VtuCsLabService::class.java)
