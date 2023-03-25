@@ -4,14 +4,16 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.nagpal.shivam.vtucslab.VTUCSLabApplication
-import com.nagpal.shivam.vtucslab.retrofit.ApiResult.*
-import com.nagpal.shivam.vtucslab.retrofit.logNetworkResultError
-import com.nagpal.shivam.vtucslab.retrofit.logNetworkResultException
+import com.nagpal.shivam.vtucslab.retrofit.onError
+import com.nagpal.shivam.vtucslab.retrofit.onException
+import com.nagpal.shivam.vtucslab.retrofit.onSuccess
 import com.nagpal.shivam.vtucslab.services.VtuCsLabService
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import com.nagpal.shivam.vtucslab.utilities.StaticMethods
+import com.nagpal.shivam.vtucslab.utilities.StaticMethods.logNetworkResultError
+import com.nagpal.shivam.vtucslab.utilities.StaticMethods.logNetworkResultException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -44,28 +46,25 @@ class ProgramViewModel(app: Application) : AndroidViewModel(app) {
         }
         _uiState.update { initialState }
         viewModelScope.launch(Dispatchers.IO) {
-            when (val networkResult =
-                VtuCsLabService.instance.getLaboratoryExperimentsResponse(url)) {
-                is ApiSuccess -> {
+            VtuCsLabService.instance.getLaboratoryExperimentsResponse(url)
+                .onSuccess { data ->
                     _uiState.update {
-                        val labResponse = networkResult.data
                         ProgramState(
                             Stages.SUCCEEDED,
-                            labResponse,
+                            data,
                             null,
-                            StaticMethods.getBaseURL(labResponse)
+                            StaticMethods.getBaseURL(data)
                         )
                     }
                 }
-                is ApiError -> {
-                    logNetworkResultError(LOG_TAG, url, networkResult)
+                .onError { code, message ->
+                    logNetworkResultError(LOG_TAG, url, code, message)
                     updateStateAsFailed()
                 }
-                is ApiException -> {
-                    logNetworkResultException(LOG_TAG, url, networkResult)
+                .onException { throwable ->
+                    logNetworkResultException(LOG_TAG, url, throwable)
                     updateStateAsFailed()
                 }
-            }
         }
     }
 

@@ -5,7 +5,6 @@ import com.nagpal.shivam.vtucslab.models.LaboratoryResponse
 import com.nagpal.shivam.vtucslab.retrofit.ApiResult
 import com.nagpal.shivam.vtucslab.retrofit.getRetrofitBuilder
 import com.nagpal.shivam.vtucslab.utilities.Constants
-import com.nagpal.shivam.vtucslab.utilities.StaticMethods
 import retrofit2.http.GET
 import retrofit2.http.Url
 
