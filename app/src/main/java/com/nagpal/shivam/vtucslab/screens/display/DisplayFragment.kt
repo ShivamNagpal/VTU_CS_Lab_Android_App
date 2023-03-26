@@ -10,8 +10,8 @@ import android.view.*
 import android.widget.Toast
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
@@ -27,7 +27,7 @@ class DisplayFragment : Fragment() {
     private var _binding: FragmentDisplayBinding? = null
     private val binding get() = _binding!!
     private val displayFragmentArgs by navArgs<DisplayFragmentArgs>()
-    private lateinit var viewModel: DisplayViewModel
+    private val viewModel: DisplayViewModel by viewModels { DisplayViewModel.Factory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,8 +35,6 @@ class DisplayFragment : Fragment() {
     ): View {
         _binding = FragmentDisplayBinding.inflate(inflater, container, false)
         setupMenuProvider()
-
-        viewModel = ViewModelProvider(this)[DisplayViewModel::class.java]
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
