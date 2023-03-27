@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.*
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -25,7 +25,7 @@ class RepositoryFragment : Fragment() {
     private lateinit var navigationAdapter: NavigationAdapter
 
     private val binding get() = _binding!!
-    private lateinit var viewModel: RepositoryViewModel
+    private val viewModel: RepositoryViewModel by viewModels { RepositoryViewModel.Factory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,8 +35,6 @@ class RepositoryFragment : Fragment() {
         setupMenuProvider()
         setupViews()
         setupRepositoryAdapter()
-
-        viewModel = ViewModelProvider(this)[RepositoryViewModel::class.java]
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

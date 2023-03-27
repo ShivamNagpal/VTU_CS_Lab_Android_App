@@ -2,32 +2,33 @@ package com.nagpal.shivam.vtucslab.screens.display
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.nagpal.shivam.vtucslab.VTUCSLabApplication
-import com.nagpal.shivam.vtucslab.retrofit.ApiResult.*
-import com.nagpal.shivam.vtucslab.services.VtuCsLabService
+import com.nagpal.shivam.vtucslab.core.Resource
+import com.nagpal.shivam.vtucslab.repositories.VtuCsLabRepository
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
 import com.nagpal.shivam.vtucslab.utilities.Stages
-import com.nagpal.shivam.vtucslab.utilities.StaticMethods.logNetworkResultError
-import com.nagpal.shivam.vtucslab.utilities.StaticMethods.logNetworkResultException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-private val LOG_TAG: String = DisplayViewModel::class.java.name
-
-class DisplayViewModel(app: Application) : AndroidViewModel(app) {
+class DisplayViewModel(
+    private val application: Application,
+    private val vtuCsLabRepository: VtuCsLabRepository
+) : AndroidViewModel(application) {
     var scrollX = 0
     var scrollY = 0
     private val initialState = DisplayState(Stages.LOADING, null, null)
 
     private val _uiState = MutableStateFlow(initialState)
     val uiState = _uiState.asStateFlow()
-
-    private val application = this.getApplication<VTUCSLabApplication>()
+    private var fetchJob: Job? = null
 
     fun loadContent(url: String) {
         if (_uiState.value.stage == Stages.SUCCEEDED) {
@@ -43,24 +44,22 @@ class DisplayViewModel(app: Application) : AndroidViewModel(app) {
             }
             return
         }
-        _uiState.update { initialState }
-        viewModelScope.launch(Dispatchers.IO) {
-            when (val apiResult = VtuCsLabService.instance.fetchRawResponse(url)) {
-                is ApiSuccess -> {
-                    _uiState.update {
-                        val stringResponse = apiResult.data.replace("\t", "\t\t")
-                        DisplayState(Stages.SUCCEEDED, stringResponse, null)
+        fetchJob?.cancel()
+        fetchJob = viewModelScope.launch(Dispatchers.IO) {
+            vtuCsLabRepository.fetchContent(url)
+                .onEach { resource ->
+                    when (resource) {
+                        is Resource.Loading -> {
+                            _uiState.update { initialState }
+                        }
+                        is Resource.Success -> {
+                            _uiState.update { DisplayState(Stages.SUCCEEDED, resource.data, null) }
+                        }
+                        is Resource.Error -> {
+                            updateStateAsFailed()
+                        }
                     }
-                }
-                is ApiError -> {
-                    logNetworkResultError(LOG_TAG, url, apiResult.code, apiResult.message)
-                    updateStateAsFailed()
-                }
-                is ApiException -> {
-                    logNetworkResultException(LOG_TAG, url, apiResult.throwable)
-                    updateStateAsFailed()
-                }
-            }
+                }.launchIn(this)
         }
     }
 
@@ -70,5 +69,17 @@ class DisplayViewModel(app: Application) : AndroidViewModel(app) {
 
     fun resetState() {
         _uiState.update { initialState }
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val vtuCsLabApplication = this[APPLICATION_KEY] as VTUCSLabApplication
+                DisplayViewModel(
+                    vtuCsLabApplication,
+                    vtuCsLabApplication.vtuCsLabRepository
+                )
+            }
+        }
     }
 }

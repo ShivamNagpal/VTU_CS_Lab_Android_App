@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -25,7 +25,7 @@ class ProgramFragment : Fragment() {
     private var _binding: FragmentProgramBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: ProgramViewModel
+    private val viewModel: ProgramViewModel by viewModels { ProgramViewModel.Factory }
     private lateinit var contentAdapter: ContentAdapter
 
     private val programFragmentArgs by navArgs<ProgramFragmentArgs>()
@@ -37,8 +37,6 @@ class ProgramFragment : Fragment() {
         _binding = FragmentProgramBinding.inflate(inflater, container, false)
         setupViews()
         setupRepositoryAdapter()
-
-        viewModel = ViewModelProvider(this)[ProgramViewModel::class.java]
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

@@ -2,30 +2,31 @@ package com.nagpal.shivam.vtucslab.screens.programs
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.nagpal.shivam.vtucslab.VTUCSLabApplication
-import com.nagpal.shivam.vtucslab.retrofit.ApiResult.*
-import com.nagpal.shivam.vtucslab.services.VtuCsLabService
+import com.nagpal.shivam.vtucslab.core.Resource
+import com.nagpal.shivam.vtucslab.repositories.VtuCsLabRepository
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import com.nagpal.shivam.vtucslab.utilities.StaticMethods
-import com.nagpal.shivam.vtucslab.utilities.StaticMethods.logNetworkResultError
-import com.nagpal.shivam.vtucslab.utilities.StaticMethods.logNetworkResultException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-private val LOG_TAG: String = ProgramViewModel::class.java.name
-
-class ProgramViewModel(app: Application) : AndroidViewModel(app) {
+class ProgramViewModel(
+    private val application: Application,
+    private val vtuCsLabRepository: VtuCsLabRepository
+) : AndroidViewModel(application) {
     private val initialState = ProgramState(Stages.LOADING, null, null, null)
     private val _uiState = MutableStateFlow(initialState)
-    private val application = this.getApplication<VTUCSLabApplication>()
     val uiState: StateFlow<ProgramState> = _uiState.asStateFlow()
+    private var fetchJob: Job? = null
 
     fun loadContent(url: String) {
         if (_uiState.value.stage == Stages.SUCCEEDED) {
@@ -42,32 +43,46 @@ class ProgramViewModel(app: Application) : AndroidViewModel(app) {
             }
             return
         }
-        _uiState.update { initialState }
-        viewModelScope.launch(Dispatchers.IO) {
-            when (val apiResult = VtuCsLabService.instance.getLaboratoryExperimentsResponse(url)) {
-                is ApiSuccess -> {
-                    _uiState.update {
-                        ProgramState(
-                            Stages.SUCCEEDED,
-                            apiResult.data,
-                            null,
-                            StaticMethods.getBaseURL(apiResult.data)
-                        )
+
+        fetchJob?.cancel()
+        fetchJob = viewModelScope.launch(Dispatchers.IO) {
+            vtuCsLabRepository.fetchExperiments(url)
+                .onEach { resource ->
+                    when (resource) {
+                        is Resource.Loading -> {
+                            _uiState.update { initialState }
+                        }
+                        is Resource.Success -> {
+                            _uiState.update {
+                                ProgramState(
+                                    Stages.SUCCEEDED,
+                                    resource.data,
+                                    null,
+                                    StaticMethods.getBaseURL(resource.data!!)
+                                )
+                            }
+                        }
+                        is Resource.Error -> {
+                            updateStateAsFailed()
+                        }
                     }
-                }
-                is ApiError -> {
-                    logNetworkResultError(LOG_TAG, url, apiResult.code, apiResult.message)
-                    updateStateAsFailed()
-                }
-                is ApiException -> {
-                    logNetworkResultException(LOG_TAG, url, apiResult.throwable)
-                    updateStateAsFailed()
-                }
-            }
+                }.launchIn(this)
         }
     }
 
     private fun updateStateAsFailed() {
         _uiState.update { ProgramState(Stages.FAILED, null, null, null) }
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val vtuCsLabApplication = this[APPLICATION_KEY] as VTUCSLabApplication
+                ProgramViewModel(
+                    vtuCsLabApplication,
+                    vtuCsLabApplication.vtuCsLabRepository
+                )
+            }
+        }
     }
 }
