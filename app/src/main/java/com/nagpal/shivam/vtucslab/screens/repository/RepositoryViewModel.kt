@@ -8,19 +8,17 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.nagpal.shivam.vtucslab.VTUCSLabApplication
-import com.nagpal.shivam.vtucslab.core.Resource
 import com.nagpal.shivam.vtucslab.models.LaboratoryResponse
 import com.nagpal.shivam.vtucslab.repositories.VtuCsLabRepository
 import com.nagpal.shivam.vtucslab.screens.ContentState
 import com.nagpal.shivam.vtucslab.screens.UiEvent
-import com.nagpal.shivam.vtucslab.utilities.Constants
-import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
+import com.nagpal.shivam.vtucslab.screens.Utils
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import com.nagpal.shivam.vtucslab.utilities.StaticMethods
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class RepositoryViewModel(
     private val application: Application,
@@ -43,48 +41,15 @@ class RepositoryViewModel(
     }
 
     private fun loadContent(url: String) {
-        if (_uiState.value.stage == Stages.SUCCEEDED) {
-            return
-        }
-        if (!NetworkUtils.isNetworkConnected(application)) {
-            _uiState.update {
-                ContentState(
-                    Stages.FAILED,
-                    null,
-                    Constants.NO_ACTIVE_NETWORK,
-                    null
-                )
-            }
-            return
-        }
-
-        fetchJob?.cancel()
-        fetchJob = viewModelScope.launch(Dispatchers.IO) {
-            vtuCsLabRepository.fetchLaboratories(url)
-                .onEach { resource ->
-                    when (resource) {
-                        is Resource.Loading -> {
-                            _uiState.update { initialState }
-                        }
-                        is Resource.Success -> {
-                            _uiState.update {
-                                ContentState(
-                                    Stages.SUCCEEDED,
-                                    data = resource.data,
-                                    baseUrl = StaticMethods.getBaseURL(resource.data!!),
-                                )
-                            }
-                        }
-                        is Resource.Error -> {
-                            updateStateAsFailed()
-                        }
-                    }
-                }.launchIn(this)
-        }
-    }
-
-    private fun updateStateAsFailed() {
-        _uiState.update { ContentState(Stages.FAILED) }
+        fetchJob = Utils.loadContent(
+            _uiState,
+            application,
+            fetchJob,
+            viewModelScope,
+            { vtuCsLabRepository.fetchLaboratories(it) },
+            { StaticMethods.getBaseURL(it) },
+            url
+        )
     }
 
     companion object {
