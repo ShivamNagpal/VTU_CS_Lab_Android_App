@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.nagpal.shivam.vtucslab.VTUCSLabApplication
 import com.nagpal.shivam.vtucslab.core.Resource
 import com.nagpal.shivam.vtucslab.repositories.VtuCsLabRepository
+import com.nagpal.shivam.vtucslab.screens.UiEvent
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
 import com.nagpal.shivam.vtucslab.utilities.Stages
@@ -28,7 +29,19 @@ class ProgramViewModel(
     val uiState: StateFlow<ProgramState> = _uiState.asStateFlow()
     private var fetchJob: Job? = null
 
-    fun loadContent(url: String) {
+
+    fun onEvent(event: UiEvent) {
+        when (event) {
+            is UiEvent.LoadContent -> {
+                loadContent(event.url)
+            }
+            is UiEvent.RefreshContent -> {
+                // ToDo: Handle this case
+            }
+        }
+    }
+
+    private fun loadContent(url: String) {
         if (_uiState.value.stage == Stages.SUCCEEDED) {
             return
         }

@@ -16,6 +16,7 @@ import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.adapters.ContentAdapter
 import com.nagpal.shivam.vtucslab.databinding.FragmentProgramBinding
 import com.nagpal.shivam.vtucslab.models.ContentFile
+import com.nagpal.shivam.vtucslab.screens.UiEvent
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
@@ -101,7 +102,7 @@ class ProgramFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.loadContent("${programFragmentArgs.baseUrl}/${programFragmentArgs.fileName}")
+        viewModel.onEvent(UiEvent.LoadContent("${programFragmentArgs.baseUrl}/${programFragmentArgs.fileName}"))
     }
 
     override fun onDestroyView() {
