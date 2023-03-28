@@ -17,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.databinding.FragmentDisplayBinding
+import com.nagpal.shivam.vtucslab.screens.UiEvent
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
@@ -29,13 +30,16 @@ class DisplayFragment : Fragment() {
     private val displayFragmentArgs by navArgs<DisplayFragmentArgs>()
     private val viewModel: DisplayViewModel by viewModels { DisplayViewModel.Factory }
 
+    private val url: String by lazy {
+        return@lazy "${displayFragmentArgs.baseUrl}/${displayFragmentArgs.fileName}"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDisplayBinding.inflate(inflater, container, false)
         setupMenuProvider()
-
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
@@ -85,8 +89,7 @@ class DisplayFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.display_menu_item_refresh -> {
-                        viewModel.resetState()
-                        loadContent()
+                        viewModel.onEvent(UiEvent.RefreshContent(url))
                         return true
                     }
                     R.id.menu_item_copy_display_activity -> {
@@ -115,16 +118,12 @@ class DisplayFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        loadContent()
+        viewModel.onEvent(UiEvent.LoadContent(url))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         viewModel.scrollX = binding.horizontalScroll.scrollX
         viewModel.scrollY = binding.verticalScroll.scrollY
         super.onSaveInstanceState(outState)
-    }
-
-    private fun loadContent() {
-        viewModel.loadContent("${displayFragmentArgs.baseUrl}/${displayFragmentArgs.fileName}")
     }
 }

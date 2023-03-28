@@ -16,6 +16,7 @@ import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.adapters.NavigationAdapter
 import com.nagpal.shivam.vtucslab.databinding.FragmentRepositoryBinding
 import com.nagpal.shivam.vtucslab.models.Laboratory
+import com.nagpal.shivam.vtucslab.screens.UiEvent
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
@@ -81,7 +82,7 @@ class RepositoryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.loadContent(Constants.INDEX_REPOSITORY_URL)
+        viewModel.onEvent(UiEvent.LoadContent(Constants.INDEX_REPOSITORY_URL))
     }
 
     private fun setupRepositoryAdapter() {
