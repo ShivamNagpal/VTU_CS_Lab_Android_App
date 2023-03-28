@@ -9,7 +9,9 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.nagpal.shivam.vtucslab.VTUCSLabApplication
 import com.nagpal.shivam.vtucslab.core.Resource
+import com.nagpal.shivam.vtucslab.models.LaboratoryResponse
 import com.nagpal.shivam.vtucslab.repositories.VtuCsLabRepository
+import com.nagpal.shivam.vtucslab.screens.ContentState
 import com.nagpal.shivam.vtucslab.screens.UiEvent
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
@@ -24,9 +26,9 @@ class RepositoryViewModel(
     private val application: Application,
     private val vtuCsLabRepository: VtuCsLabRepository
 ) : AndroidViewModel(application) {
-    private val initialState = RepositoryState(Stages.LOADING, null, null, null)
+    private val initialState = ContentState<LaboratoryResponse>(Stages.LOADING)
     private val _uiState = MutableStateFlow(initialState)
-    val uiState: StateFlow<RepositoryState> = _uiState.asStateFlow()
+    val uiState: StateFlow<ContentState<LaboratoryResponse>> = _uiState.asStateFlow()
     private var fetchJob: Job? = null
 
     fun onEvent(event: UiEvent) {
@@ -46,7 +48,7 @@ class RepositoryViewModel(
         }
         if (!NetworkUtils.isNetworkConnected(application)) {
             _uiState.update {
-                RepositoryState(
+                ContentState(
                     Stages.FAILED,
                     null,
                     Constants.NO_ACTIVE_NETWORK,
@@ -66,11 +68,10 @@ class RepositoryViewModel(
                         }
                         is Resource.Success -> {
                             _uiState.update {
-                                RepositoryState(
+                                ContentState(
                                     Stages.SUCCEEDED,
-                                    resource.data,
-                                    null,
-                                    StaticMethods.getBaseURL(resource.data!!)
+                                    data = resource.data,
+                                    baseUrl = StaticMethods.getBaseURL(resource.data!!),
                                 )
                             }
                         }
@@ -83,7 +84,7 @@ class RepositoryViewModel(
     }
 
     private fun updateStateAsFailed() {
-        _uiState.update { RepositoryState(Stages.FAILED, null, null, null) }
+        _uiState.update { ContentState(Stages.FAILED) }
     }
 
     companion object {

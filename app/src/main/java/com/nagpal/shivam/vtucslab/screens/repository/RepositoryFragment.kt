@@ -47,11 +47,11 @@ class RepositoryFragment : Fragment() {
                             binding.progressBar.visibility = View.VISIBLE
                         }
                         Stages.SUCCEEDED -> {
-                            if (it.laboratoryResponse!!.isValid) {
+                            if (it.data!!.isValid) {
                                 navigationAdapter.clear()
-                                navigationAdapter.addAll(it.laboratoryResponse.laboratories)
+                                navigationAdapter.addAll(it.data.laboratories)
                             } else {
-                                showErrorMessage(it.laboratoryResponse.invalidationMessage)
+                                showErrorMessage(it.data.invalidationMessage)
                             }
                         }
                         Stages.FAILED -> {

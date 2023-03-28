@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.nagpal.shivam.vtucslab.VTUCSLabApplication
 import com.nagpal.shivam.vtucslab.core.Resource
 import com.nagpal.shivam.vtucslab.repositories.VtuCsLabRepository
+import com.nagpal.shivam.vtucslab.screens.ContentState
 import com.nagpal.shivam.vtucslab.screens.UiEvent
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
@@ -25,7 +26,7 @@ class DisplayViewModel(
 ) : AndroidViewModel(application) {
     var scrollX = 0
     var scrollY = 0
-    private val initialState = DisplayState(Stages.LOADING, null, null)
+    private val initialState = ContentState<String>(Stages.LOADING)
 
     private val _uiState = MutableStateFlow(initialState)
     val uiState = _uiState.asStateFlow()
@@ -49,10 +50,9 @@ class DisplayViewModel(
         }
         if (!NetworkUtils.isNetworkConnected(application)) {
             _uiState.update {
-                DisplayState(
+                ContentState(
                     Stages.FAILED,
-                    null,
-                    Constants.NO_ACTIVE_NETWORK,
+                    message = Constants.NO_ACTIVE_NETWORK,
                 )
             }
             return
@@ -66,7 +66,12 @@ class DisplayViewModel(
                             _uiState.update { initialState }
                         }
                         is Resource.Success -> {
-                            _uiState.update { DisplayState(Stages.SUCCEEDED, resource.data, null) }
+                            _uiState.update {
+                                ContentState(
+                                    Stages.SUCCEEDED,
+                                    data = resource.data,
+                                )
+                            }
                         }
                         is Resource.Error -> {
                             updateStateAsFailed()
@@ -77,7 +82,7 @@ class DisplayViewModel(
     }
 
     private fun updateStateAsFailed() {
-        _uiState.update { DisplayState(Stages.FAILED, null, null) }
+        _uiState.update { ContentState(Stages.FAILED) }
     }
 
     private fun resetState() {

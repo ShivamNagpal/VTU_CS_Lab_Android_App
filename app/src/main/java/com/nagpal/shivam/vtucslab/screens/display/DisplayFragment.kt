@@ -50,7 +50,7 @@ class DisplayFragment : Fragment() {
                             binding.progressBar.visibility = View.VISIBLE
                         }
                         Stages.SUCCEEDED -> {
-                            binding.displayTextView.text = it.response
+                            binding.displayTextView.text = it.data
                             requireActivity().invalidateOptionsMenu()
                             Handler(Looper.getMainLooper()).postDelayed({
                                 binding.horizontalScroll.scrollX = viewModel.scrollX
@@ -99,7 +99,7 @@ class DisplayFragment : Fragment() {
                         val clipData = ClipData(
                             ClipData.newPlainText(
                                 Constants.LABEL_CODE,
-                                viewModel.uiState.value.response
+                                viewModel.uiState.value.data
                             )
                         )
                         clipboard.setPrimaryClip(clipData)

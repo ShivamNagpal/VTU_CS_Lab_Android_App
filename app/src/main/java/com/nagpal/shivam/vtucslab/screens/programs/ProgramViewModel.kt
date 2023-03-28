@@ -9,7 +9,9 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.nagpal.shivam.vtucslab.VTUCSLabApplication
 import com.nagpal.shivam.vtucslab.core.Resource
+import com.nagpal.shivam.vtucslab.models.LaboratoryExperimentResponse
 import com.nagpal.shivam.vtucslab.repositories.VtuCsLabRepository
+import com.nagpal.shivam.vtucslab.screens.ContentState
 import com.nagpal.shivam.vtucslab.screens.UiEvent
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
@@ -24,9 +26,10 @@ class ProgramViewModel(
     private val application: Application,
     private val vtuCsLabRepository: VtuCsLabRepository
 ) : AndroidViewModel(application) {
-    private val initialState = ProgramState(Stages.LOADING, null, null, null)
+    private val initialState =
+        ContentState<LaboratoryExperimentResponse>(Stages.LOADING)
     private val _uiState = MutableStateFlow(initialState)
-    val uiState: StateFlow<ProgramState> = _uiState.asStateFlow()
+    val uiState: StateFlow<ContentState<LaboratoryExperimentResponse>> = _uiState.asStateFlow()
     private var fetchJob: Job? = null
 
 
@@ -47,11 +50,9 @@ class ProgramViewModel(
         }
         if (!NetworkUtils.isNetworkConnected(application)) {
             _uiState.update {
-                ProgramState(
+                ContentState(
                     Stages.FAILED,
-                    null,
-                    Constants.NO_ACTIVE_NETWORK,
-                    null
+                    message = Constants.NO_ACTIVE_NETWORK,
                 )
             }
             return
@@ -67,11 +68,10 @@ class ProgramViewModel(
                         }
                         is Resource.Success -> {
                             _uiState.update {
-                                ProgramState(
+                                ContentState(
                                     Stages.SUCCEEDED,
-                                    resource.data,
-                                    null,
-                                    StaticMethods.getBaseURL(resource.data!!)
+                                    data = resource.data,
+                                    baseUrl = StaticMethods.getBaseURL(resource.data!!),
                                 )
                             }
                         }
@@ -84,7 +84,7 @@ class ProgramViewModel(
     }
 
     private fun updateStateAsFailed() {
-        _uiState.update { ProgramState(Stages.FAILED, null, null, null) }
+        _uiState.update { ContentState(Stages.FAILED) }
     }
 
     companion object {

@@ -49,11 +49,11 @@ class ProgramFragment : Fragment() {
                             binding.progressBar.visibility = View.VISIBLE
                         }
                         Stages.SUCCEEDED -> {
-                            if (it.laboratoryExperimentResponse!!.isValid) {
+                            if (it.data!!.isValid) {
                                 contentAdapter.clear()
-                                contentAdapter.addAll(it.laboratoryExperimentResponse.labExperiments)
+                                contentAdapter.addAll(it.data.labExperiments)
                             } else {
-                                showErrorMessage(it.laboratoryExperimentResponse.invalidationMessage)
+                                showErrorMessage(it.data.invalidationMessage)
                             }
                         }
                         Stages.FAILED -> {
