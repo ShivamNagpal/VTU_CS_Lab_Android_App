@@ -18,6 +18,7 @@ import androidx.navigation.fragment.navArgs
 import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.databinding.FragmentDisplayBinding
 import com.nagpal.shivam.vtucslab.screens.UiEvent
+import com.nagpal.shivam.vtucslab.screens.Utils
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
@@ -58,11 +59,9 @@ class DisplayFragment : Fragment() {
                             }, 500)
                         }
                         Stages.FAILED -> {
-                            if (it.message == Constants.NO_ACTIVE_NETWORK) {
-                                showErrorMessage(getString(R.string.no_internet_connection))
-                            } else {
-                                showErrorMessage(getString(R.string.error_occurred))
-                            }
+                            val message: String =
+                                Utils.mapErrorTypeToString(requireContext(), it.errorType)
+                            showErrorMessage(message)
                         }
                     }
                 }

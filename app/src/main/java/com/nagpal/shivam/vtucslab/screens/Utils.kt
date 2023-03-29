@@ -1,8 +1,10 @@
 package com.nagpal.shivam.vtucslab.screens
 
 import android.app.Application
+import android.content.Context
+import com.nagpal.shivam.vtucslab.R
+import com.nagpal.shivam.vtucslab.core.ErrorType
 import com.nagpal.shivam.vtucslab.core.Resource
-import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +30,7 @@ object Utils {
             uiStateFlow.update {
                 ContentState(
                     Stages.FAILED,
-                    message = Constants.NO_ACTIVE_NETWORK,
+                    errorType = ErrorType.NoActiveInternetConnection
                 )
             }
             return null
@@ -64,5 +66,12 @@ object Utils {
         initialState: ContentState<T>
     ) {
         uiStateFlow.update { initialState }
+    }
+
+    fun mapErrorTypeToString(context: Context, errorType: ErrorType?): String {
+        return when (errorType) {
+            ErrorType.NoActiveInternetConnection -> context.getString(R.string.no_internet_connection)
+            else -> context.getString(R.string.error_occurred)
+        }
     }
 }

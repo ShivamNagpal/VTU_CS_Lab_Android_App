@@ -12,12 +12,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.adapters.ContentAdapter
 import com.nagpal.shivam.vtucslab.databinding.FragmentProgramBinding
 import com.nagpal.shivam.vtucslab.models.ContentFile
 import com.nagpal.shivam.vtucslab.screens.UiEvent
-import com.nagpal.shivam.vtucslab.utilities.Constants
+import com.nagpal.shivam.vtucslab.screens.Utils
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
 
@@ -53,15 +52,14 @@ class ProgramFragment : Fragment() {
                                 contentAdapter.clear()
                                 contentAdapter.addAll(it.data.labExperiments)
                             } else {
+                                // TODO: Handle this logic in Data Layer
                                 showErrorMessage(it.data.invalidationMessage)
                             }
                         }
                         Stages.FAILED -> {
-                            if (it.message == Constants.NO_ACTIVE_NETWORK) {
-                                showErrorMessage(getString(R.string.no_internet_connection))
-                            } else {
-                                showErrorMessage(getString(R.string.error_occurred))
-                            }
+                            val message: String =
+                                Utils.mapErrorTypeToString(requireContext(), it.errorType)
+                            showErrorMessage(message)
                         }
                     }
                 }

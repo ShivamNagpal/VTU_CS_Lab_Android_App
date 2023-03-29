@@ -17,6 +17,7 @@ import com.nagpal.shivam.vtucslab.adapters.NavigationAdapter
 import com.nagpal.shivam.vtucslab.databinding.FragmentRepositoryBinding
 import com.nagpal.shivam.vtucslab.models.Laboratory
 import com.nagpal.shivam.vtucslab.screens.UiEvent
+import com.nagpal.shivam.vtucslab.screens.Utils
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
@@ -51,15 +52,14 @@ class RepositoryFragment : Fragment() {
                                 navigationAdapter.clear()
                                 navigationAdapter.addAll(it.data.laboratories)
                             } else {
+                                // TODO: Handle this logic in Data Layer
                                 showErrorMessage(it.data.invalidationMessage)
                             }
                         }
                         Stages.FAILED -> {
-                            if (it.message == Constants.NO_ACTIVE_NETWORK) {
-                                showErrorMessage(getString(R.string.no_internet_connection))
-                            } else {
-                                showErrorMessage(getString(R.string.error_occurred))
-                            }
+                            val message: String =
+                                Utils.mapErrorTypeToString(requireContext(), it.errorType)
+                            showErrorMessage(message)
                         }
                     }
                 }
