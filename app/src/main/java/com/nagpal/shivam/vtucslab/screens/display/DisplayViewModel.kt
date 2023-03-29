@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class DisplayViewModel(
-    private val application: Application,
+    application: Application,
     private val vtuCsLabRepository: VtuCsLabRepository
 ) : AndroidViewModel(application) {
     var scrollX = 0
@@ -44,7 +44,6 @@ class DisplayViewModel(
     private fun loadContent(url: String) {
         fetchJob = Utils.loadContent(
             _uiState,
-            application,
             fetchJob,
             viewModelScope,
             { vtuCsLabRepository.fetchContent(it) },

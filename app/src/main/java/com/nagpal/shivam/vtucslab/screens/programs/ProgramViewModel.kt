@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class ProgramViewModel(
-    private val application: Application,
+    application: Application,
     private val vtuCsLabRepository: VtuCsLabRepository
 ) : AndroidViewModel(application) {
     private val initialState =
@@ -45,7 +45,6 @@ class ProgramViewModel(
     private fun loadContent(url: String) {
         fetchJob = Utils.loadContent(
             _uiState,
-            application,
             fetchJob,
             viewModelScope,
             { vtuCsLabRepository.fetchExperiments(it) },

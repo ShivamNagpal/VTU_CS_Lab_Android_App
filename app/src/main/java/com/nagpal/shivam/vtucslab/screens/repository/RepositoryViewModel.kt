@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class RepositoryViewModel(
-    private val application: Application,
+    application: Application,
     private val vtuCsLabRepository: VtuCsLabRepository
 ) : AndroidViewModel(application) {
     private val initialState = ContentState<LaboratoryResponse>(Stages.LOADING)
@@ -43,7 +43,6 @@ class RepositoryViewModel(
     private fun loadContent(url: String) {
         fetchJob = Utils.loadContent(
             _uiState,
-            application,
             fetchJob,
             viewModelScope,
             { vtuCsLabRepository.fetchLaboratories(it) },
