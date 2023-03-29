@@ -7,7 +7,9 @@ import com.nagpal.shivam.vtucslab.repositories.VtuCsLabRepositoryImpl
 import com.nagpal.shivam.vtucslab.services.VtuCsLabService
 
 class VTUCSLabApplication : MultiDexApplication() {
-    val vtuCsLabRepository: VtuCsLabRepository = VtuCsLabRepositoryImpl(VtuCsLabService.instance)
+    val vtuCsLabRepository: VtuCsLabRepository =
+        VtuCsLabRepositoryImpl(this, VtuCsLabService.instance)
+
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG) {

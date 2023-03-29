@@ -1,9 +1,9 @@
 package com.nagpal.shivam.vtucslab.screens
 
-import android.app.Application
+import android.content.Context
+import com.nagpal.shivam.vtucslab.R
+import com.nagpal.shivam.vtucslab.core.ErrorType
 import com.nagpal.shivam.vtucslab.core.Resource
-import com.nagpal.shivam.vtucslab.utilities.Constants
-import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 object Utils {
     fun <T> loadContent(
         uiStateFlow: MutableStateFlow<ContentState<T>>,
-        application: Application,
         fetchJob: Job?,
         viewModelScope: CoroutineScope,
         fetchExecutable: (String) -> Flow<Resource<T>>,
@@ -22,15 +21,6 @@ object Utils {
         url: String
     ): Job? {
         if (uiStateFlow.value.stage == Stages.SUCCEEDED) {
-            return null
-        }
-        if (!NetworkUtils.isNetworkConnected(application)) {
-            uiStateFlow.update {
-                ContentState(
-                    Stages.FAILED,
-                    message = Constants.NO_ACTIVE_NETWORK,
-                )
-            }
             return null
         }
 
@@ -52,7 +42,12 @@ object Utils {
                             }
                         }
                         is Resource.Error -> {
-                            uiStateFlow.update { ContentState(Stages.FAILED) }
+                            uiStateFlow.update {
+                                ContentState(
+                                    Stages.FAILED,
+                                    errorType = resource.errorType,
+                                )
+                            }
                         }
                     }
                 }.launchIn(this)
@@ -64,5 +59,12 @@ object Utils {
         initialState: ContentState<T>
     ) {
         uiStateFlow.update { initialState }
+    }
+
+    fun mapErrorTypeToString(context: Context, errorType: ErrorType?): String {
+        return when (errorType) {
+            ErrorType.NoActiveInternetConnection -> context.getString(R.string.no_internet_connection)
+            else -> context.getString(R.string.error_occurred)
+        }
     }
 }
