@@ -1,0 +1,68 @@
+package com.nagpal.shivam.vtucslab.screens
+
+import android.app.Application
+import com.nagpal.shivam.vtucslab.core.Resource
+import com.nagpal.shivam.vtucslab.utilities.Constants
+import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
+import com.nagpal.shivam.vtucslab.utilities.Stages
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+
+object Utils {
+    fun <T> loadContent(
+        uiStateFlow: MutableStateFlow<ContentState<T>>,
+        application: Application,
+        fetchJob: Job?,
+        viewModelScope: CoroutineScope,
+        fetchExecutable: (String) -> Flow<Resource<T>>,
+        getBaseUrl: (T) -> String?,
+        url: String
+    ): Job? {
+        if (uiStateFlow.value.stage == Stages.SUCCEEDED) {
+            return null
+        }
+        if (!NetworkUtils.isNetworkConnected(application)) {
+            uiStateFlow.update {
+                ContentState(
+                    Stages.FAILED,
+                    message = Constants.NO_ACTIVE_NETWORK,
+                )
+            }
+            return null
+        }
+
+        fetchJob?.cancel()
+        return viewModelScope.launch(Dispatchers.IO) {
+            fetchExecutable.invoke(url)
+                .onEach { resource ->
+                    when (resource) {
+                        is Resource.Loading -> {
+                            uiStateFlow.update { ContentState(Stages.LOADING) }
+                        }
+                        is Resource.Success -> {
+                            uiStateFlow.update {
+                                ContentState(
+                                    Stages.SUCCEEDED,
+                                    data = resource.data,
+                                    baseUrl = getBaseUrl(resource.data!!),
+                                )
+                            }
+                        }
+                        is Resource.Error -> {
+                            uiStateFlow.update { ContentState(Stages.FAILED) }
+                        }
+                    }
+                }.launchIn(this)
+        }
+    }
+
+    fun <T> resetState(
+        uiStateFlow: MutableStateFlow<ContentState<T>>,
+        initialState: ContentState<T>
+    ) {
+        uiStateFlow.update { initialState }
+    }
+}
