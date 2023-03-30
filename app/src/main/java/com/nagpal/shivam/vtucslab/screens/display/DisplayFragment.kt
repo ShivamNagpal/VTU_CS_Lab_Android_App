@@ -18,7 +18,7 @@ import androidx.navigation.fragment.navArgs
 import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.databinding.FragmentDisplayBinding
 import com.nagpal.shivam.vtucslab.screens.UiEvent
-import com.nagpal.shivam.vtucslab.screens.Utils
+import com.nagpal.shivam.vtucslab.screens.Utils.asString
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
@@ -59,8 +59,7 @@ class DisplayFragment : Fragment() {
                             }, 500)
                         }
                         Stages.FAILED -> {
-                            val message: String =
-                                Utils.mapErrorTypeToString(requireContext(), it.errorType)
+                            val message: String = it.errorMessage.asString(requireContext())
                             showErrorMessage(message)
                         }
                     }

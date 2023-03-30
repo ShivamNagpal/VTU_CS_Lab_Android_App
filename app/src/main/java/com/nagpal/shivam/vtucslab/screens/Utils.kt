@@ -4,6 +4,8 @@ import android.content.Context
 import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.core.ErrorType
 import com.nagpal.shivam.vtucslab.core.Resource
+import com.nagpal.shivam.vtucslab.core.UIMessage
+import com.nagpal.shivam.vtucslab.core.UIMessageType
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +18,7 @@ object Utils {
         uiStateFlow: MutableStateFlow<ContentState<T>>,
         fetchJob: Job?,
         viewModelScope: CoroutineScope,
-        fetchExecutable: (String) -> Flow<Resource<T>>,
+        fetchExecutable: (String) -> Flow<Resource<T, ErrorType>>,
         getBaseUrl: (T) -> String?,
         url: String
     ): Job? {
@@ -43,9 +45,13 @@ object Utils {
                         }
                         is Resource.Error -> {
                             uiStateFlow.update {
+                                val uiMessage: UIMessage = when (resource.error) {
+                                    ErrorType.NoActiveInternetConnection -> UIMessage(UIMessageType.NoActiveInternetConnection)
+                                    ErrorType.SomeErrorOccurred -> UIMessage(UIMessageType.SomeErrorOccurred)
+                                }
                                 ContentState(
                                     Stages.FAILED,
-                                    errorType = resource.errorType,
+                                    errorMessage = uiMessage,
                                 )
                             }
                         }
@@ -61,10 +67,11 @@ object Utils {
         uiStateFlow.update { initialState }
     }
 
-    fun mapErrorTypeToString(context: Context, errorType: ErrorType?): String {
-        return when (errorType) {
-            ErrorType.NoActiveInternetConnection -> context.getString(R.string.no_internet_connection)
-            else -> context.getString(R.string.error_occurred)
+    fun UIMessage?.asString(context: Context): String {
+        return when (this?.messageType) {
+            UIMessageType.NoActiveInternetConnection -> context.getString(R.string.no_internet_connection)
+            UIMessageType.SomeErrorOccurred -> context.getString(R.string.error_occurred)
+            null -> context.getString(R.string.error_occurred)
         }
     }
 }

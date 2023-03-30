@@ -1,7 +1,7 @@
 package com.nagpal.shivam.vtucslab.core
 
-sealed class Resource<T> {
-    class Loading<T>(val data: T? = null) : Resource<T>()
-    class Success<T>(val data: T?) : Resource<T>()
-    class Error<T>(val errorType: ErrorType? = null) : Resource<T>()
+sealed class Resource<D, E> {
+    class Loading<D, E>(val data: D? = null) : Resource<D, E>()
+    class Success<D, E>(val data: D?) : Resource<D, E>()
+    class Error<D, E>(val error: E) : Resource<D, E>()
 }

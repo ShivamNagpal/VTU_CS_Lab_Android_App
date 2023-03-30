@@ -16,7 +16,7 @@ import com.nagpal.shivam.vtucslab.adapters.ContentAdapter
 import com.nagpal.shivam.vtucslab.databinding.FragmentProgramBinding
 import com.nagpal.shivam.vtucslab.models.ContentFile
 import com.nagpal.shivam.vtucslab.screens.UiEvent
-import com.nagpal.shivam.vtucslab.screens.Utils
+import com.nagpal.shivam.vtucslab.screens.Utils.asString
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
 
@@ -57,8 +57,7 @@ class ProgramFragment : Fragment() {
                             }
                         }
                         Stages.FAILED -> {
-                            val message: String =
-                                Utils.mapErrorTypeToString(requireContext(), it.errorType)
+                            val message: String = it.errorMessage.asString(requireContext())
                             showErrorMessage(message)
                         }
                     }
