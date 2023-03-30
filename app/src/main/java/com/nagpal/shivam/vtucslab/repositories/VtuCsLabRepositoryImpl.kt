@@ -16,31 +16,32 @@ import kotlinx.coroutines.flow.flow
 private val LOG_TAG: String = VtuCsLabRepositoryImpl::class.java.name
 
 class VtuCsLabRepositoryImpl(
-    val application: Application,
+    private val application: Application,
     private val vtuCsLabService: VtuCsLabService
 ) : VtuCsLabRepository {
-    override fun fetchLaboratories(url: String): Flow<Resource<LaboratoryResponse>> = flow {
-        fetch(url) {
-            vtuCsLabService.getLaboratoryResponse(it)
+    override fun fetchLaboratories(url: String): Flow<Resource<LaboratoryResponse, ErrorType>> =
+        flow {
+            fetch(url) {
+                vtuCsLabService.getLaboratoryResponse(it)
+            }
         }
-    }
 
-    override fun fetchExperiments(url: String): Flow<Resource<LaboratoryExperimentResponse>> =
+    override fun fetchExperiments(url: String): Flow<Resource<LaboratoryExperimentResponse, ErrorType>> =
         flow {
             fetch(url) {
                 vtuCsLabService.getLaboratoryExperimentsResponse(it)
             }
         }
 
-    override fun fetchContent(url: String): Flow<Resource<String>> = flow {
+    override fun fetchContent(url: String): Flow<Resource<String, ErrorType>> = flow {
         fetch(url) {
             vtuCsLabService.fetchRawResponse(it)
         }
     }
 
-    private suspend fun <T : Any> FlowCollector<Resource<T>>.fetch(
+    private suspend fun <D : Any> FlowCollector<Resource<D, ErrorType>>.fetch(
         url: String,
-        executable: suspend (String) -> ApiResult<T>
+        executable: suspend (String) -> ApiResult<D>
     ) {
         emit(Resource.Loading())
         if (!NetworkUtils.isNetworkConnected(application)) {
@@ -53,11 +54,11 @@ class VtuCsLabRepositoryImpl(
             }
             is ApiResult.ApiError -> {
                 StaticMethods.logNetworkResultError(LOG_TAG, url, apiResult.code, apiResult.message)
-                emit(Resource.Error())
+                emit(Resource.Error(ErrorType.SomeErrorOccurred))
             }
             is ApiResult.ApiException -> {
                 StaticMethods.logNetworkResultException(LOG_TAG, url, apiResult.throwable)
-                emit(Resource.Error())
+                emit(Resource.Error(ErrorType.SomeErrorOccurred))
             }
         }
     }
