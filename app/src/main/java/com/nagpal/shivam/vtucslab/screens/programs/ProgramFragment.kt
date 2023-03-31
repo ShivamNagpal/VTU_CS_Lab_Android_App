@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -16,6 +17,7 @@ import com.nagpal.shivam.vtucslab.adapters.ContentAdapter
 import com.nagpal.shivam.vtucslab.databinding.FragmentProgramBinding
 import com.nagpal.shivam.vtucslab.models.ContentFile
 import com.nagpal.shivam.vtucslab.screens.UiEvent
+import com.nagpal.shivam.vtucslab.screens.Utils
 import com.nagpal.shivam.vtucslab.screens.Utils.asString
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
@@ -29,6 +31,7 @@ class ProgramFragment : Fragment() {
     private lateinit var contentAdapter: ContentAdapter
 
     private val programFragmentArgs by navArgs<ProgramFragmentArgs>()
+    private var toast: Toast? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +46,14 @@ class ProgramFragment : Fragment() {
                 viewModel.uiState.collect {
                     binding.progressBar.visibility = View.GONE
                     binding.emptyTextView.visibility = View.GONE
+                    toast = Utils.showToast(
+                        requireContext(),
+                        toast,
+                        it.toast,
+                        viewModel,
+                        UiEvent.ResetToast
+                    )
+
                     when (it.stage) {
                         Stages.LOADING -> {
                             binding.progressBar.visibility = View.VISIBLE

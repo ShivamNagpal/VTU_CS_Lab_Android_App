@@ -18,6 +18,7 @@ import androidx.navigation.fragment.navArgs
 import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.databinding.FragmentDisplayBinding
 import com.nagpal.shivam.vtucslab.screens.UiEvent
+import com.nagpal.shivam.vtucslab.screens.Utils
 import com.nagpal.shivam.vtucslab.screens.Utils.asString
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.Stages
@@ -30,6 +31,7 @@ class DisplayFragment : Fragment() {
     private val binding get() = _binding!!
     private val displayFragmentArgs by navArgs<DisplayFragmentArgs>()
     private val viewModel: DisplayViewModel by viewModels { DisplayViewModel.Factory }
+    private var toast: Toast? = null
 
     private val url: String by lazy {
         return@lazy "${displayFragmentArgs.baseUrl}/${displayFragmentArgs.fileName}"
@@ -46,6 +48,14 @@ class DisplayFragment : Fragment() {
                 viewModel.uiState.collect {
                     binding.progressBar.visibility = View.GONE
                     binding.emptyTextView.visibility = View.GONE
+                    toast = Utils.showToast(
+                        requireContext(),
+                        toast,
+                        it.toast,
+                        viewModel,
+                        UiEvent.ResetToast
+                    )
+
                     when (it.stage) {
                         Stages.LOADING -> {
                             binding.progressBar.visibility = View.VISIBLE
