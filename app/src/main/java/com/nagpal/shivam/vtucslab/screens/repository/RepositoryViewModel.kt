@@ -11,6 +11,7 @@ import com.nagpal.shivam.vtucslab.VTUCSLabApplication
 import com.nagpal.shivam.vtucslab.models.LaboratoryResponse
 import com.nagpal.shivam.vtucslab.repositories.VtuCsLabRepository
 import com.nagpal.shivam.vtucslab.screens.ContentState
+import com.nagpal.shivam.vtucslab.screens.EventEmitter
 import com.nagpal.shivam.vtucslab.screens.UiEvent
 import com.nagpal.shivam.vtucslab.screens.Utils
 import com.nagpal.shivam.vtucslab.utilities.Stages
@@ -19,23 +20,27 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class RepositoryViewModel(
     application: Application,
     private val vtuCsLabRepository: VtuCsLabRepository
-) : AndroidViewModel(application) {
+) : AndroidViewModel(application), EventEmitter<UiEvent> {
     private val initialState = ContentState<LaboratoryResponse>(Stages.LOADING)
     private val _uiState = MutableStateFlow(initialState)
     val uiState: StateFlow<ContentState<LaboratoryResponse>> = _uiState.asStateFlow()
     private var fetchJob: Job? = null
 
-    fun onEvent(event: UiEvent) {
+    override fun onEvent(event: UiEvent) {
         when (event) {
             is UiEvent.LoadContent -> {
                 loadContent(event.url)
             }
             is UiEvent.RefreshContent -> {
                 // ToDo: Handle this case
+            }
+            UiEvent.ResetToast -> {
+                _uiState.update { _uiState.value.copy(toast = null) }
             }
         }
     }

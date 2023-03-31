@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,6 +18,7 @@ import com.nagpal.shivam.vtucslab.adapters.NavigationAdapter
 import com.nagpal.shivam.vtucslab.databinding.FragmentRepositoryBinding
 import com.nagpal.shivam.vtucslab.models.Laboratory
 import com.nagpal.shivam.vtucslab.screens.UiEvent
+import com.nagpal.shivam.vtucslab.screens.Utils
 import com.nagpal.shivam.vtucslab.screens.Utils.asString
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.Stages
@@ -28,6 +30,7 @@ class RepositoryFragment : Fragment() {
 
     private val binding get() = _binding!!
     private val viewModel: RepositoryViewModel by viewModels { RepositoryViewModel.Factory }
+    private var toast: Toast? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +46,14 @@ class RepositoryFragment : Fragment() {
                 viewModel.uiState.collect {
                     binding.progressBar.visibility = View.GONE
                     binding.emptyTextView.visibility = View.GONE
+                    toast = Utils.showToast(
+                        requireContext(),
+                        toast,
+                        it.toast,
+                        viewModel,
+                        UiEvent.ResetToast
+                    )
+
                     when (it.stage) {
                         Stages.LOADING -> {
                             binding.progressBar.visibility = View.VISIBLE

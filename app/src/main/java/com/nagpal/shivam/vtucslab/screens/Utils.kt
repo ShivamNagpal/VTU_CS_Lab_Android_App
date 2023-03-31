@@ -1,6 +1,7 @@
 package com.nagpal.shivam.vtucslab.screens
 
 import android.content.Context
+import android.widget.Toast
 import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.core.ErrorType
 import com.nagpal.shivam.vtucslab.core.Resource
@@ -23,7 +24,7 @@ object Utils {
         url: String
     ): Job? {
         if (uiStateFlow.value.stage == Stages.SUCCEEDED) {
-            return null
+            return fetchJob
         }
 
         fetchJob?.cancel()
@@ -72,6 +73,26 @@ object Utils {
             UIMessageType.NoActiveInternetConnection -> context.getString(R.string.no_internet_connection)
             UIMessageType.SomeErrorOccurred -> context.getString(R.string.error_occurred)
             null -> context.getString(R.string.error_occurred)
+        }
+    }
+
+    fun <T> showToast(
+        context: Context,
+        toast: Toast?,
+        toastUIMessage: UIMessage?,
+        eventEmitter: EventEmitter<T>,
+        event: T
+    ): Toast? {
+        return toastUIMessage?.let { uiMessage ->
+            toast?.cancel()
+            val newToast = Toast.makeText(
+                context,
+                uiMessage.asString(context),
+                Toast.LENGTH_LONG
+            )
+            newToast.show()
+            eventEmitter.onEvent(event)
+            newToast
         }
     }
 }
