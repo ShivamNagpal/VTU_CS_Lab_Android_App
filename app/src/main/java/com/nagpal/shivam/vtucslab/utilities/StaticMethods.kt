@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.nagpal.shivam.vtucslab.models.LaboratoryExperimentResponse
 import com.nagpal.shivam.vtucslab.models.LaboratoryResponse
+import java.util.*
 
 object StaticMethods {
 
@@ -48,5 +49,11 @@ object StaticMethods {
             "Call to $url failed with exception: ${throwable.javaClass.name}",
             throwable
         )
+    }
+
+    fun getCurrentDateMinusSeconds(seconds: Int): Date {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.SECOND, -seconds)
+        return calendar.time
     }
 }

@@ -8,4 +8,5 @@ object Constants {
         "https://raw.githubusercontent.com/vtucs/Index_v3/master/Index_v3.json"
     const val LABEL_CODE = "Code"
     const val GITHUB_RAW_CONTENT = "github_raw_content"
+    const val VTU_CS_LAB = "vtu_cs_lab"
 }
