@@ -38,9 +38,11 @@ class ProgramViewModel(
             is UiEvent.LoadContent -> {
                 loadContent(event.url)
             }
+
             is UiEvent.RefreshContent -> {
                 // ToDo: Handle this case
             }
+
             UiEvent.ResetToast -> {
                 _uiState.update { _uiState.value.copy(toast = null) }
             }
