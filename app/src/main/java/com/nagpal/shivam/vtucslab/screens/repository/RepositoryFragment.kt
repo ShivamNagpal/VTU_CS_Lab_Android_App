@@ -3,7 +3,12 @@ package com.nagpal.shivam.vtucslab.screens.repository
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -58,6 +63,7 @@ class RepositoryFragment : Fragment() {
                         Stages.LOADING -> {
                             binding.progressBar.visibility = View.VISIBLE
                         }
+
                         Stages.SUCCEEDED -> {
                             if (it.data!!.isValid) {
                                 navigationAdapter.clear()
@@ -67,6 +73,7 @@ class RepositoryFragment : Fragment() {
                                 showErrorMessage(it.data.invalidationMessage)
                             }
                         }
+
                         Stages.FAILED -> {
                             val message: String = it.errorMessage.asString(requireContext())
                             showErrorMessage(message)
@@ -127,6 +134,7 @@ class RepositoryFragment : Fragment() {
                         startActivity(intent)
                         true
                     }
+
                     else -> false
                 }
             }

@@ -36,10 +36,12 @@ class DisplayViewModel(
             is UiEvent.LoadContent -> {
                 loadContent(event.url)
             }
+
             is UiEvent.RefreshContent -> {
                 resetState()
                 loadContent(event.url)
             }
+
             UiEvent.ResetToast -> {
                 _uiState.update { _uiState.value.copy(toast = null) }
             }

@@ -46,6 +46,7 @@ class ContentAdapter(
                     )
                 SspSfViewHolder(sspSfBinding)
             }
+
             VIEW_TYPE_MSP_SF -> {
                 val mspSfBinding =
                     LayoutCardSeMspBinding.inflate(
@@ -55,6 +56,7 @@ class ContentAdapter(
                     )
                 MspSfViewHolder(mspSfBinding)
             }
+
             VIEW_TYPE_SSP_MF -> {
                 val sspMfBinding =
                     LayoutCardSeSspMfBinding.inflate(
@@ -64,6 +66,7 @@ class ContentAdapter(
                     )
                 SspMfViewHolder(sspMfBinding)
             }
+
             VIEW_TYPE_MSP_MF -> {
                 val seMspBinding =
                     LayoutCardSeMspBinding.inflate(
@@ -73,6 +76,7 @@ class ContentAdapter(
                     )
                 MspMfViewHolder(seMspBinding)
             }
+
             else -> InvalidViewHolder(View(context))
         }
     }
@@ -91,6 +95,7 @@ class ContentAdapter(
                         formatProgramName(parts[parts.size - 2])
                 }
             }
+
             is MspSfViewHolder -> {
                 holder.binding.serialOrder.text = serialOrder
                 val adapter = MultipleSubPartAdapter(
@@ -101,6 +106,7 @@ class ContentAdapter(
                 )
                 holder.binding.subPartContainer.adapter = adapter
             }
+
             is SspMfViewHolder -> {
                 holder.binding.serialOrder.text = serialOrder
                 val adapter = MultipleFileAdapter(
@@ -111,6 +117,7 @@ class ContentAdapter(
                 holder.binding.filesContainer.adapter = adapter
 
             }
+
             is MspMfViewHolder -> {
                 holder.binding.serialOrder.text = serialOrder
                 val adapter = MultipleSubPartAdapter(

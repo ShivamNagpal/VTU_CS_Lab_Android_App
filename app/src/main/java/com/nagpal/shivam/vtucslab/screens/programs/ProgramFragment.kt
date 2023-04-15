@@ -58,6 +58,7 @@ class ProgramFragment : Fragment() {
                         Stages.LOADING -> {
                             binding.progressBar.visibility = View.VISIBLE
                         }
+
                         Stages.SUCCEEDED -> {
                             if (it.data!!.isValid) {
                                 contentAdapter.clear()
@@ -67,6 +68,7 @@ class ProgramFragment : Fragment() {
                                 showErrorMessage(it.data.invalidationMessage)
                             }
                         }
+
                         Stages.FAILED -> {
                             val message: String = it.errorMessage.asString(requireContext())
                             showErrorMessage(message)

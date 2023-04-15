@@ -11,7 +11,11 @@ import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 object Utils {
@@ -35,6 +39,7 @@ object Utils {
                         is Resource.Loading -> {
                             uiStateFlow.update { ContentState(Stages.LOADING) }
                         }
+
                         is Resource.Success -> {
                             uiStateFlow.update {
                                 ContentState(
@@ -44,6 +49,7 @@ object Utils {
                                 )
                             }
                         }
+
                         is Resource.Error -> {
                             uiStateFlow.update {
                                 val uiMessage: UIMessage = when (resource.error) {

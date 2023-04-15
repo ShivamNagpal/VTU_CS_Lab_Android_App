@@ -6,7 +6,12 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -60,6 +65,7 @@ class DisplayFragment : Fragment() {
                         Stages.LOADING -> {
                             binding.progressBar.visibility = View.VISIBLE
                         }
+
                         Stages.SUCCEEDED -> {
                             binding.displayTextView.text = it.data
                             requireActivity().invalidateOptionsMenu()
@@ -68,6 +74,7 @@ class DisplayFragment : Fragment() {
                                 binding.verticalScroll.scrollY = viewModel.scrollY
                             }, 500)
                         }
+
                         Stages.FAILED -> {
                             val message: String = it.errorMessage.asString(requireContext())
                             showErrorMessage(message)
@@ -100,6 +107,7 @@ class DisplayFragment : Fragment() {
                         viewModel.onEvent(UiEvent.RefreshContent(url))
                         return true
                     }
+
                     R.id.menu_item_copy_display_activity -> {
 
                         val clipboard =
@@ -118,6 +126,7 @@ class DisplayFragment : Fragment() {
                         ).show()
                         return true
                     }
+
                     else -> false
                 }
             }

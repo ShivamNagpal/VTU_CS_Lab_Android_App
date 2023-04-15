@@ -1,6 +1,8 @@
 package com.nagpal.shivam.vtucslab.retrofit
 
-import com.nagpal.shivam.vtucslab.retrofit.ApiResult.*
+import com.nagpal.shivam.vtucslab.retrofit.ApiResult.ApiError
+import com.nagpal.shivam.vtucslab.retrofit.ApiResult.ApiException
+import com.nagpal.shivam.vtucslab.retrofit.ApiResult.ApiSuccess
 import com.nagpal.shivam.vtucslab.utilities.StaticMethods
 import retrofit2.HttpException
 import retrofit2.Response
