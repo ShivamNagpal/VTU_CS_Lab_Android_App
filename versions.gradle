@@ -1,7 +1,7 @@
 def versions = [:]
 versions.appcompat = "1.6.1"
 versions.constraintlayout = "2.1.4"
-versions.core_ktx = "1.9.0"
+versions.core_ktx = "1.10.0"
 versions.espresso_core = "3.5.1"
 versions.firebase_bom = "31.2.3"
 versions.firebase_crashlytics_gradle = "2.9.4"
