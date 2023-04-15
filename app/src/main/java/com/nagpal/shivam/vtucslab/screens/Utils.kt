@@ -23,17 +23,18 @@ object Utils {
         uiStateFlow: MutableStateFlow<ContentState<T>>,
         fetchJob: Job?,
         viewModelScope: CoroutineScope,
-        fetchExecutable: (String) -> Flow<Resource<T, ErrorType>>,
+        fetchExecutable: (String, Boolean) -> Flow<Resource<T, ErrorType>>,
         getBaseUrl: (T) -> String?,
-        url: String
+        url: String,
+        forceRefresh: Boolean,
     ): Job? {
-        if (uiStateFlow.value.stage == Stages.SUCCEEDED) {
+        if (!forceRefresh && uiStateFlow.value.stage == Stages.SUCCEEDED) {
             return fetchJob
         }
 
         fetchJob?.cancel()
         return viewModelScope.launch(Dispatchers.IO) {
-            fetchExecutable.invoke(url)
+            fetchExecutable.invoke(url, forceRefresh)
                 .onEach { resource ->
                     when (resource) {
                         is Resource.Loading -> {
@@ -53,12 +54,12 @@ object Utils {
                         is Resource.Error -> {
                             uiStateFlow.update {
                                 val uiMessage: UIMessage = when (resource.error) {
-                                    ErrorType.NoActiveInternetConnection -> UIMessage(UIMessageType.NoActiveInternetConnection)
+                                    ErrorType.NoActiveInternetConnection -> UIMessage(UIMessageType.NoActiveInternetConnection) // TODO: Change the UIMessage based on the forceRefresh flag
                                     ErrorType.SomeErrorOccurred -> UIMessage(UIMessageType.SomeErrorOccurred)
                                 }
                                 ContentState(
                                     Stages.FAILED,
-                                    errorMessage = uiMessage,
+                                    errorMessage = uiMessage, // TODO: Show Toast message instead if the forceRefresh is true
                                 )
                             }
                         }
