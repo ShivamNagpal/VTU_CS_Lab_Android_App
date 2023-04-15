@@ -14,5 +14,6 @@ versions.material = "1.8.0"
 versions.multidex = "2.0.1"
 versions.navigation = "2.5.3"
 versions.retrofit = "2.9.0"
+versions.room = "2.5.1"
 versions.test_runner = "1.5.2"
 ext.versions = versions
