@@ -75,8 +75,9 @@ class RepositoryFragment : Fragment() {
                         }
 
                         Stages.FAILED -> {
-                            val message: String = it.errorMessage.asString(requireContext())
-                            showErrorMessage(message)
+                            it.errorMessage?.let { uiMessage ->
+                                showErrorMessage(uiMessage.asString(requireContext()))
+                            }
                         }
                     }
                 }

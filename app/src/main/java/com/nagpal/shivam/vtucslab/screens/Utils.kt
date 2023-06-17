@@ -54,13 +54,24 @@ object Utils {
                         is Resource.Error -> {
                             uiStateFlow.update {
                                 val uiMessage: UIMessage = when (resource.error) {
-                                    ErrorType.NoActiveInternetConnection -> UIMessage(UIMessageType.NoActiveInternetConnection) // TODO: Change the UIMessage based on the forceRefresh flag
+                                    ErrorType.NoActiveInternetConnection -> if (forceRefresh) UIMessage(
+                                        UIMessageType.NoActiveInternetConnection
+                                    ) else UIMessage(UIMessageType.NoActiveInternetConnectionDetailed)
+
                                     ErrorType.SomeErrorOccurred -> UIMessage(UIMessageType.SomeErrorOccurred)
                                 }
-                                ContentState(
-                                    Stages.FAILED,
-                                    errorMessage = uiMessage, // TODO: Show Toast message instead if the forceRefresh is true
-                                )
+                                if (forceRefresh) {
+                                    ContentState(
+                                        Stages.FAILED,
+                                        toast = uiMessage,
+                                    )
+                                } else {
+                                    ContentState(
+                                        Stages.FAILED,
+                                        errorMessage = uiMessage,
+                                    )
+                                }
+
                             }
                         }
                     }
@@ -75,11 +86,11 @@ object Utils {
         uiStateFlow.update { initialState }
     }
 
-    fun UIMessage?.asString(context: Context): String {
-        return when (this?.messageType) {
-            UIMessageType.NoActiveInternetConnection -> context.getString(R.string.no_internet_connection)
+    fun UIMessage.asString(context: Context): String {
+        return when (this.messageType) {
+            UIMessageType.NoActiveInternetConnectionDetailed -> context.getString(R.string.no_internet_connection_detailed)
             UIMessageType.SomeErrorOccurred -> context.getString(R.string.error_occurred)
-            null -> context.getString(R.string.error_occurred)
+            UIMessageType.NoActiveInternetConnection -> context.getString(R.string.no_internet_connection)
         }
     }
 
