@@ -104,7 +104,7 @@ class DisplayFragment : Fragment() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
-                    R.id.display_menu_item_refresh -> {
+                    R.id.menu_item_refresh -> {
                         viewModel.onEvent(UiEvent.RefreshContent(url))
                         return true
                     }

@@ -35,6 +35,8 @@ class RepositoryFragment : Fragment() {
 
     private val binding get() = _binding!!
     private val viewModel: RepositoryViewModel by viewModels { RepositoryViewModel.Factory }
+    private val url = Constants.INDEX_REPOSITORY_URL
+
     private var toast: Toast? = null
 
     override fun onCreateView(
@@ -100,7 +102,7 @@ class RepositoryFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.onEvent(UiEvent.LoadContent(Constants.INDEX_REPOSITORY_URL))
+        viewModel.onEvent(UiEvent.LoadContent(url))
     }
 
     private fun setupRepositoryAdapter() {
@@ -129,6 +131,11 @@ class RepositoryFragment : Fragment() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
+                    R.id.menu_item_refresh -> {
+                        viewModel.onEvent(UiEvent.RefreshContent(url))
+                        true
+                    }
+
                     R.id.main_menu_item_privacy -> {
                         val intent = Intent(Intent.ACTION_VIEW)
                         intent.data = Uri.parse(Constants.PRIVACY_POLICY_LINK)

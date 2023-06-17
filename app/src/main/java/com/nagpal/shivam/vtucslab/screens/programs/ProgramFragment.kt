@@ -2,9 +2,13 @@ package com.nagpal.shivam.vtucslab.screens.programs
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -13,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.adapters.ContentAdapter
 import com.nagpal.shivam.vtucslab.databinding.FragmentProgramBinding
 import com.nagpal.shivam.vtucslab.models.ContentFile
@@ -33,11 +38,16 @@ class ProgramFragment : Fragment() {
     private val programFragmentArgs by navArgs<ProgramFragmentArgs>()
     private var toast: Toast? = null
 
+    private val url: String by lazy {
+        return@lazy "${programFragmentArgs.baseUrl}/${programFragmentArgs.fileName}"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProgramBinding.inflate(inflater, container, false)
+        setupMenuProvider()
         setupViews()
         setupRepositoryAdapter()
 
@@ -88,6 +98,25 @@ class ProgramFragment : Fragment() {
         binding.emptyTextView.text = message
     }
 
+    private fun setupMenuProvider() {
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_program_fragment, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.menu_item_refresh -> {
+                        viewModel.onEvent(UiEvent.RefreshContent(url))
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner)
+    }
+
     private fun setupRepositoryAdapter() {
         contentAdapter = ContentAdapter(requireContext(), ArrayList())
         contentAdapter.setItemClickHandler(object : ContentAdapter.ItemClickHandler {
@@ -113,7 +142,7 @@ class ProgramFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.onEvent(UiEvent.LoadContent("${programFragmentArgs.baseUrl}/${programFragmentArgs.fileName}"))
+        viewModel.onEvent(UiEvent.LoadContent(url))
     }
 
     override fun onDestroyView() {

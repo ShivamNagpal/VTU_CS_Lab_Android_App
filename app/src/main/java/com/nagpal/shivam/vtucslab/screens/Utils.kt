@@ -38,7 +38,9 @@ object Utils {
                 .onEach { resource ->
                     when (resource) {
                         is Resource.Loading -> {
-                            uiStateFlow.update { ContentState(Stages.LOADING) }
+                            uiStateFlow.update {
+                                uiStateFlow.value.copy(stage = Stages.LOADING)
+                            }
                         }
 
                         is Resource.Success -> {
@@ -61,13 +63,13 @@ object Utils {
                                     ErrorType.SomeErrorOccurred -> UIMessage(UIMessageType.SomeErrorOccurred)
                                 }
                                 if (forceRefresh) {
-                                    ContentState(
-                                        Stages.FAILED,
+                                    uiStateFlow.value.copy(
+                                        stage = Stages.SUCCEEDED,
                                         toast = uiMessage,
                                     )
                                 } else {
                                     ContentState(
-                                        Stages.FAILED,
+                                        stage = Stages.FAILED,
                                         errorMessage = uiMessage,
                                     )
                                 }
@@ -77,13 +79,6 @@ object Utils {
                     }
                 }.launchIn(this)
         }
-    }
-
-    fun <T> resetState(
-        uiStateFlow: MutableStateFlow<ContentState<T>>,
-        initialState: ContentState<T>
-    ) {
-        uiStateFlow.update { initialState }
     }
 
     fun UIMessage.asString(context: Context): String {
