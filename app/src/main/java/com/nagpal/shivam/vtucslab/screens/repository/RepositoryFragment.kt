@@ -51,7 +51,6 @@ class RepositoryFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
-                    binding.progressBar.visibility = View.GONE
                     binding.emptyTextView.visibility = View.GONE
                     toast = Utils.showToast(
                         requireContext(),
@@ -61,9 +60,13 @@ class RepositoryFragment : Fragment() {
                         UiEvent.ResetToast
                     )
 
+                    if (it.stage != Stages.LOADING) {
+                        binding.swipeRefresh.isRefreshing = false
+                    }
+
                     when (it.stage) {
                         Stages.LOADING -> {
-                            binding.progressBar.visibility = View.VISIBLE
+                            binding.swipeRefresh.isRefreshing = true
                         }
 
                         Stages.SUCCEEDED -> {
@@ -98,6 +101,9 @@ class RepositoryFragment : Fragment() {
         binding.repositoryRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.repositoryRecyclerView.setHasFixedSize(true)
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.onEvent(UiEvent.RefreshContent(url))
+        }
     }
 
     override fun onResume() {

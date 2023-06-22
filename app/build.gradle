@@ -62,6 +62,9 @@ dependencies {
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
     implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$versions.jackson_module_kotlin"
 
+    // https://mvnrepository.com/artifact/androidx.swiperefreshlayout/swiperefreshlayout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swipe_refresh_layout"
+
     // Firebase SDK
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
