@@ -64,7 +64,7 @@ object Utils {
                                 }
                                 if (forceRefresh) {
                                     uiStateFlow.value.copy(
-                                        stage = Stages.SUCCEEDED,
+                                        stage = if (uiStateFlow.value.data != null) Stages.SUCCEEDED else Stages.FAILED,
                                         toast = uiMessage,
                                     )
                                 } else {
