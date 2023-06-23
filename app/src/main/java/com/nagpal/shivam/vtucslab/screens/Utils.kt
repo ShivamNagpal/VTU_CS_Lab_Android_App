@@ -106,6 +106,6 @@ object Utils {
             newToast.show()
             eventEmitter.onEvent(event)
             newToast
-        }
+        } ?: toast
     }
 }
