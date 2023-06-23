@@ -38,8 +38,7 @@ class DisplayViewModel(
             }
 
             is UiEvent.RefreshContent -> {
-                resetState()
-                loadContent(event.url)
+                loadContent(event.url, true)
             }
 
             UiEvent.ResetToast -> {
@@ -48,19 +47,16 @@ class DisplayViewModel(
         }
     }
 
-    private fun loadContent(url: String) {
+    private fun loadContent(url: String, forceRefresh: Boolean = false) {
         fetchJob = Utils.loadContent(
             _uiState,
             fetchJob,
             viewModelScope,
-            { vtuCsLabRepository.fetchContent(it) },
+            { urlArg, forceRefreshArg -> vtuCsLabRepository.fetchContent(urlArg, forceRefreshArg) },
             { null },
-            url
+            url,
+            forceRefresh,
         )
-    }
-
-    private fun resetState() {
-        Utils.resetState(_uiState, initialState)
     }
 
     companion object {

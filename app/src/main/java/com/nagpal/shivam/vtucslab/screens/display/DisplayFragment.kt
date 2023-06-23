@@ -48,10 +48,10 @@ class DisplayFragment : Fragment() {
     ): View {
         _binding = FragmentDisplayBinding.inflate(inflater, container, false)
         setupMenuProvider()
+        setupViews()
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
-                    binding.progressBar.visibility = View.GONE
                     binding.emptyTextView.visibility = View.GONE
                     toast = Utils.showToast(
                         requireContext(),
@@ -61,9 +61,13 @@ class DisplayFragment : Fragment() {
                         UiEvent.ResetToast
                     )
 
+                    if (it.stage != Stages.LOADING) {
+                        binding.swipeRefresh.isRefreshing = false
+                    }
+
                     when (it.stage) {
                         Stages.LOADING -> {
-                            binding.progressBar.visibility = View.VISIBLE
+                            binding.swipeRefresh.isRefreshing = true
                         }
 
                         Stages.SUCCEEDED -> {
@@ -76,8 +80,9 @@ class DisplayFragment : Fragment() {
                         }
 
                         Stages.FAILED -> {
-                            val message: String = it.errorMessage.asString(requireContext())
-                            showErrorMessage(message)
+                            it.errorMessage?.let { uiMessage ->
+                                showErrorMessage(uiMessage.asString(requireContext()))
+                            }
                         }
                     }
                 }
@@ -85,6 +90,12 @@ class DisplayFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun setupViews() {
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.onEvent(UiEvent.RefreshContent(url))
+        }
     }
 
     private fun showErrorMessage(message: String) {
@@ -103,7 +114,7 @@ class DisplayFragment : Fragment() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
-                    R.id.display_menu_item_refresh -> {
+                    R.id.menu_item_refresh -> {
                         viewModel.onEvent(UiEvent.RefreshContent(url))
                         return true
                     }

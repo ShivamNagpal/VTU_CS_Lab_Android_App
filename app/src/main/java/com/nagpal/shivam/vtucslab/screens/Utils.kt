@@ -23,21 +23,24 @@ object Utils {
         uiStateFlow: MutableStateFlow<ContentState<T>>,
         fetchJob: Job?,
         viewModelScope: CoroutineScope,
-        fetchExecutable: (String) -> Flow<Resource<T, ErrorType>>,
+        fetchExecutable: (String, Boolean) -> Flow<Resource<T, ErrorType>>,
         getBaseUrl: (T) -> String?,
-        url: String
+        url: String,
+        forceRefresh: Boolean,
     ): Job? {
-        if (uiStateFlow.value.stage == Stages.SUCCEEDED) {
+        if (!forceRefresh && uiStateFlow.value.stage == Stages.SUCCEEDED) {
             return fetchJob
         }
 
         fetchJob?.cancel()
         return viewModelScope.launch(Dispatchers.IO) {
-            fetchExecutable.invoke(url)
+            fetchExecutable.invoke(url, forceRefresh)
                 .onEach { resource ->
                     when (resource) {
                         is Resource.Loading -> {
-                            uiStateFlow.update { ContentState(Stages.LOADING) }
+                            uiStateFlow.update {
+                                uiStateFlow.value.copy(stage = Stages.LOADING)
+                            }
                         }
 
                         is Resource.Success -> {
@@ -53,13 +56,24 @@ object Utils {
                         is Resource.Error -> {
                             uiStateFlow.update {
                                 val uiMessage: UIMessage = when (resource.error) {
-                                    ErrorType.NoActiveInternetConnection -> UIMessage(UIMessageType.NoActiveInternetConnection)
+                                    ErrorType.NoActiveInternetConnection -> if (forceRefresh) UIMessage(
+                                        UIMessageType.NoActiveInternetConnection
+                                    ) else UIMessage(UIMessageType.NoActiveInternetConnectionDetailed)
+
                                     ErrorType.SomeErrorOccurred -> UIMessage(UIMessageType.SomeErrorOccurred)
                                 }
-                                ContentState(
-                                    Stages.FAILED,
-                                    errorMessage = uiMessage,
-                                )
+                                if (forceRefresh) {
+                                    uiStateFlow.value.copy(
+                                        stage = if (uiStateFlow.value.data != null) Stages.SUCCEEDED else Stages.FAILED,
+                                        toast = uiMessage,
+                                    )
+                                } else {
+                                    ContentState(
+                                        stage = Stages.FAILED,
+                                        errorMessage = uiMessage,
+                                    )
+                                }
+
                             }
                         }
                     }
@@ -67,18 +81,11 @@ object Utils {
         }
     }
 
-    fun <T> resetState(
-        uiStateFlow: MutableStateFlow<ContentState<T>>,
-        initialState: ContentState<T>
-    ) {
-        uiStateFlow.update { initialState }
-    }
-
-    fun UIMessage?.asString(context: Context): String {
-        return when (this?.messageType) {
-            UIMessageType.NoActiveInternetConnection -> context.getString(R.string.no_internet_connection)
+    fun UIMessage.asString(context: Context): String {
+        return when (this.messageType) {
+            UIMessageType.NoActiveInternetConnectionDetailed -> context.getString(R.string.no_internet_connection_detailed)
             UIMessageType.SomeErrorOccurred -> context.getString(R.string.error_occurred)
-            null -> context.getString(R.string.error_occurred)
+            UIMessageType.NoActiveInternetConnection -> context.getString(R.string.no_internet_connection)
         }
     }
 
@@ -99,6 +106,6 @@ object Utils {
             newToast.show()
             eventEmitter.onEvent(event)
             newToast
-        }
+        } ?: toast
     }
 }

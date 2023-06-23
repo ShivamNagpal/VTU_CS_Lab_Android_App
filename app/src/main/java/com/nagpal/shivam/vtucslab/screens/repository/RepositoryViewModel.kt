@@ -38,7 +38,7 @@ class RepositoryViewModel(
             }
 
             is UiEvent.RefreshContent -> {
-                // ToDo: Handle this case
+                loadContent(event.url, true)
             }
 
             UiEvent.ResetToast -> {
@@ -47,14 +47,20 @@ class RepositoryViewModel(
         }
     }
 
-    private fun loadContent(url: String) {
+    private fun loadContent(url: String, forceRefresh: Boolean = false) {
         fetchJob = Utils.loadContent(
             _uiState,
             fetchJob,
             viewModelScope,
-            { vtuCsLabRepository.fetchLaboratories(it) },
+            { urlArg, forceRefreshArg ->
+                vtuCsLabRepository.fetchLaboratories(
+                    urlArg,
+                    forceRefreshArg
+                )
+            },
             { StaticMethods.getBaseURL(it) },
-            url
+            url,
+            forceRefresh,
         )
     }
 

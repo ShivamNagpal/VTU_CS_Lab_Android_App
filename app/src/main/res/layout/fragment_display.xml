@@ -8,32 +8,38 @@
     android:clipToPadding="false"
     tools:context=".screens.display.DisplayFragment">
 
-    <ScrollView
-        android:id="@+id/vertical_scroll"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
-        <HorizontalScrollView
-            android:id="@+id/horizontal_scroll"
+        <ScrollView
+            android:id="@+id/vertical_scroll"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fillViewport="true">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/display_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:lineSpacingExtra="2dp"
-                android:padding="8dp"
-                android:textColor="@android:color/black"
-                android:textIsSelectable="true" />
-        </HorizontalScrollView>
-    </ScrollView>
+            <HorizontalScrollView
+                android:id="@+id/horizontal_scroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true">
+
+                <TextView
+                    android:id="@+id/display_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:lineSpacingExtra="2dp"
+                    android:padding="8dp"
+                    android:textColor="@android:color/black"
+                    android:textIsSelectable="true" />
+            </HorizontalScrollView>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
     <TextView
@@ -44,12 +50,4 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
