@@ -21,6 +21,11 @@ android {
             }
         }
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -81,7 +86,13 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-scalars:$versions.retrofit"
 
     testImplementation "junit:junit:$versions.junit"
+
+    debugImplementation "androidx.test:core:$versions.test_core"
+    debugImplementation "androidx.test:core-ktx:$versions.test_core"
+    androidTestImplementation "androidx.test.ext:junit:$versions.ext_junit"
+    androidTestImplementation "androidx.test.ext:junit-ktx:$versions.ext_junit"
     androidTestImplementation "androidx.test:runner:$versions.test_runner"
+    androidTestImplementation "androidx.test:rules:$versions.test_rules"
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espresso_core"
 }
 
