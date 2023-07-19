@@ -27,8 +27,12 @@ class VtuCsLabRepositoryImpl(
     private val application: Application,
     private val vtuCsLabService: VtuCsLabService,
     private val labResponseDao: LabResponseDao,
-    private val moshi: Moshi,
+    moshi: Moshi,
 ) : VtuCsLabRepository {
+    private val laboratoryResponseJsonAdapter = LaboratoryResponseJsonAdapter(moshi)
+    private val laboratoryExperimentResponseJsonAdapter =
+        LaboratoryExperimentResponseJsonAdapter(moshi)
+
     override fun fetchLaboratories(
         url: String,
         forceRefresh: Boolean
@@ -39,14 +43,8 @@ class VtuCsLabRepositoryImpl(
                 url,
                 LabResponseType.LABORATORY,
                 vtuCsLabService::getLaboratoryResponse,
-                { data ->
-                    val adapter = LaboratoryResponseJsonAdapter(moshi)
-                    adapter.toJson(data)
-                },
-                { stringContent ->
-                    val adapter = LaboratoryResponseJsonAdapter(moshi)
-                    adapter.fromJson(stringContent)
-                },
+                { data -> laboratoryResponseJsonAdapter.toJson(data) },
+                { stringContent -> laboratoryResponseJsonAdapter.fromJson(stringContent) },
                 forceRefresh,
             )
         }
@@ -61,14 +59,8 @@ class VtuCsLabRepositoryImpl(
                 url,
                 LabResponseType.EXPERIMENT,
                 vtuCsLabService::getLaboratoryExperimentsResponse,
-                { data ->
-                    val adapter = LaboratoryExperimentResponseJsonAdapter(moshi)
-                    adapter.toJson(data)
-                },
-                { stringContent ->
-                    val adapter = LaboratoryExperimentResponseJsonAdapter(moshi)
-                    adapter.fromJson(stringContent)
-                },
+                { data -> laboratoryExperimentResponseJsonAdapter.toJson(data) },
+                { stringContent -> laboratoryExperimentResponseJsonAdapter.fromJson(stringContent) },
                 forceRefresh,
             )
         }
