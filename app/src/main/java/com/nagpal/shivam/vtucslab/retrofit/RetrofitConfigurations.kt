@@ -7,14 +7,14 @@ import com.nagpal.shivam.vtucslab.utilities.StaticMethods
 import retrofit2.HttpException
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.jackson.JacksonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 
 fun getRetrofitBuilder(): Retrofit.Builder {
     return Retrofit.Builder()
         .addConverterFactory(ScalarsConverterFactory.create())
-        .addConverterFactory(JacksonConverterFactory.create(StaticMethods.jsonMapper))
+        .addConverterFactory(MoshiConverterFactory.create(StaticMethods.moshi))
         .addCallAdapterFactory(ApiResultCallAdapterFactory.create())
 }
 

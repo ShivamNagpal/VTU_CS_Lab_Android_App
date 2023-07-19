@@ -36,7 +36,7 @@ class VTUCSLabApplication : MultiDexApplication() {
             this,
             vtuCsLabService,
             _db.labResponseDao(),
-            StaticMethods.jsonMapper
+            StaticMethods.moshi,
         )
     }
 }

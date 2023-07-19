@@ -24,6 +24,7 @@ import com.nagpal.shivam.vtucslab.models.ContentFile
 import com.nagpal.shivam.vtucslab.screens.UiEvent
 import com.nagpal.shivam.vtucslab.screens.Utils
 import com.nagpal.shivam.vtucslab.screens.Utils.asString
+import com.nagpal.shivam.vtucslab.screens.Utils.safeNavigate
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
 
@@ -130,7 +131,7 @@ class ProgramFragment : Fragment() {
                         file.fileName,
                         file.fileName
                     )
-                findNavController().navigate(actionProgramFragmentToDisplayFragment)
+                findNavController().safeNavigate(actionProgramFragmentToDisplayFragment)
             }
 
         })
