@@ -25,6 +25,7 @@ import com.nagpal.shivam.vtucslab.models.Laboratory
 import com.nagpal.shivam.vtucslab.screens.UiEvent
 import com.nagpal.shivam.vtucslab.screens.Utils
 import com.nagpal.shivam.vtucslab.screens.Utils.asString
+import com.nagpal.shivam.vtucslab.screens.Utils.safeNavigate
 import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
@@ -122,7 +123,7 @@ class RepositoryFragment : Fragment() {
                         laboratory.fileName,
                         laboratory.title.orEmpty(),
                     )
-                findNavController().navigate(actionRepositoryFragmentToProgramFragment)
+                findNavController().safeNavigate(actionRepositoryFragmentToProgramFragment)
             }
 
         })

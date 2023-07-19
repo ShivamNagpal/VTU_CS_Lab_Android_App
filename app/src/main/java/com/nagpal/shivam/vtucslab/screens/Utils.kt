@@ -2,6 +2,8 @@ package com.nagpal.shivam.vtucslab.screens
 
 import android.content.Context
 import android.widget.Toast
+import androidx.navigation.NavController
+import androidx.navigation.NavDirections
 import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.core.ErrorType
 import com.nagpal.shivam.vtucslab.core.Resource
@@ -107,5 +109,13 @@ object Utils {
             eventEmitter.onEvent(event)
             newToast
         } ?: toast
+    }
+
+    fun NavController.safeNavigate(direction: NavDirections) {
+        with(this) {
+            currentDestination?.getAction(direction.actionId)?.let {
+                navigate(direction)
+            }
+        }
     }
 }
