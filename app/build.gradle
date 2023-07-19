@@ -10,8 +10,8 @@ android {
         applicationId "com.nagpal.shivam.vtucslab"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 9
-        versionName "7.0"
+        versionCode 10
+        versionName "7.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
