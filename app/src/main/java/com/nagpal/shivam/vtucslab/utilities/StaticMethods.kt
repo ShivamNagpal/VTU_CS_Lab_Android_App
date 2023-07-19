@@ -1,19 +1,16 @@
 package com.nagpal.shivam.vtucslab.utilities
 
 import android.util.Log
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.json.JsonMapper
 import com.nagpal.shivam.vtucslab.models.LaboratoryExperimentResponse
 import com.nagpal.shivam.vtucslab.models.LaboratoryResponse
+import com.squareup.moshi.Moshi
 import java.util.Calendar
 import java.util.Date
 
 object StaticMethods {
 
-    val jsonMapper: JsonMapper by lazy {
-        com.fasterxml.jackson.module.kotlin.jacksonMapperBuilder()
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .build()
+    val moshi: Moshi by lazy {
+        Moshi.Builder().build()
     }
 
     fun formatProgramName(programName: String): String {

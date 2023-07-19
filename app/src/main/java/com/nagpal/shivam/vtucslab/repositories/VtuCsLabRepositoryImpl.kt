@@ -1,20 +1,21 @@
 package com.nagpal.shivam.vtucslab.repositories
 
 import android.app.Application
-import com.fasterxml.jackson.core.JsonParseException
-import com.fasterxml.jackson.databind.json.JsonMapper
 import com.nagpal.shivam.vtucslab.core.ErrorType
 import com.nagpal.shivam.vtucslab.core.Resource
 import com.nagpal.shivam.vtucslab.data.local.LabResponse
 import com.nagpal.shivam.vtucslab.data.local.LabResponseDao
 import com.nagpal.shivam.vtucslab.data.local.LabResponseType
 import com.nagpal.shivam.vtucslab.models.LaboratoryExperimentResponse
+import com.nagpal.shivam.vtucslab.models.LaboratoryExperimentResponseJsonAdapter
 import com.nagpal.shivam.vtucslab.models.LaboratoryResponse
+import com.nagpal.shivam.vtucslab.models.LaboratoryResponseJsonAdapter
 import com.nagpal.shivam.vtucslab.retrofit.ApiResult
 import com.nagpal.shivam.vtucslab.services.VtuCsLabService
 import com.nagpal.shivam.vtucslab.utilities.Configurations
 import com.nagpal.shivam.vtucslab.utilities.NetworkUtils
 import com.nagpal.shivam.vtucslab.utilities.StaticMethods
+import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
@@ -26,7 +27,7 @@ class VtuCsLabRepositoryImpl(
     private val application: Application,
     private val vtuCsLabService: VtuCsLabService,
     private val labResponseDao: LabResponseDao,
-    private val jsonMapper: JsonMapper,
+    private val moshi: Moshi,
 ) : VtuCsLabRepository {
     override fun fetchLaboratories(
         url: String,
@@ -38,12 +39,13 @@ class VtuCsLabRepositoryImpl(
                 url,
                 LabResponseType.LABORATORY,
                 vtuCsLabService::getLaboratoryResponse,
-                { data -> jsonMapper.writeValueAsString(data) },
+                { data ->
+                    val adapter = LaboratoryResponseJsonAdapter(moshi)
+                    adapter.toJson(data)
+                },
                 { stringContent ->
-                    jsonMapper.readValue(
-                        stringContent,
-                        LaboratoryResponse::class.java
-                    )
+                    val adapter = LaboratoryResponseJsonAdapter(moshi)
+                    adapter.fromJson(stringContent)
                 },
                 forceRefresh,
             )
@@ -59,12 +61,13 @@ class VtuCsLabRepositoryImpl(
                 url,
                 LabResponseType.EXPERIMENT,
                 vtuCsLabService::getLaboratoryExperimentsResponse,
-                { data -> jsonMapper.writeValueAsString(data) },
+                { data ->
+                    val adapter = LaboratoryExperimentResponseJsonAdapter(moshi)
+                    adapter.toJson(data)
+                },
                 { stringContent ->
-                    jsonMapper.readValue(
-                        stringContent,
-                        LaboratoryExperimentResponse::class.java
-                    )
+                    val adapter = LaboratoryExperimentResponseJsonAdapter(moshi)
+                    adapter.fromJson(stringContent)
                 },
                 forceRefresh,
             )
@@ -91,7 +94,7 @@ class VtuCsLabRepositoryImpl(
         labResponseType: LabResponseType,
         fetchFromNetwork: suspend (String) -> ApiResult<D>,
         encodeToString: (D) -> String,
-        decodeFromString: (String) -> D,
+        decodeFromString: (String) -> D?,
         forceRefresh: Boolean,
     ) {
         flow.emit(Resource.Loading())
@@ -101,15 +104,17 @@ class VtuCsLabRepositoryImpl(
             val labResponse = labResponseDao.findByUrl(url)
             labResponse?.let {
                 try {
-                    flow.emit(Resource.Success(decodeFromString.invoke(it.response)))
-                    foundInDB = true
-                    if (it.fetchedAt.after(
-                            StaticMethods.getCurrentDateMinusSeconds(Configurations.RESPONSE_FRESHNESS_TIME)
-                        )
-                    ) {
-                        return
+                    decodeFromString.invoke(it.response)?.let { decodedString ->
+                        flow.emit(Resource.Success(decodedString))
+                        foundInDB = true
+                        if (it.fetchedAt.after(
+                                StaticMethods.getCurrentDateMinusSeconds(Configurations.RESPONSE_FRESHNESS_TIME)
+                            )
+                        ) {
+                            return
+                        }
                     }
-                } catch (_: JsonParseException) {
+                } catch (_: Exception) {
                 }
             }
         }

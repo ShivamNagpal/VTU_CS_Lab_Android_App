@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'com.google.devtools.ksp'
 
 android {
     compileSdkVersion 33
     defaultConfig {
         applicationId "com.nagpal.shivam.vtucslab"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 33
         versionCode 9
         versionName "7.0"
@@ -63,10 +63,10 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$versions.navigation"
 
     implementation "androidx.room:room-runtime:$versions.room"
-    kapt "androidx.room:room-compiler:$versions.room"
+    ksp "androidx.room:room-compiler:$versions.room"
 
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
-    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$versions.jackson_module_kotlin"
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:1.15.0"
+    implementation "com.squareup.moshi:moshi:1.15.0"
 
     // https://mvnrepository.com/artifact/androidx.swiperefreshlayout/swiperefreshlayout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swipe_refresh_layout"
@@ -77,7 +77,9 @@ dependencies {
 
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
-    implementation "com.squareup.retrofit2:converter-jackson:$versions.retrofit"
+    implementation("com.squareup.retrofit2:converter-moshi:$versions.retrofit") {
+        exclude group: "com.squareup.moshi", module: "moshi"
+    }
     implementation "com.squareup.retrofit2:converter-scalars:$versions.retrofit"
 
     testImplementation "junit:junit:$versions.junit"
