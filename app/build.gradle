@@ -5,20 +5,18 @@ apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'com.google.devtools.ksp'
 
 android {
-    compileSdkVersion 33
     defaultConfig {
+        compileSdk 34
         applicationId "com.nagpal.shivam.vtucslab"
-        minSdkVersion 21
-        targetSdkVersion 33
+        minSdkVersion 23
+        targetSdkVersion 34
         versionCode 10
         versionName "7.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
-            }
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
     }
     buildTypes {
@@ -44,6 +42,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
     namespace 'com.nagpal.shivam.vtucslab'
 }
@@ -65,8 +64,8 @@ dependencies {
     implementation "androidx.room:room-runtime:$versions.room"
     ksp "androidx.room:room-compiler:$versions.room"
 
-    ksp "com.squareup.moshi:moshi-kotlin-codegen:1.15.0"
-    implementation "com.squareup.moshi:moshi:1.15.0"
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
+    implementation "com.squareup.moshi:moshi:$versions.moshi"
 
     // https://mvnrepository.com/artifact/androidx.swiperefreshlayout/swiperefreshlayout
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swipe_refresh_layout"

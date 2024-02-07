@@ -19,7 +19,7 @@ buildscript {
 }
 
 plugins {
-    id 'com.google.devtools.ksp' version '1.8.20-1.0.11'
+    id 'com.google.devtools.ksp' version '1.9.21-1.0.15'
 }
 
 allprojects {
@@ -30,6 +30,6 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
