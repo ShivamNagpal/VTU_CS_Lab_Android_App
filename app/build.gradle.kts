@@ -58,59 +58,57 @@ android {
 
 
 dependencies {
-    val versions = object {
-        val appCompat = "1.6.1"
-        val constraintLayout = "2.1.4"
-        val coreKTX = "1.12.0"
-        val espressoCore = "3.5.1"
-        val firebaseBom = "31.2.3"
-        val junit = "4.13.2"
-        val material = "1.11.0"
-        val moshi = "1.15.0"
-        val multidex = "2.0.1"
-        val navigation = rootProject.extra["navigation"] as String
-        val retrofit = "2.9.0"
-        val room = "2.6.1"
-        val swipeRefreshLayout = "1.1.0"
-        val testRunner = "1.5.2"
-    }
+    val appCompatVersion = "1.6.1"
+    val constraintLayoutVersion = "2.1.4"
+    val coreKTXVersion = "1.12.0"
+    val espressoCoreVersion = "3.5.1"
+    val firebaseBomVersion = "31.2.3"
+    val junitVersion = "4.13.2"
+    val materialVersion = "1.11.0"
+    val moshiVersion = "1.15.0"
+    val multidexVersion = "2.0.1"
+    val navigationVersion = rootProject.extra["navigation"] as String
+    val retrofitVersion = "2.9.0"
+    val roomVersion = "2.6.1"
+    val swipeRefreshLayoutVersion = "1.1.0"
+    val testRunnerVersion = "1.5.2"
 
-    implementation(platform("com.google.firebase:firebase-bom:${versions.firebaseBom}"))
+    implementation(platform("com.google.firebase:firebase-bom:$firebaseBomVersion"))
     implementation(fileTree(mapOf("include" to listOf("*.jar"), "dir" to "libs")))
 
-    implementation("androidx.core:core-ktx:${versions.coreKTX}")
-    implementation("androidx.appcompat:appcompat:${versions.appCompat}")
-    implementation("androidx.constraintlayout:constraintlayout:${versions.constraintLayout}")
-    implementation("com.google.android.material:material:${versions.material}")
-    implementation("androidx.multidex:multidex:${versions.multidex}")
+    implementation("androidx.core:core-ktx:$coreKTXVersion")
+    implementation("androidx.appcompat:appcompat:$appCompatVersion")
+    implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutVersion")
+    implementation("com.google.android.material:material:$materialVersion")
+    implementation("androidx.multidex:multidex:$multidexVersion")
 
     // Navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:${versions.navigation}")
-    implementation("androidx.navigation:navigation-ui-ktx:${versions.navigation}")
+    implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
+    implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
 
-    implementation("androidx.room:room-runtime:${versions.room}")
-    ksp("androidx.room:room-compiler:${versions.room}")
+    implementation("androidx.room:room-runtime:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
-    ksp("com.squareup.moshi:moshi-kotlin-codegen:${versions.moshi}")
-    implementation("com.squareup.moshi:moshi:${versions.moshi}")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion")
+    implementation("com.squareup.moshi:moshi:$moshiVersion")
 
     // https://mvnrepository.com/artifact/androidx.swiperefreshlayout/swiperefreshlayout
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:${versions.swipeRefreshLayout}")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshLayoutVersion")
 
     // Firebase SDK
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:${versions.retrofit}")
-    implementation("com.squareup.retrofit2:converter-moshi:${versions.retrofit}") {
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-moshi:$retrofitVersion") {
         exclude(group = "com.squareup.moshi", module = "moshi")
     }
-    implementation("com.squareup.retrofit2:converter-scalars:${versions.retrofit}")
+    implementation("com.squareup.retrofit2:converter-scalars:$retrofitVersion")
 
-    testImplementation("junit:junit:${versions.junit}")
-    androidTestImplementation("androidx.test:runner:${versions.testRunner}")
-    androidTestImplementation("androidx.test.espresso:espresso-core:${versions.espressoCore}")
+    testImplementation("junit:junit:$junitVersion")
+    androidTestImplementation("androidx.test:runner:$testRunnerVersion")
+    androidTestImplementation("androidx.test.espresso:espresso-core:$espressoCoreVersion")
 }
 
 apply {

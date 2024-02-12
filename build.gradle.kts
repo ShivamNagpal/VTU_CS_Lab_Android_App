@@ -7,20 +7,18 @@ plugins {
 
 buildscript {
     dependencies {
-        val versions = object {
-            val firebaseCrashlyticsGradle = "2.9.4"
-            val googleServices = "4.3.15"
-            val gradle = "8.2.2"
-            val kotlinGradlePlugin = "1.9.21"
-            val navigation = "2.7.7"
-        }
-        rootProject.extra["navigation"] = versions.navigation
+        val firebaseCrashlyticsGradleVersion = "2.9.9"
+        val googleServicesVersion = "4.4.1"
+        val gradleVersion = "8.2.2"
+        val kotlinGradlePluginVersion = "1.9.21"
+        val navigationVersion = "2.7.7"
+        rootProject.extra["navigation"] = navigationVersion
 
-        classpath("com.android.tools.build:gradle:${versions.gradle}")
-        classpath("com.google.gms:google-services:${versions.googleServices}")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:${versions.firebaseCrashlyticsGradle}")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlinGradlePlugin}")
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:${versions.navigation}")
+        classpath("com.android.tools.build:gradle:$gradleVersion")
+        classpath("com.google.gms:google-services:$googleServicesVersion")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:$firebaseCrashlyticsGradleVersion")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinGradlePluginVersion")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion")
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
