@@ -33,7 +33,7 @@ spotless {
   }
 
   kotlinGradle {
-    target("*.gradle.kts")
+    target("**/*.gradle.kts")
     ktfmt()
   }
 }
