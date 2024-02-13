@@ -1,0 +1,26 @@
+name: "Build PR"
+
+on:
+  pull_request:
+    branches:
+      - master
+      - release-candidate
+
+jobs:
+  build-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "corretto"
+          java-version: "21"
+
+      - name: Generate Google Service file
+        run: echo "${{secrets.GOOGLE_SERVICES}}" > app/google-services.json
+
+      - name: Gradle Build
+        run: ./gradlew --no-daemon clean build
