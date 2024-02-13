@@ -111,6 +111,18 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:$espressoCoreVersion")
 }
 
+val installLocalGitHookTaskName = "installLocalGitHook"
+tasks.register<Copy>(installLocalGitHookTaskName) {
+    description = "Setup Local GitHooks on the Developer's machine"
+    group = JavaBasePlugin.BUILD_DEPENDENTS_TASK_NAME
+    from("../.githooks")
+    into("../.git/hooks")
+}
+
+tasks.named("build") {
+    dependsOn(installLocalGitHookTaskName)
+}
+
 apply {
     plugin("com.google.gms.google-services")
     plugin("org.jetbrains.kotlin.android")
