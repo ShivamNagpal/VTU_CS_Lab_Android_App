@@ -111,6 +111,11 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:$espressoCoreVersion")
 }
 
+// Install GitHooks
+// This snippet is placed in the :app module as the tasks such as build, preBuild doesn't exists in the root project.
+// However there is a way to place this logic in the rootProject build.gradle.kts by simply moving this logic to the rootProject file.
+// Then prefix tasks with project(":app") at both th places
+// and wrap the build dependency section with afterEvaluate {} as the tasks are generated dynamically.
 val installLocalGitHookTaskName = "installLocalGitHook"
 tasks.register<Copy>(installLocalGitHookTaskName) {
     description = "Setup Local GitHooks on the Developer's machine"
