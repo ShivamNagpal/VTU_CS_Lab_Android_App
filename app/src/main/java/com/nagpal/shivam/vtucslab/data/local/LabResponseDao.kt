@@ -8,9 +8,7 @@ import com.nagpal.shivam.vtucslab.data.local.Tables.LAB_RESPONSE
 
 @Dao
 interface LabResponseDao {
-    @Upsert
-    fun upsert(labResponse: LabResponse)
+  @Upsert fun upsert(labResponse: LabResponse)
 
-    @Query("SELECT * FROM $LAB_RESPONSE where $URL = :url")
-    fun findByUrl(url: String): LabResponse?
+  @Query("SELECT * FROM $LAB_RESPONSE where $URL = :url") fun findByUrl(url: String): LabResponse?
 }

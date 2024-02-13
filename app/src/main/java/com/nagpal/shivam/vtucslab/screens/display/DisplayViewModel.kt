@@ -23,32 +23,31 @@ class DisplayViewModel(
     application: Application,
     private val vtuCsLabRepository: VtuCsLabRepository
 ) : AndroidViewModel(application), EventEmitter<UiEvent> {
-    var scrollX = 0
-    var scrollY = 0
-    private val initialState = ContentState<String>(Stages.LOADING)
+  var scrollX = 0
+  var scrollY = 0
+  private val initialState = ContentState<String>(Stages.LOADING)
 
-    private val _uiState = MutableStateFlow(initialState)
-    val uiState = _uiState.asStateFlow()
-    private var fetchJob: Job? = null
+  private val _uiState = MutableStateFlow(initialState)
+  val uiState = _uiState.asStateFlow()
+  private var fetchJob: Job? = null
 
-    override fun onEvent(event: UiEvent) {
-        when (event) {
-            is UiEvent.LoadContent -> {
-                loadContent(event.url)
-            }
-
-            is UiEvent.RefreshContent -> {
-                loadContent(event.url, true)
-            }
-
-            UiEvent.ResetToast -> {
-                _uiState.update { _uiState.value.copy(toast = null) }
-            }
-        }
+  override fun onEvent(event: UiEvent) {
+    when (event) {
+      is UiEvent.LoadContent -> {
+        loadContent(event.url)
+      }
+      is UiEvent.RefreshContent -> {
+        loadContent(event.url, true)
+      }
+      UiEvent.ResetToast -> {
+        _uiState.update { _uiState.value.copy(toast = null) }
+      }
     }
+  }
 
-    private fun loadContent(url: String, forceRefresh: Boolean = false) {
-        fetchJob = Utils.loadContent(
+  private fun loadContent(url: String, forceRefresh: Boolean = false) {
+    fetchJob =
+        Utils.loadContent(
             _uiState,
             fetchJob,
             viewModelScope,
@@ -57,17 +56,14 @@ class DisplayViewModel(
             url,
             forceRefresh,
         )
-    }
+  }
 
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val vtuCsLabApplication = this[APPLICATION_KEY] as VTUCSLabApplication
-                DisplayViewModel(
-                    vtuCsLabApplication,
-                    vtuCsLabApplication.vtuCsLabRepository
-                )
-            }
-        }
+  companion object {
+    val Factory: ViewModelProvider.Factory = viewModelFactory {
+      initializer {
+        val vtuCsLabApplication = this[APPLICATION_KEY] as VTUCSLabApplication
+        DisplayViewModel(vtuCsLabApplication, vtuCsLabApplication.vtuCsLabRepository)
+      }
     }
+  }
 }

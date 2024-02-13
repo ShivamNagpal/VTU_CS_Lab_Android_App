@@ -7,5 +7,5 @@ import androidx.room.TypeConverters
 @Database(entities = [LabResponse::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun labResponseDao(): LabResponseDao
+  abstract fun labResponseDao(): LabResponseDao
 }

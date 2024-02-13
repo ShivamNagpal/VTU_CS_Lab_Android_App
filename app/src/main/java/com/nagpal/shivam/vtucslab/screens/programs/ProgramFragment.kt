@@ -28,132 +28,122 @@ import com.nagpal.shivam.vtucslab.screens.Utils.safeNavigate
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
 
-
 class ProgramFragment : Fragment() {
-    private var _binding: FragmentProgramBinding? = null
-    private val binding get() = _binding!!
+  private var _binding: FragmentProgramBinding? = null
+  private val binding
+    get() = _binding!!
 
-    private val viewModel: ProgramViewModel by viewModels { ProgramViewModel.Factory }
-    private lateinit var contentAdapter: ContentAdapter
+  private val viewModel: ProgramViewModel by viewModels { ProgramViewModel.Factory }
+  private lateinit var contentAdapter: ContentAdapter
 
-    private val programFragmentArgs by navArgs<ProgramFragmentArgs>()
-    private var toast: Toast? = null
+  private val programFragmentArgs by navArgs<ProgramFragmentArgs>()
+  private var toast: Toast? = null
 
-    private val url: String by lazy {
-        return@lazy "${programFragmentArgs.baseUrl}/${programFragmentArgs.fileName}"
-    }
+  private val url: String by lazy {
+    return@lazy "${programFragmentArgs.baseUrl}/${programFragmentArgs.fileName}"
+  }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentProgramBinding.inflate(inflater, container, false)
-        setupMenuProvider()
-        setupViews()
-        setupRepositoryAdapter()
+  override fun onCreateView(
+      inflater: LayoutInflater,
+      container: ViewGroup?,
+      savedInstanceState: Bundle?
+  ): View {
+    _binding = FragmentProgramBinding.inflate(inflater, container, false)
+    setupMenuProvider()
+    setupViews()
+    setupRepositoryAdapter()
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect {
-                    binding.emptyTextView.visibility = View.GONE
-                    toast = Utils.showToast(
-                        requireContext(),
-                        toast,
-                        it.toast,
-                        viewModel,
-                        UiEvent.ResetToast
-                    )
+    viewLifecycleOwner.lifecycleScope.launch {
+      repeatOnLifecycle(Lifecycle.State.STARTED) {
+        viewModel.uiState.collect {
+          binding.emptyTextView.visibility = View.GONE
+          toast = Utils.showToast(requireContext(), toast, it.toast, viewModel, UiEvent.ResetToast)
 
-                    if (it.stage != Stages.LOADING) {
-                        binding.swipeRefresh.isRefreshing = false
-                    }
+          if (it.stage != Stages.LOADING) {
+            binding.swipeRefresh.isRefreshing = false
+          }
 
-                    when (it.stage) {
-                        Stages.LOADING -> {
-                            binding.swipeRefresh.isRefreshing = true
-                        }
-
-                        Stages.SUCCEEDED -> {
-                            if (it.data!!.isValid) {
-                                contentAdapter.clear()
-                                contentAdapter.addAll(it.data.labExperiments)
-                            } else {
-                                // TODO: Handle this logic in Data Layer
-                                showErrorMessage(it.data.invalidationMessage)
-                            }
-                        }
-
-                        Stages.FAILED -> {
-                            it.errorMessage?.let { uiMessage ->
-                                showErrorMessage(uiMessage.asString(requireContext()))
-                            }
-                        }
-                    }
-                }
+          when (it.stage) {
+            Stages.LOADING -> {
+              binding.swipeRefresh.isRefreshing = true
             }
+            Stages.SUCCEEDED -> {
+              if (it.data!!.isValid) {
+                contentAdapter.clear()
+                contentAdapter.addAll(it.data.labExperiments)
+              } else {
+                // TODO: Handle this logic in Data Layer
+                showErrorMessage(it.data.invalidationMessage)
+              }
+            }
+            Stages.FAILED -> {
+              it.errorMessage?.let { uiMessage ->
+                showErrorMessage(uiMessage.asString(requireContext()))
+              }
+            }
+          }
         }
-
-        return binding.root
+      }
     }
 
-    // TODO: Duplicate: Move to a static method
-    private fun showErrorMessage(message: String?) {
-        binding.emptyTextView.visibility = View.VISIBLE
-        binding.emptyTextView.text = message
-    }
+    return binding.root
+  }
 
-    private fun setupMenuProvider() {
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+  // TODO: Duplicate: Move to a static method
+  private fun showErrorMessage(message: String?) {
+    binding.emptyTextView.visibility = View.VISIBLE
+    binding.emptyTextView.text = message
+  }
+
+  private fun setupMenuProvider() {
+    requireActivity()
+        .addMenuProvider(
+            object : MenuProvider {
+              override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_program_fragment, menu)
-            }
+              }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+              override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
-                    R.id.menu_item_refresh -> {
-                        viewModel.onEvent(UiEvent.RefreshContent(url))
-                        true
-                    }
-
-                    else -> false
+                  R.id.menu_item_refresh -> {
+                    viewModel.onEvent(UiEvent.RefreshContent(url))
+                    true
+                  }
+                  else -> false
                 }
-            }
-        }, viewLifecycleOwner)
-    }
+              }
+            },
+            viewLifecycleOwner)
+  }
 
-    private fun setupRepositoryAdapter() {
-        contentAdapter = ContentAdapter(requireContext(), ArrayList())
-        contentAdapter.setItemClickHandler(object : ContentAdapter.ItemClickHandler {
-            override fun onContentFileClick(file: ContentFile) {
-                val actionProgramFragmentToDisplayFragment =
-                    ProgramFragmentDirections.actionProgramFragmentToDisplayFragment(
-                        viewModel.uiState.value.baseUrl!!,
-                        file.fileName,
-                        file.fileName
-                    )
-                findNavController().safeNavigate(actionProgramFragmentToDisplayFragment)
-            }
-
+  private fun setupRepositoryAdapter() {
+    contentAdapter = ContentAdapter(requireContext(), ArrayList())
+    contentAdapter.setItemClickHandler(
+        object : ContentAdapter.ItemClickHandler {
+          override fun onContentFileClick(file: ContentFile) {
+            val actionProgramFragmentToDisplayFragment =
+                ProgramFragmentDirections.actionProgramFragmentToDisplayFragment(
+                    viewModel.uiState.value.baseUrl!!, file.fileName, file.fileName)
+            findNavController().safeNavigate(actionProgramFragmentToDisplayFragment)
+          }
         })
-        binding.recyclerView.adapter = contentAdapter
-    }
+    binding.recyclerView.adapter = contentAdapter
+  }
 
-    private fun setupViews() {
-        binding.recyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.recyclerView.setHasFixedSize(true)
-        binding.swipeRefresh.setOnRefreshListener {
-            viewModel.onEvent(UiEvent.RefreshContent(url))
-        }
-    }
+  private fun setupViews() {
+    binding.recyclerView.layoutManager =
+        LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+    binding.recyclerView.setHasFixedSize(true)
+    binding.swipeRefresh.setOnRefreshListener { viewModel.onEvent(UiEvent.RefreshContent(url)) }
+  }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.onEvent(UiEvent.LoadContent(url))
-    }
+  override fun onResume() {
+    super.onResume()
+    viewModel.onEvent(UiEvent.LoadContent(url))
+  }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+  override fun onDestroyView() {
+    super.onDestroyView()
+    _binding = null
+  }
 }

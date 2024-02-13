@@ -15,59 +15,61 @@ class NavigationAdapter(
     private val context: Context,
     private val laboratoryArrayList: ArrayList<Laboratory>
 ) : RecyclerView.Adapter<NavigationViewHolder>() {
-    private var navigationAdapterItemClickHandler: NavigationAdapterItemClickHandler? = null
-    fun addAll(laboratories: List<Laboratory>) {
-        val i = laboratoryArrayList.size
-        laboratoryArrayList.addAll(laboratories)
-        notifyItemRangeInserted(i, laboratories.size)
+  private var navigationAdapterItemClickHandler: NavigationAdapterItemClickHandler? = null
+
+  fun addAll(laboratories: List<Laboratory>) {
+    val i = laboratoryArrayList.size
+    laboratoryArrayList.addAll(laboratories)
+    notifyItemRangeInserted(i, laboratories.size)
+  }
+
+  @SuppressLint("NotifyDataSetChanged")
+  fun clear() {
+    laboratoryArrayList.clear()
+    notifyDataSetChanged()
+  }
+
+  fun setNavigationAdapterItemClickHandler(
+      navigationAdapterItemClickHandler: NavigationAdapterItemClickHandler?
+  ) {
+    this.navigationAdapterItemClickHandler = navigationAdapterItemClickHandler
+  }
+
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NavigationViewHolder {
+    val view = LayoutInflater.from(context).inflate(R.layout.layout_card_repository, parent, false)
+    return NavigationViewHolder(view)
+  }
+
+  override fun onBindViewHolder(holder: NavigationViewHolder, position: Int) {
+    val laboratory = laboratoryArrayList[position]
+    val fileName = laboratory.fileName
+    val parts = fileName.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+    laboratory.title = parts[0].replace('_', ' ')
+    holder.textView.text = laboratory.title
+  }
+
+  override fun getItemCount(): Int {
+    return laboratoryArrayList.size
+  }
+
+  interface NavigationAdapterItemClickHandler {
+    fun onNavigationAdapterItemClick(laboratory: Laboratory, i: Int)
+  }
+
+  inner class NavigationViewHolder(itemView: View) :
+      RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    var textView: TextView
+
+    init {
+      textView = itemView.findViewById(R.id.text_view_layout)
+      itemView.setOnClickListener(this)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun clear() {
-        laboratoryArrayList.clear()
-        notifyDataSetChanged()
+    override fun onClick(view: View) {
+      navigationAdapterItemClickHandler?.let {
+        val i = adapterPosition
+        it.onNavigationAdapterItemClick(laboratoryArrayList[i], i)
+      }
     }
-
-    fun setNavigationAdapterItemClickHandler(navigationAdapterItemClickHandler: NavigationAdapterItemClickHandler?) {
-        this.navigationAdapterItemClickHandler = navigationAdapterItemClickHandler
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NavigationViewHolder {
-        val view =
-            LayoutInflater.from(context).inflate(R.layout.layout_card_repository, parent, false)
-        return NavigationViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: NavigationViewHolder, position: Int) {
-        val laboratory = laboratoryArrayList[position]
-        val fileName = laboratory.fileName
-        val parts = fileName.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        laboratory.title = parts[0].replace('_', ' ')
-        holder.textView.text = laboratory.title
-    }
-
-    override fun getItemCount(): Int {
-        return laboratoryArrayList.size
-    }
-
-    interface NavigationAdapterItemClickHandler {
-        fun onNavigationAdapterItemClick(laboratory: Laboratory, i: Int)
-    }
-
-    inner class NavigationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
-        var textView: TextView
-
-        init {
-            textView = itemView.findViewById(R.id.text_view_layout)
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            navigationAdapterItemClickHandler?.let {
-                val i = adapterPosition
-                it.onNavigationAdapterItemClick(laboratoryArrayList[i], i)
-            }
-        }
-    }
+  }
 }
