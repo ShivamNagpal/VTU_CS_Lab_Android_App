@@ -24,48 +24,54 @@ import kotlinx.coroutines.flow.update
 
 class ProgramViewModel(
     application: Application,
-    private val vtuCsLabRepository: VtuCsLabRepository
+    private val vtuCsLabRepository: VtuCsLabRepository,
 ) : AndroidViewModel(application), EventEmitter<UiEvent> {
-  private val initialState = ContentState<LaboratoryExperimentResponse>(Stages.LOADING)
-  private val _uiState = MutableStateFlow(initialState)
-  val uiState: StateFlow<ContentState<LaboratoryExperimentResponse>> = _uiState.asStateFlow()
-  private var fetchJob: Job? = null
+    private val initialState = ContentState<LaboratoryExperimentResponse>(Stages.LOADING)
+    private val _uiState = MutableStateFlow(initialState)
+    val uiState: StateFlow<ContentState<LaboratoryExperimentResponse>> = _uiState.asStateFlow()
+    private var fetchJob: Job? = null
 
-  override fun onEvent(event: UiEvent) {
-    when (event) {
-      is UiEvent.LoadContent -> {
-        loadContent(event.url)
-      }
-      is UiEvent.RefreshContent -> {
-        loadContent(event.url, true)
-      }
-      UiEvent.ResetToast -> {
-        _uiState.update { _uiState.value.copy(toast = null) }
-      }
+    override fun onEvent(event: UiEvent) {
+        when (event) {
+            is UiEvent.LoadContent -> {
+                loadContent(event.url)
+            }
+
+            is UiEvent.RefreshContent -> {
+                loadContent(event.url, true)
+            }
+
+            UiEvent.ResetToast -> {
+                _uiState.update { _uiState.value.copy(toast = null) }
+            }
+        }
     }
-  }
 
-  private fun loadContent(url: String, forceRefresh: Boolean = false) {
-    fetchJob =
-        Utils.loadContent(
-            _uiState,
-            fetchJob,
-            viewModelScope,
-            { urlArg, forceRefreshArg ->
-              vtuCsLabRepository.fetchExperiments(urlArg, forceRefreshArg)
-            },
-            { StaticMethods.getBaseURL(it) },
-            url,
-            forceRefresh,
-        )
-  }
-
-  companion object {
-    val Factory: ViewModelProvider.Factory = viewModelFactory {
-      initializer {
-        val vtuCsLabApplication = this[APPLICATION_KEY] as VTUCSLabApplication
-        ProgramViewModel(vtuCsLabApplication, vtuCsLabApplication.vtuCsLabRepository)
-      }
+    private fun loadContent(
+        url: String,
+        forceRefresh: Boolean = false,
+    ) {
+        fetchJob =
+            Utils.loadContent(
+                _uiState,
+                fetchJob,
+                viewModelScope,
+                { urlArg, forceRefreshArg ->
+                    vtuCsLabRepository.fetchExperiments(urlArg, forceRefreshArg)
+                },
+                { StaticMethods.getBaseURL(it) },
+                url,
+                forceRefresh,
+            )
     }
-  }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory =
+            viewModelFactory {
+                initializer {
+                    val vtuCsLabApplication = this[APPLICATION_KEY] as VTUCSLabApplication
+                    ProgramViewModel(vtuCsLabApplication, vtuCsLabApplication.vtuCsLabRepository)
+                }
+            }
+    }
 }

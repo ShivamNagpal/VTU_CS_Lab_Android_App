@@ -7,18 +7,18 @@ import com.nagpal.shivam.vtucslab.models.LaboratoryResponse
 import kotlinx.coroutines.flow.Flow
 
 interface VtuCsLabRepository {
-  fun fetchLaboratories(
-      url: String,
-      forceRefresh: Boolean,
-  ): Flow<Resource<LaboratoryResponse, ErrorType>>
+    fun fetchLaboratories(
+        url: String,
+        forceRefresh: Boolean,
+    ): Flow<Resource<LaboratoryResponse, ErrorType>>
 
-  fun fetchExperiments(
-      url: String,
-      forceRefresh: Boolean,
-  ): Flow<Resource<LaboratoryExperimentResponse, ErrorType>>
+    fun fetchExperiments(
+        url: String,
+        forceRefresh: Boolean,
+    ): Flow<Resource<LaboratoryExperimentResponse, ErrorType>>
 
-  fun fetchContent(
-      url: String,
-      forceRefresh: Boolean,
-  ): Flow<Resource<String, ErrorType>>
+    fun fetchContent(
+        url: String,
+        forceRefresh: Boolean,
+    ): Flow<Resource<String, ErrorType>>
 }

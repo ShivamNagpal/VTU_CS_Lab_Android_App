@@ -8,7 +8,7 @@ import com.nagpal.shivam.vtucslab.data.local.LabResponseAttributes.RESPONSE
 import com.nagpal.shivam.vtucslab.data.local.LabResponseAttributes.RESPONSE_TYPE
 import com.nagpal.shivam.vtucslab.data.local.LabResponseAttributes.URL
 import com.nagpal.shivam.vtucslab.data.local.Tables.LAB_RESPONSE
-import java.util.*
+import java.util.Date
 
 @Entity(LAB_RESPONSE)
 data class LabResponse(

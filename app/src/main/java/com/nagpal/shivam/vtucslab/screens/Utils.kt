@@ -21,93 +21,102 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 object Utils {
-  fun <T> loadContent(
-      uiStateFlow: MutableStateFlow<ContentState<T>>,
-      fetchJob: Job?,
-      viewModelScope: CoroutineScope,
-      fetchExecutable: (String, Boolean) -> Flow<Resource<T, ErrorType>>,
-      getBaseUrl: (T) -> String?,
-      url: String,
-      forceRefresh: Boolean,
-  ): Job? {
-    if (!forceRefresh && uiStateFlow.value.stage == Stages.SUCCEEDED) {
-      return fetchJob
-    }
+    fun <T> loadContent(
+        uiStateFlow: MutableStateFlow<ContentState<T>>,
+        fetchJob: Job?,
+        viewModelScope: CoroutineScope,
+        fetchExecutable: (String, Boolean) -> Flow<Resource<T, ErrorType>>,
+        getBaseUrl: (T) -> String?,
+        url: String,
+        forceRefresh: Boolean,
+    ): Job? {
+        if (!forceRefresh && uiStateFlow.value.stage == Stages.SUCCEEDED) {
+            return fetchJob
+        }
 
-    fetchJob?.cancel()
-    return viewModelScope.launch(Dispatchers.IO) {
-      fetchExecutable
-          .invoke(url, forceRefresh)
-          .onEach { resource ->
-            when (resource) {
-              is Resource.Loading -> {
-                uiStateFlow.update { uiStateFlow.value.copy(stage = Stages.LOADING) }
-              }
-              is Resource.Success -> {
-                uiStateFlow.update {
-                  ContentState(
-                      Stages.SUCCEEDED,
-                      data = resource.data,
-                      baseUrl = getBaseUrl(resource.data!!),
-                  )
+        fetchJob?.cancel()
+        return viewModelScope.launch(Dispatchers.IO) {
+            fetchExecutable
+                .invoke(url, forceRefresh)
+                .onEach { resource ->
+                    when (resource) {
+                        is Resource.Loading -> {
+                            uiStateFlow.update { uiStateFlow.value.copy(stage = Stages.LOADING) }
+                        }
+
+                        is Resource.Success -> {
+                            uiStateFlow.update {
+                                ContentState(
+                                    Stages.SUCCEEDED,
+                                    data = resource.data,
+                                    baseUrl = getBaseUrl(resource.data!!),
+                                )
+                            }
+                        }
+
+                        is Resource.Error -> {
+                            uiStateFlow.update {
+                                val uiMessage: UIMessage =
+                                    when (resource.error) {
+                                        ErrorType.NoActiveInternetConnection ->
+                                            if (forceRefresh) {
+                                                UIMessage(UIMessageType.NoActiveInternetConnection)
+                                            } else {
+                                                UIMessage(UIMessageType.NoActiveInternetConnectionDetailed)
+                                            }
+
+                                        ErrorType.SomeErrorOccurred -> UIMessage(UIMessageType.SomeErrorOccurred)
+                                    }
+                                if (forceRefresh) {
+                                    uiStateFlow.value.copy(
+                                        stage =
+                                            if (uiStateFlow.value.data != null) Stages.SUCCEEDED else Stages.FAILED,
+                                        toast = uiMessage,
+                                    )
+                                } else {
+                                    ContentState(
+                                        stage = Stages.FAILED,
+                                        errorMessage = uiMessage,
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
-              }
-              is Resource.Error -> {
-                uiStateFlow.update {
-                  val uiMessage: UIMessage =
-                      when (resource.error) {
-                        ErrorType.NoActiveInternetConnection ->
-                            if (forceRefresh) UIMessage(UIMessageType.NoActiveInternetConnection)
-                            else UIMessage(UIMessageType.NoActiveInternetConnectionDetailed)
-                        ErrorType.SomeErrorOccurred -> UIMessage(UIMessageType.SomeErrorOccurred)
-                      }
-                  if (forceRefresh) {
-                    uiStateFlow.value.copy(
-                        stage =
-                            if (uiStateFlow.value.data != null) Stages.SUCCEEDED else Stages.FAILED,
-                        toast = uiMessage,
-                    )
-                  } else {
-                    ContentState(
-                        stage = Stages.FAILED,
-                        errorMessage = uiMessage,
-                    )
-                  }
-                }
-              }
-            }
-          }
-          .launchIn(this)
+                .launchIn(this)
+        }
     }
-  }
 
-  fun UIMessage.asString(context: Context): String {
-    return when (this.messageType) {
-      UIMessageType.NoActiveInternetConnectionDetailed ->
-          context.getString(R.string.no_internet_connection_detailed)
-      UIMessageType.SomeErrorOccurred -> context.getString(R.string.error_occurred)
-      UIMessageType.NoActiveInternetConnection -> context.getString(R.string.no_internet_connection)
+    fun UIMessage.asString(context: Context): String {
+        return when (this.messageType) {
+            UIMessageType.NoActiveInternetConnectionDetailed ->
+                context.getString(R.string.no_internet_connection_detailed)
+
+            UIMessageType.SomeErrorOccurred -> context.getString(R.string.error_occurred)
+            UIMessageType.NoActiveInternetConnection -> context.getString(R.string.no_internet_connection)
+        }
     }
-  }
 
-  fun <T> showToast(
-      context: Context,
-      toast: Toast?,
-      toastUIMessage: UIMessage?,
-      eventEmitter: EventEmitter<T>,
-      event: T
-  ): Toast? {
-    return toastUIMessage?.let { uiMessage ->
-      toast?.cancel()
-      val newToast = Toast.makeText(context, uiMessage.asString(context), Toast.LENGTH_LONG)
-      newToast.show()
-      eventEmitter.onEvent(event)
-      newToast
+    fun <T> showToast(
+        context: Context,
+        toast: Toast?,
+        toastUIMessage: UIMessage?,
+        eventEmitter: EventEmitter<T>,
+        event: T,
+    ): Toast? {
+        return toastUIMessage?.let { uiMessage ->
+            toast?.cancel()
+            val newToast = Toast.makeText(context, uiMessage.asString(context), Toast.LENGTH_LONG)
+            newToast.show()
+            eventEmitter.onEvent(event)
+            newToast
+        }
+            ?: toast
     }
-        ?: toast
-  }
 
-  fun NavController.safeNavigate(direction: NavDirections) {
-    with(this) { currentDestination?.getAction(direction.actionId)?.let { navigate(direction) } }
-  }
+    fun NavController.safeNavigate(direction: NavDirections) {
+        with(this) {
+            currentDestination?.getAction(direction.actionId)?.let { navigate(direction) }
+        }
+    }
 }

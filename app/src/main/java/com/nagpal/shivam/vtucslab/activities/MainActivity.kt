@@ -24,101 +24,109 @@ import com.nagpal.shivam.vtucslab.databinding.ActivityMainBinding
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
-  private lateinit var binding: ActivityMainBinding
-  private lateinit var navController: NavController
-  private lateinit var appBarConfiguration: AppBarConfiguration
-  private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
+    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    binding = ActivityMainBinding.inflate(layoutInflater)
-    setContentView(binding.root)
-    val navHostFragment =
-        supportFragmentManager.findFragmentById(R.id.navigation_host_fragment) as NavHostFragment
-    navController = navHostFragment.navController
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.navigation_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
 
-    setupActionBar()
-    setupNavigationView()
-    setupDrawerToggle()
-  }
-
-  private fun setupActionBar() {
-    appBarConfiguration = AppBarConfiguration(setOf(R.id.repositoryFragment), binding.drawerLayout)
-    setupActionBarWithNavController(navController, appBarConfiguration)
-  }
-
-  private fun setupNavigationView() {
-    binding.navigationView.setupWithNavController(navController)
-    binding.navigationView.setNavigationItemSelectedListener {
-      var flag = false
-      val itemId: Int = it.itemId
-      if (itemId == R.id.repositoryFragment) {
-        flag = true
-      } else if (itemId == R.id.menu_item_exit) {
-        exitApplication()
-        flag = true
-      }
-      if (flag) {
-        closeNavigationDrawer()
-      }
-      return@setNavigationItemSelectedListener flag
+        setupActionBar()
+        setupNavigationView()
+        setupDrawerToggle()
     }
-  }
 
-  private fun setupDrawerToggle() {
-    actionBarDrawerToggle =
-        ActionBarDrawerToggle(
-            this, binding.drawerLayout, R.string.drawer_open, R.string.drawer_close)
-    binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
-    actionBarDrawerToggle.syncState()
-
-    val drawerBackPressedCallback =
-        onBackPressedDispatcher.addCallback(this, false) { closeNavigationDrawer() }
-    binding.drawerLayout.addDrawerListener(
-        object : DrawerLayout.DrawerListener {
-          override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
-
-          override fun onDrawerOpened(drawerView: View) {
-            drawerBackPressedCallback.isEnabled = true
-          }
-
-          override fun onDrawerClosed(drawerView: View) {
-            drawerBackPressedCallback.isEnabled = false
-          }
-
-          override fun onDrawerStateChanged(newState: Int) {}
-        })
-    navController.addOnDestinationChangedListener { _, destination, _ ->
-      if (appBarConfiguration.topLevelDestinations.contains(destination.id)) {
-        binding.drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED, GravityCompat.START)
-      } else {
-        binding.drawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED, GravityCompat.START)
-      }
+    private fun setupActionBar() {
+        appBarConfiguration =
+            AppBarConfiguration(setOf(R.id.repositoryFragment), binding.drawerLayout)
+        setupActionBarWithNavController(navController, appBarConfiguration)
     }
-  }
 
-  override fun onSupportNavigateUp(): Boolean {
-    return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    if (item.itemId == android.R.id.home &&
-        appBarConfiguration.topLevelDestinations.contains(navController.currentDestination?.id)) {
-      actionBarDrawerToggle.syncState()
-      if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
-        binding.drawerLayout.closeDrawer(GravityCompat.START)
-        return true
-      }
+    private fun setupNavigationView() {
+        binding.navigationView.setupWithNavController(navController)
+        binding.navigationView.setNavigationItemSelectedListener {
+            var flag = false
+            val itemId: Int = it.itemId
+            if (itemId == R.id.repositoryFragment) {
+                flag = true
+            } else if (itemId == R.id.menu_item_exit) {
+                exitApplication()
+                flag = true
+            }
+            if (flag) {
+                closeNavigationDrawer()
+            }
+            return@setNavigationItemSelectedListener flag
+        }
     }
-    return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
-  }
 
-  private fun exitApplication() {
-    finishAffinity()
-    Handler(Looper.getMainLooper()).postDelayed({ exitProcess(0) }, 1000)
-  }
+    private fun setupDrawerToggle() {
+        actionBarDrawerToggle =
+            ActionBarDrawerToggle(
+                this, binding.drawerLayout, R.string.drawer_open, R.string.drawer_close,
+            )
+        binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
+        actionBarDrawerToggle.syncState()
 
-  private fun closeNavigationDrawer() {
-    binding.drawerLayout.closeDrawer(GravityCompat.START, true)
-  }
+        val drawerBackPressedCallback =
+            onBackPressedDispatcher.addCallback(this, false) { closeNavigationDrawer() }
+        binding.drawerLayout.addDrawerListener(
+            object : DrawerLayout.DrawerListener {
+                override fun onDrawerSlide(
+                    drawerView: View,
+                    slideOffset: Float,
+                ) {
+                }
+
+                override fun onDrawerOpened(drawerView: View) {
+                    drawerBackPressedCallback.isEnabled = true
+                }
+
+                override fun onDrawerClosed(drawerView: View) {
+                    drawerBackPressedCallback.isEnabled = false
+                }
+
+                override fun onDrawerStateChanged(newState: Int) {}
+            },
+        )
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (appBarConfiguration.topLevelDestinations.contains(destination.id)) {
+                binding.drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED, GravityCompat.START)
+            } else {
+                binding.drawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED, GravityCompat.START)
+            }
+        }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home &&
+            appBarConfiguration.topLevelDestinations.contains(navController.currentDestination?.id)
+        ) {
+            actionBarDrawerToggle.syncState()
+            if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+                return true
+            }
+        }
+        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
+    }
+
+    private fun exitApplication() {
+        finishAffinity()
+        Handler(Looper.getMainLooper()).postDelayed({ exitProcess(0) }, 1000)
+    }
+
+    private fun closeNavigationDrawer() {
+        binding.drawerLayout.closeDrawer(GravityCompat.START, true)
+    }
 }

@@ -11,29 +11,29 @@ import com.nagpal.shivam.vtucslab.utilities.Constants.VTU_CS_LAB
 import com.nagpal.shivam.vtucslab.utilities.StaticMethods
 
 class VTUCSLabApplication : MultiDexApplication() {
-  private lateinit var _db: AppDatabase
-  val db: AppDatabase
-    get() = _db
+    private lateinit var _db: AppDatabase
+    val db: AppDatabase
+        get() = _db
 
-  private lateinit var _vtuCsLabRepository: VtuCsLabRepository
-  val vtuCsLabRepository: VtuCsLabRepository
-    get() = _vtuCsLabRepository
+    private lateinit var _vtuCsLabRepository: VtuCsLabRepository
+    val vtuCsLabRepository: VtuCsLabRepository
+        get() = _vtuCsLabRepository
 
-  override fun onCreate() {
-    super.onCreate()
-    if (BuildConfig.DEBUG) {
-      FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false)
+    override fun onCreate() {
+        super.onCreate()
+        if (BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false)
+        }
+
+        _db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, VTU_CS_LAB).build()
+
+        val vtuCsLabService = VtuCsLabService.instance
+        _vtuCsLabRepository =
+            VtuCsLabRepositoryImpl(
+                this,
+                vtuCsLabService,
+                _db.labResponseDao(),
+                StaticMethods.moshi,
+            )
     }
-
-    _db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, VTU_CS_LAB).build()
-
-    val vtuCsLabService = VtuCsLabService.instance
-    _vtuCsLabRepository =
-        VtuCsLabRepositoryImpl(
-            this,
-            vtuCsLabService,
-            _db.labResponseDao(),
-            StaticMethods.moshi,
-        )
-  }
 }
