@@ -9,17 +9,25 @@ import retrofit2.Response
 
 class ApiResultCall<T : Any>(private val proxy: Call<T>) : Call<ApiResult<T>> {
     override fun enqueue(callback: Callback<ApiResult<T>>) {
-        proxy.enqueue(object : Callback<T> {
-            override fun onResponse(call: Call<T>, response: Response<T>) {
-                val apiResult = handleApiResult { response }
-                callback.onResponse(this@ApiResultCall, Response.success(apiResult))
-            }
+        proxy.enqueue(
+            object : Callback<T> {
+                override fun onResponse(
+                    call: Call<T>,
+                    response: Response<T>,
+                ) {
+                    val apiResult = handleApiResult { response }
+                    callback.onResponse(this@ApiResultCall, Response.success(apiResult))
+                }
 
-            override fun onFailure(call: Call<T>, t: Throwable) {
-                val apiResult = ApiException<T>(t)
-                callback.onResponse(this@ApiResultCall, Response.success(apiResult))
-            }
-        })
+                override fun onFailure(
+                    call: Call<T>,
+                    t: Throwable,
+                ) {
+                    val apiResult = ApiException<T>(t)
+                    callback.onResponse(this@ApiResultCall, Response.success(apiResult))
+                }
+            },
+        )
     }
 
     override fun execute(): Response<ApiResult<T>> = throw NotImplementedError()
@@ -35,5 +43,4 @@ class ApiResultCall<T : Any>(private val proxy: Call<T>) : Call<ApiResult<T>> {
     override fun request(): Request = proxy.request()
 
     override fun timeout(): Timeout = proxy.timeout()
-
 }

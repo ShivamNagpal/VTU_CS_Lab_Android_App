@@ -57,13 +57,19 @@ object Utils {
 
                         is Resource.Error -> {
                             uiStateFlow.update {
-                                val uiMessage: UIMessage = when (resource.error) {
-                                    ErrorType.NoActiveInternetConnection -> if (forceRefresh) UIMessage(
-                                        UIMessageType.NoActiveInternetConnection
-                                    ) else UIMessage(UIMessageType.NoActiveInternetConnectionDetailed)
+                                val uiMessage: UIMessage =
+                                    when (resource.error) {
+                                        ErrorType.NoActiveInternetConnection ->
+                                            if (forceRefresh) {
+                                                UIMessage(
+                                                    UIMessageType.NoActiveInternetConnection,
+                                                )
+                                            } else {
+                                                UIMessage(UIMessageType.NoActiveInternetConnectionDetailed)
+                                            }
 
-                                    ErrorType.SomeErrorOccurred -> UIMessage(UIMessageType.SomeErrorOccurred)
-                                }
+                                        ErrorType.SomeErrorOccurred -> UIMessage(UIMessageType.SomeErrorOccurred)
+                                    }
                                 if (forceRefresh) {
                                     uiStateFlow.value.copy(
                                         stage = if (uiStateFlow.value.data != null) Stages.SUCCEEDED else Stages.FAILED,
@@ -75,7 +81,6 @@ object Utils {
                                         errorMessage = uiMessage,
                                     )
                                 }
-
                             }
                         }
                     }
@@ -96,15 +101,16 @@ object Utils {
         toast: Toast?,
         toastUIMessage: UIMessage?,
         eventEmitter: EventEmitter<T>,
-        event: T
+        event: T,
     ): Toast? {
         return toastUIMessage?.let { uiMessage ->
             toast?.cancel()
-            val newToast = Toast.makeText(
-                context,
-                uiMessage.asString(context),
-                Toast.LENGTH_LONG
-            )
+            val newToast =
+                Toast.makeText(
+                    context,
+                    uiMessage.asString(context),
+                    Toast.LENGTH_LONG,
+                )
             newToast.show()
             eventEmitter.onEvent(event)
             newToast

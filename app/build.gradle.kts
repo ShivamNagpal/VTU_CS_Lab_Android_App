@@ -31,7 +31,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -55,7 +55,6 @@ android {
         }
     }
 }
-
 
 dependencies {
     val appCompatVersion = "1.6.1"

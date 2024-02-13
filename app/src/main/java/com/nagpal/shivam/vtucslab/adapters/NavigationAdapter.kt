@@ -13,9 +13,10 @@ import com.nagpal.shivam.vtucslab.models.Laboratory
 
 class NavigationAdapter(
     private val context: Context,
-    private val laboratoryArrayList: ArrayList<Laboratory>
+    private val laboratoryArrayList: ArrayList<Laboratory>,
 ) : RecyclerView.Adapter<NavigationViewHolder>() {
     private var navigationAdapterItemClickHandler: NavigationAdapterItemClickHandler? = null
+
     fun addAll(laboratories: List<Laboratory>) {
         val i = laboratoryArrayList.size
         laboratoryArrayList.addAll(laboratories)
@@ -32,13 +33,19 @@ class NavigationAdapter(
         this.navigationAdapterItemClickHandler = navigationAdapterItemClickHandler
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NavigationViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): NavigationViewHolder {
         val view =
             LayoutInflater.from(context).inflate(R.layout.layout_card_repository, parent, false)
         return NavigationViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: NavigationViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: NavigationViewHolder,
+        position: Int,
+    ) {
         val laboratory = laboratoryArrayList[position]
         val fileName = laboratory.fileName
         val parts = fileName.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -51,10 +58,14 @@ class NavigationAdapter(
     }
 
     interface NavigationAdapterItemClickHandler {
-        fun onNavigationAdapterItemClick(laboratory: Laboratory, i: Int)
+        fun onNavigationAdapterItemClick(
+            laboratory: Laboratory,
+            i: Int,
+        )
     }
 
-    inner class NavigationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    inner class NavigationViewHolder(itemView: View) :
+        RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
         var textView: TextView
 

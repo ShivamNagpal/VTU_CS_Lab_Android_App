@@ -16,15 +16,18 @@ class MultipleSubPartAdapter(
     private val context: Context,
     private val subParts: List<LabExperimentSubPart>,
     private val containsMultipleFiles: Boolean,
-    private val itemClickHandler: ItemClickHandler?
+    private val itemClickHandler: ItemClickHandler?,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(
+        viewGroup: ViewGroup,
+        i: Int,
+    ): RecyclerView.ViewHolder {
         return if (!containsMultipleFiles) {
             val binding =
                 LayoutCardSingleSubPartsWithoutFilesBinding.inflate(
                     LayoutInflater.from(context),
                     viewGroup,
-                    false
+                    false,
                 )
             SubPartWithoutFilesViewHolder(binding)
         } else {
@@ -32,32 +35,38 @@ class MultipleSubPartAdapter(
                 LayoutCardSingleSubPartsWithFilesBinding.inflate(
                     LayoutInflater.from(context),
                     viewGroup,
-                    false
+                    false,
                 )
             SubPartWithFilesViewHolder(binding)
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, i: Int) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        i: Int,
+    ) {
         when (holder) {
             is SubPartWithoutFilesViewHolder -> {
                 holder.binding.serialOrder.text = subParts[i].subSerialOrder
-                val parts = subParts[i].contentFiles[0].fileName.split("\\.".toRegex())
-                    .dropLastWhile { it.isEmpty() }.toTypedArray()
+                val parts =
+                    subParts[i].contentFiles[0].fileName.split("\\.".toRegex())
+                        .dropLastWhile { it.isEmpty() }.toTypedArray()
                 if (parts.size >= 2) {
-                    holder.binding.programTitle.text = formatProgramName(
-                        parts[parts.size - 2]
-                    )
+                    holder.binding.programTitle.text =
+                        formatProgramName(
+                            parts[parts.size - 2],
+                        )
                 }
             }
 
             is SubPartWithFilesViewHolder -> {
                 holder.binding.serialOrder.text = subParts[i].subSerialOrder
-                val adapter = MultipleFileAdapter(
-                    context,
-                    subParts[i].contentFiles,
-                    itemClickHandler
-                )
+                val adapter =
+                    MultipleFileAdapter(
+                        context,
+                        subParts[i].contentFiles,
+                        itemClickHandler,
+                    )
                 holder.binding.filesContainer.adapter = adapter
             }
         }
@@ -69,8 +78,9 @@ class MultipleSubPartAdapter(
 
     internal inner class SubPartWithoutFilesViewHolder(var binding: LayoutCardSingleSubPartsWithoutFilesBinding) :
         RecyclerView.ViewHolder(
-            binding.root
-        ), View.OnClickListener {
+            binding.root,
+        ),
+        View.OnClickListener {
         init {
             binding.root.setOnClickListener(this)
         }
@@ -86,7 +96,7 @@ class MultipleSubPartAdapter(
 
     internal inner class SubPartWithFilesViewHolder(var binding: LayoutCardSingleSubPartsWithFilesBinding) :
         RecyclerView.ViewHolder(
-            binding.root
+            binding.root,
         ) {
         init {
             binding.filesContainer.layoutManager = LinearLayoutManager(context)

@@ -29,9 +29,7 @@ import com.nagpal.shivam.vtucslab.utilities.Constants
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
 
-
 class DisplayFragment : Fragment() {
-
     private var _binding: FragmentDisplayBinding? = null
     private val binding get() = _binding!!
     private val displayFragmentArgs by navArgs<DisplayFragmentArgs>()
@@ -43,8 +41,9 @@ class DisplayFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentDisplayBinding.inflate(inflater, container, false)
         setupMenuProvider()
@@ -53,13 +52,14 @@ class DisplayFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
                     binding.emptyTextView.visibility = View.GONE
-                    toast = Utils.showToast(
-                        requireContext(),
-                        toast,
-                        it.toast,
-                        viewModel,
-                        UiEvent.ResetToast
-                    )
+                    toast =
+                        Utils.showToast(
+                            requireContext(),
+                            toast,
+                            it.toast,
+                            viewModel,
+                            UiEvent.ResetToast,
+                        )
 
                     if (it.stage != Stages.LOADING) {
                         binding.swipeRefresh.isRefreshing = false
@@ -104,44 +104,50 @@ class DisplayFragment : Fragment() {
     }
 
     private fun setupMenuProvider() {
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_display_fragment, menu)
-                if (viewModel.uiState.value.stage == Stages.SUCCEEDED) {
-                    menu.findItem(R.id.menu_item_copy_display_activity).isEnabled = true
-                }
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.menu_item_refresh -> {
-                        viewModel.onEvent(UiEvent.RefreshContent(url))
-                        return true
+        requireActivity().addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(
+                    menu: Menu,
+                    menuInflater: MenuInflater,
+                ) {
+                    menuInflater.inflate(R.menu.menu_display_fragment, menu)
+                    if (viewModel.uiState.value.stage == Stages.SUCCEEDED) {
+                        menu.findItem(R.id.menu_item_copy_display_activity).isEnabled = true
                     }
-
-                    R.id.menu_item_copy_display_activity -> {
-
-                        val clipboard =
-                            requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val clipData = ClipData(
-                            ClipData.newPlainText(
-                                Constants.LABEL_CODE,
-                                viewModel.uiState.value.data
-                            )
-                        )
-                        clipboard.setPrimaryClip(clipData)
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.code_copied_to_clipboard),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return true
-                    }
-
-                    else -> false
                 }
-            }
-        }, viewLifecycleOwner)
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.menu_item_refresh -> {
+                            viewModel.onEvent(UiEvent.RefreshContent(url))
+                            return true
+                        }
+
+                        R.id.menu_item_copy_display_activity -> {
+                            val clipboard =
+                                requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clipData =
+                                ClipData(
+                                    ClipData.newPlainText(
+                                        Constants.LABEL_CODE,
+                                        viewModel.uiState.value.data,
+                                    ),
+                                )
+                            clipboard.setPrimaryClip(clipData)
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.code_copied_to_clipboard),
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                            return true
+                        }
+
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner,
+        )
     }
 
     override fun onResume() {
