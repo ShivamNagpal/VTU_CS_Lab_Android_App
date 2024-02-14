@@ -31,6 +31,7 @@ import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
 
 class RepositoryFragment : Fragment() {
+
     private var _binding: FragmentRepositoryBinding? = null
     private lateinit var navigationAdapter: NavigationAdapter
 

@@ -3,7 +3,7 @@ plugins {
     id("com.android.application") version "8.2.2" apply false
     id("org.jetbrains.kotlin.android") version "1.9.0" apply false
     id("com.google.devtools.ksp") version ("1.9.21-1.0.15") apply false
-    id("com.diffplug.spotless") version "6.22.0"
+    id("com.diffplug.spotless") version "6.25.0"
 }
 
 buildscript {
@@ -11,7 +11,7 @@ buildscript {
         val firebaseCrashlyticsGradleVersion = "2.9.9"
         val googleServicesVersion = "4.4.1"
         val gradleVersion = "8.2.2"
-        val kotlinGradlePluginVersion = "1.9.21"
+        val kotlinGradlePluginVersion = "1.9.0"
         val navigationVersion = "2.7.7"
         rootProject.extra["navigation"] = navigationVersion
 
@@ -29,7 +29,11 @@ spotless {
     kotlin {
         target("**/*.kt")
         targetExclude("$buildDir/**/*.kt")
-        ktlint()
+        ktlint().editorConfigOverride(
+            mapOf(
+                "ktlint_standard_property-naming" to "disabled",
+            ),
+        )
     }
 
     kotlinGradle {

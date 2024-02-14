@@ -2,14 +2,12 @@ package com.nagpal.shivam.vtucslab.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.compose.ui.platform.ComposeView
 import androidx.recyclerview.widget.RecyclerView
-import com.nagpal.shivam.vtucslab.R
 import com.nagpal.shivam.vtucslab.adapters.NavigationAdapter.NavigationViewHolder
 import com.nagpal.shivam.vtucslab.models.Laboratory
+import com.nagpal.shivam.vtucslab.screens.repository.RepositoryCard
 
 class NavigationAdapter(
     private val context: Context,
@@ -37,9 +35,8 @@ class NavigationAdapter(
         parent: ViewGroup,
         viewType: Int,
     ): NavigationViewHolder {
-        val view =
-            LayoutInflater.from(context).inflate(R.layout.layout_card_repository, parent, false)
-        return NavigationViewHolder(view)
+        val composeView = ComposeView(context)
+        return NavigationViewHolder(composeView)
     }
 
     override fun onBindViewHolder(
@@ -47,10 +44,7 @@ class NavigationAdapter(
         position: Int,
     ) {
         val laboratory = laboratoryArrayList[position]
-        val fileName = laboratory.fileName
-        val parts = fileName.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        laboratory.title = parts[0].replace('_', ' ')
-        holder.textView.text = laboratory.title
+        holder.bind(laboratory)
     }
 
     override fun getItemCount(): Int {
@@ -64,20 +58,20 @@ class NavigationAdapter(
         )
     }
 
-    inner class NavigationViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
-        var textView: TextView
-
-        init {
-            textView = itemView.findViewById(R.id.text_view_layout)
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            navigationAdapterItemClickHandler?.let {
-                val i = adapterPosition
-                it.onNavigationAdapterItemClick(laboratoryArrayList[i], i)
+    inner class NavigationViewHolder(private val composeView: ComposeView) :
+        RecyclerView.ViewHolder(composeView) {
+        fun bind(laboratory: Laboratory) {
+            val fileName = laboratory.fileName
+            val parts = fileName.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val title = parts[0].replace('_', ' ')
+            laboratory.title = title
+            composeView.setContent {
+                RepositoryCard(text = title) {
+                    navigationAdapterItemClickHandler?.let {
+                        val i = adapterPosition
+                        it.onNavigationAdapterItemClick(laboratoryArrayList[i], i)
+                    }
+                }
             }
         }
     }
