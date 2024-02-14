@@ -28,7 +28,6 @@ import com.nagpal.shivam.vtucslab.screens.Utils.safeNavigate
 import com.nagpal.shivam.vtucslab.utilities.Stages
 import kotlinx.coroutines.launch
 
-
 class ProgramFragment : Fragment() {
     private var _binding: FragmentProgramBinding? = null
     private val binding get() = _binding!!
@@ -44,8 +43,9 @@ class ProgramFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentProgramBinding.inflate(inflater, container, false)
         setupMenuProvider()
@@ -56,13 +56,14 @@ class ProgramFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
                     binding.emptyTextView.visibility = View.GONE
-                    toast = Utils.showToast(
-                        requireContext(),
-                        toast,
-                        it.toast,
-                        viewModel,
-                        UiEvent.ResetToast
-                    )
+                    toast =
+                        Utils.showToast(
+                            requireContext(),
+                            toast,
+                            it.toast,
+                            viewModel,
+                            UiEvent.ResetToast,
+                        )
 
                     if (it.stage != Stages.LOADING) {
                         binding.swipeRefresh.isRefreshing = false
@@ -103,38 +104,45 @@ class ProgramFragment : Fragment() {
     }
 
     private fun setupMenuProvider() {
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_program_fragment, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.menu_item_refresh -> {
-                        viewModel.onEvent(UiEvent.RefreshContent(url))
-                        true
-                    }
-
-                    else -> false
+        requireActivity().addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(
+                    menu: Menu,
+                    menuInflater: MenuInflater,
+                ) {
+                    menuInflater.inflate(R.menu.menu_program_fragment, menu)
                 }
-            }
-        }, viewLifecycleOwner)
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.menu_item_refresh -> {
+                            viewModel.onEvent(UiEvent.RefreshContent(url))
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner,
+        )
     }
 
     private fun setupRepositoryAdapter() {
         contentAdapter = ContentAdapter(requireContext(), ArrayList())
-        contentAdapter.setItemClickHandler(object : ContentAdapter.ItemClickHandler {
-            override fun onContentFileClick(file: ContentFile) {
-                val actionProgramFragmentToDisplayFragment =
-                    ProgramFragmentDirections.actionProgramFragmentToDisplayFragment(
-                        viewModel.uiState.value.baseUrl!!,
-                        file.fileName,
-                        file.fileName
-                    )
-                findNavController().safeNavigate(actionProgramFragmentToDisplayFragment)
-            }
-
-        })
+        contentAdapter.setItemClickHandler(
+            object : ContentAdapter.ItemClickHandler {
+                override fun onContentFileClick(file: ContentFile) {
+                    val actionProgramFragmentToDisplayFragment =
+                        ProgramFragmentDirections.actionProgramFragmentToDisplayFragment(
+                            viewModel.uiState.value.baseUrl!!,
+                            file.fileName,
+                            file.fileName,
+                        )
+                    findNavController().safeNavigate(actionProgramFragmentToDisplayFragment)
+                }
+            },
+        )
         binding.recyclerView.adapter = contentAdapter
     }
 

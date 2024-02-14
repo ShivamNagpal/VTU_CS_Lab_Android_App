@@ -10,7 +10,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
-
 fun getRetrofitBuilder(): Retrofit.Builder {
     return Retrofit.Builder()
         .addConverterFactory(ScalarsConverterFactory.create())
@@ -18,9 +17,7 @@ fun getRetrofitBuilder(): Retrofit.Builder {
         .addCallAdapterFactory(ApiResultCallAdapterFactory.create())
 }
 
-fun <T : Any> handleApiResult(
-    execute: () -> Response<T>
-): ApiResult<T> {
+fun <T : Any> handleApiResult(execute: () -> Response<T>): ApiResult<T> {
     return try {
         val response = execute()
         val body = response.body()

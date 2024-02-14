@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.update
 
 class DisplayViewModel(
     application: Application,
-    private val vtuCsLabRepository: VtuCsLabRepository
+    private val vtuCsLabRepository: VtuCsLabRepository,
 ) : AndroidViewModel(application), EventEmitter<UiEvent> {
     var scrollX = 0
     var scrollY = 0
@@ -47,27 +47,32 @@ class DisplayViewModel(
         }
     }
 
-    private fun loadContent(url: String, forceRefresh: Boolean = false) {
-        fetchJob = Utils.loadContent(
-            _uiState,
-            fetchJob,
-            viewModelScope,
-            { urlArg, forceRefreshArg -> vtuCsLabRepository.fetchContent(urlArg, forceRefreshArg) },
-            { null },
-            url,
-            forceRefresh,
-        )
+    private fun loadContent(
+        url: String,
+        forceRefresh: Boolean = false,
+    ) {
+        fetchJob =
+            Utils.loadContent(
+                _uiState,
+                fetchJob,
+                viewModelScope,
+                { urlArg, forceRefreshArg -> vtuCsLabRepository.fetchContent(urlArg, forceRefreshArg) },
+                { null },
+                url,
+                forceRefresh,
+            )
     }
 
     companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val vtuCsLabApplication = this[APPLICATION_KEY] as VTUCSLabApplication
-                DisplayViewModel(
-                    vtuCsLabApplication,
-                    vtuCsLabApplication.vtuCsLabRepository
-                )
+        val Factory: ViewModelProvider.Factory =
+            viewModelFactory {
+                initializer {
+                    val vtuCsLabApplication = this[APPLICATION_KEY] as VTUCSLabApplication
+                    DisplayViewModel(
+                        vtuCsLabApplication,
+                        vtuCsLabApplication.vtuCsLabRepository,
+                    )
+                }
             }
-        }
     }
 }

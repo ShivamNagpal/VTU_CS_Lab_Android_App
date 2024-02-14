@@ -31,7 +31,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -55,7 +55,6 @@ android {
         }
     }
 }
-
 
 dependencies {
     val appCompatVersion = "1.6.1"
@@ -109,6 +108,23 @@ dependencies {
     testImplementation("junit:junit:$junitVersion")
     androidTestImplementation("androidx.test:runner:$testRunnerVersion")
     androidTestImplementation("androidx.test.espresso:espresso-core:$espressoCoreVersion")
+}
+
+// Install GitHooks
+// This snippet is placed in the :app module as the tasks such as build, preBuild doesn't exists in the root project.
+// However there is a way to place this logic in the rootProject build.gradle.kts by simply moving this logic to the rootProject file.
+// Then prefix tasks with project(":app") at both th places
+// and wrap the build dependency section with afterEvaluate {} as the tasks are generated dynamically.
+val installLocalGitHookTaskName = "installLocalGitHook"
+tasks.register<Copy>(installLocalGitHookTaskName) {
+    description = "Setup Local GitHooks on the Developer's machine"
+    group = JavaBasePlugin.BUILD_DEPENDENTS_TASK_NAME
+    from("../.githooks")
+    into("../.git/hooks")
+}
+
+tasks.named("build") {
+    dependsOn(installLocalGitHookTaskName)
 }
 
 apply {

@@ -35,7 +35,7 @@ class VtuCsLabRepositoryImpl(
 
     override fun fetchLaboratories(
         url: String,
-        forceRefresh: Boolean
+        forceRefresh: Boolean,
     ): Flow<Resource<LaboratoryResponse, ErrorType>> =
         flow {
             fetch(
@@ -51,7 +51,7 @@ class VtuCsLabRepositoryImpl(
 
     override fun fetchExperiments(
         url: String,
-        forceRefresh: Boolean
+        forceRefresh: Boolean,
     ): Flow<Resource<LaboratoryExperimentResponse, ErrorType>> =
         flow {
             fetch(
@@ -67,18 +67,19 @@ class VtuCsLabRepositoryImpl(
 
     override fun fetchContent(
         url: String,
-        forceRefresh: Boolean
-    ): Flow<Resource<String, ErrorType>> = flow {
-        fetch(
-            flow = this,
-            url,
-            LabResponseType.CONTENT,
-            vtuCsLabService::fetchRawResponse,
-            { stringContent -> stringContent },
-            { stringContent -> stringContent },
-            forceRefresh,
-        )
-    }
+        forceRefresh: Boolean,
+    ): Flow<Resource<String, ErrorType>> =
+        flow {
+            fetch(
+                flow = this,
+                url,
+                LabResponseType.CONTENT,
+                vtuCsLabService::fetchRawResponse,
+                { stringContent -> stringContent },
+                { stringContent -> stringContent },
+                forceRefresh,
+            )
+        }
 
     private suspend fun <D : Any> fetch(
         flow: FlowCollector<Resource<D, ErrorType>>,
@@ -100,7 +101,7 @@ class VtuCsLabRepositoryImpl(
                         flow.emit(Resource.Success(decodedString))
                         foundInDB = true
                         if (it.fetchedAt.after(
-                                StaticMethods.getCurrentDateMinusSeconds(Configurations.RESPONSE_FRESHNESS_TIME)
+                                StaticMethods.getCurrentDateMinusSeconds(Configurations.RESPONSE_FRESHNESS_TIME),
                             )
                         ) {
                             return
@@ -129,7 +130,7 @@ class VtuCsLabRepositoryImpl(
                         encodeToString(data),
                         labResponseType,
                         Date(),
-                    )
+                    ),
                 )
                 flow.emit(Resource.Success(data))
             }
@@ -160,7 +161,7 @@ class VtuCsLabRepositoryImpl(
         flow: FlowCollector<Resource<D, ErrorType>>,
         forceRefresh: Boolean,
         foundInDB: Boolean,
-        errorResource: Resource.Error<D, ErrorType>
+        errorResource: Resource.Error<D, ErrorType>,
     ) {
         if (forceRefresh || !foundInDB) {
             flow.emit(errorResource)

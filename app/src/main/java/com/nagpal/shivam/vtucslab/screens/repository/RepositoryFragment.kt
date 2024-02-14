@@ -41,8 +41,9 @@ class RepositoryFragment : Fragment() {
     private var toast: Toast? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentRepositoryBinding.inflate(inflater, container, false)
         setupMenuProvider()
@@ -53,13 +54,14 @@ class RepositoryFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
                     binding.emptyTextView.visibility = View.GONE
-                    toast = Utils.showToast(
-                        requireContext(),
-                        toast,
-                        it.toast,
-                        viewModel,
-                        UiEvent.ResetToast
-                    )
+                    toast =
+                        Utils.showToast(
+                            requireContext(),
+                            toast,
+                            it.toast,
+                            viewModel,
+                            UiEvent.ResetToast,
+                        )
 
                     if (it.stage != Stages.LOADING) {
                         binding.swipeRefresh.isRefreshing = false
@@ -114,46 +116,56 @@ class RepositoryFragment : Fragment() {
 
     private fun setupRepositoryAdapter() {
         navigationAdapter = NavigationAdapter(requireContext(), ArrayList())
-        navigationAdapter.setNavigationAdapterItemClickHandler(object :
-            NavigationAdapter.NavigationAdapterItemClickHandler {
-            override fun onNavigationAdapterItemClick(laboratory: Laboratory, i: Int) {
-                val actionRepositoryFragmentToProgramFragment =
-                    RepositoryFragmentDirections.actionRepositoryFragmentToProgramFragment(
-                        viewModel.uiState.value.baseUrl!!,
-                        laboratory.fileName,
-                        laboratory.title.orEmpty(),
-                    )
-                findNavController().safeNavigate(actionRepositoryFragmentToProgramFragment)
-            }
-
-        })
+        navigationAdapter.setNavigationAdapterItemClickHandler(
+            object :
+                NavigationAdapter.NavigationAdapterItemClickHandler {
+                override fun onNavigationAdapterItemClick(
+                    laboratory: Laboratory,
+                    i: Int,
+                ) {
+                    val actionRepositoryFragmentToProgramFragment =
+                        RepositoryFragmentDirections.actionRepositoryFragmentToProgramFragment(
+                            viewModel.uiState.value.baseUrl!!,
+                            laboratory.fileName,
+                            laboratory.title.orEmpty(),
+                        )
+                    findNavController().safeNavigate(actionRepositoryFragmentToProgramFragment)
+                }
+            },
+        )
         binding.repositoryRecyclerView.adapter = navigationAdapter
     }
 
     private fun setupMenuProvider() {
-        requireActivity().addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_main_fragment, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId) {
-                    R.id.menu_item_refresh -> {
-                        viewModel.onEvent(UiEvent.RefreshContent(url))
-                        true
-                    }
-
-                    R.id.main_menu_item_privacy -> {
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse(Constants.PRIVACY_POLICY_LINK)
-                        startActivity(intent)
-                        true
-                    }
-
-                    else -> false
+        requireActivity().addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(
+                    menu: Menu,
+                    menuInflater: MenuInflater,
+                ) {
+                    menuInflater.inflate(R.menu.menu_main_fragment, menu)
                 }
-            }
-        }, viewLifecycleOwner)
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.menu_item_refresh -> {
+                            viewModel.onEvent(UiEvent.RefreshContent(url))
+                            true
+                        }
+
+                        R.id.main_menu_item_privacy -> {
+                            val intent = Intent(Intent.ACTION_VIEW)
+                            intent.data = Uri.parse(Constants.PRIVACY_POLICY_LINK)
+                            startActivity(intent)
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
+            },
+            viewLifecycleOwner,
+        )
     }
 
     override fun onDestroyView() {

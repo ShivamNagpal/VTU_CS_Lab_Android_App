@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -66,40 +67,47 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupDrawerToggle() {
-        actionBarDrawerToggle = ActionBarDrawerToggle(
-            this,
-            binding.drawerLayout,
-            R.string.drawer_open,
-            R.string.drawer_close
-        )
+        actionBarDrawerToggle =
+            ActionBarDrawerToggle(
+                this,
+                binding.drawerLayout,
+                R.string.drawer_open,
+                R.string.drawer_close,
+            )
         binding.drawerLayout.addDrawerListener(actionBarDrawerToggle)
         actionBarDrawerToggle.syncState()
 
-        val drawerBackPressedCallback = onBackPressedDispatcher.addCallback(this, false) {
-            closeNavigationDrawer()
-        }
-        binding.drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+        val drawerBackPressedCallback =
+            onBackPressedDispatcher.addCallback(this, false) {
+                closeNavigationDrawer()
             }
+        binding.drawerLayout.addDrawerListener(
+            object : DrawerLayout.DrawerListener {
+                override fun onDrawerSlide(
+                    drawerView: View,
+                    slideOffset: Float,
+                ) {
+                }
 
-            override fun onDrawerOpened(drawerView: View) {
-                drawerBackPressedCallback.isEnabled = true
-            }
+                override fun onDrawerOpened(drawerView: View) {
+                    drawerBackPressedCallback.isEnabled = true
+                }
 
-            override fun onDrawerClosed(drawerView: View) {
-                drawerBackPressedCallback.isEnabled = false
-            }
+                override fun onDrawerClosed(drawerView: View) {
+                    drawerBackPressedCallback.isEnabled = false
+                }
 
-            override fun onDrawerStateChanged(newState: Int) {
-            }
-        })
+                override fun onDrawerStateChanged(newState: Int) {
+                }
+            },
+        )
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (appBarConfiguration.topLevelDestinations.contains(destination.id)) {
                 binding.drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED, GravityCompat.START)
             } else {
                 binding.drawerLayout.setDrawerLockMode(
                     LOCK_MODE_LOCKED_CLOSED,
-                    GravityCompat.START
+                    GravityCompat.START,
                 )
             }
         }
@@ -110,8 +118,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home && appBarConfiguration.topLevelDestinations.contains(
-                navController.currentDestination?.id
+        if (item.itemId == android.R.id.home &&
+            appBarConfiguration.topLevelDestinations.contains(
+                navController.currentDestination?.id,
             )
         ) {
             actionBarDrawerToggle.syncState()
@@ -122,7 +131,6 @@ class MainActivity : AppCompatActivity() {
         }
         return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
     }
-
 
     private fun exitApplication() {
         finishAffinity()
