@@ -14,8 +14,8 @@ android {
         applicationId = "com.nagpal.shivam.vtucslab"
         minSdk = 23
         targetSdk = 34
-        versionCode = 10
-        versionName = "7.1"
+        versionCode = 11
+        versionName = "7.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
         vectorDrawables {
