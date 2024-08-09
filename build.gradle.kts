@@ -1,6 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id("com.android.application") version "8.2.2" apply false
+    id("com.android.application") version "8.5.2" apply false
     id("org.jetbrains.kotlin.android") version "1.9.0" apply false
     id("com.google.devtools.ksp") version ("1.9.21-1.0.15") apply false
     id("com.diffplug.spotless") version "6.22.0"
@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         val firebaseCrashlyticsGradleVersion = "2.9.9"
         val googleServicesVersion = "4.4.1"
-        val gradleVersion = "8.2.2"
+        val gradleVersion = "8.5.2"
         val kotlinGradlePluginVersion = "1.9.21"
         val navigationVersion = "2.7.7"
         rootProject.extra["navigation"] = navigationVersion
