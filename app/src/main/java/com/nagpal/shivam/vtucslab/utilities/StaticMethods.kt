@@ -8,7 +8,6 @@ import java.util.Calendar
 import java.util.Date
 
 object StaticMethods {
-
     val moshi: Moshi by lazy {
         Moshi.Builder().build()
     }
@@ -18,34 +17,50 @@ object StaticMethods {
     }
 
     fun getBaseURL(labResponse: LaboratoryResponse): String {
-        return "${labResponse.githubRawContent}/${labResponse.organization}/${labResponse.repository}/${labResponse.branch}"
+        return buildString {
+            append(labResponse.githubRawContent)
+            append("/")
+            append(labResponse.organization)
+            append("/")
+            append(labResponse.repository)
+            append("/")
+            append(labResponse.branch)
+        }
     }
 
     fun getBaseURL(laboratoryExperimentResponse: LaboratoryExperimentResponse): String {
-        return "${laboratoryExperimentResponse.githubRawContent}/${laboratoryExperimentResponse.organization}/${laboratoryExperimentResponse.repository}/${laboratoryExperimentResponse.branch}"
+        return buildString {
+            append(laboratoryExperimentResponse.githubRawContent)
+            append("/")
+            append(laboratoryExperimentResponse.organization)
+            append("/")
+            append(laboratoryExperimentResponse.repository)
+            append("/")
+            append(laboratoryExperimentResponse.branch)
+        }
     }
 
     fun logNetworkResultError(
         logTag: String,
         url: String,
         code: Int,
-        message: String?
+        message: String?,
     ) {
         Log.e(
             logTag,
-            "Call to $url resulted in non-success response. Status Code: $code. Message: $message"
+            "Call to $url resulted in non-success response. Status Code: $code. Message: $message",
         )
     }
 
     fun logNetworkResultException(
         logTag: String,
         url: String,
-        throwable: Throwable
+        throwable: Throwable,
     ) {
         Log.e(
             logTag,
             "Call to $url failed with exception: ${throwable.javaClass.name}",
-            throwable
+            throwable,
         )
     }
 

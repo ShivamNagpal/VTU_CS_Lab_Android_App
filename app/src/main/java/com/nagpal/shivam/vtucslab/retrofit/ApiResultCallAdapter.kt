@@ -11,5 +11,4 @@ class ApiResultCallAdapter(private val resultType: Type) :
     override fun adapt(call: Call<Type>): Call<ApiResult<Type>> {
         return ApiResultCall(call)
     }
-
 }

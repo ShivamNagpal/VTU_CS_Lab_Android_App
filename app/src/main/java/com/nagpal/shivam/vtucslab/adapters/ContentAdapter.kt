@@ -16,9 +16,10 @@ import com.nagpal.shivam.vtucslab.utilities.StaticMethods.formatProgramName
 
 class ContentAdapter(
     private val context: Context,
-    private val labExperimentArrayList: ArrayList<LabExperiment>
+    private val labExperimentArrayList: ArrayList<LabExperiment>,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var itemClickHandler: ItemClickHandler? = null
+
     fun setItemClickHandler(itemClickHandler: ItemClickHandler) {
         this.itemClickHandler = itemClickHandler
     }
@@ -35,14 +36,17 @@ class ContentAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_SSP_SF -> {
                 val sspSfBinding =
                     LayoutCardSeSspSfBinding.inflate(
                         LayoutInflater.from(context),
                         parent,
-                        false
+                        false,
                     )
                 SspSfViewHolder(sspSfBinding)
             }
@@ -52,7 +56,7 @@ class ContentAdapter(
                     LayoutCardSeMspBinding.inflate(
                         LayoutInflater.from(context),
                         parent,
-                        false
+                        false,
                     )
                 MspSfViewHolder(mspSfBinding)
             }
@@ -62,7 +66,7 @@ class ContentAdapter(
                     LayoutCardSeSspMfBinding.inflate(
                         LayoutInflater.from(context),
                         parent,
-                        false
+                        false,
                     )
                 SspMfViewHolder(sspMfBinding)
             }
@@ -72,7 +76,7 @@ class ContentAdapter(
                     LayoutCardSeMspBinding.inflate(
                         LayoutInflater.from(context),
                         parent,
-                        false
+                        false,
                     )
                 MspMfViewHolder(seMspBinding)
             }
@@ -81,7 +85,10 @@ class ContentAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+    ) {
         val labExperiment = labExperimentArrayList[position]
         val serialOrder = processSerialOrder(labExperiment.serialOrder)
         when (holder) {
@@ -98,34 +105,36 @@ class ContentAdapter(
 
             is MspSfViewHolder -> {
                 holder.binding.serialOrder.text = serialOrder
-                val adapter = MultipleSubPartAdapter(
-                    context,
-                    labExperiment.labExperimentSubParts,
-                    false,
-                    itemClickHandler
-                )
+                val adapter =
+                    MultipleSubPartAdapter(
+                        context,
+                        labExperiment.labExperimentSubParts,
+                        false,
+                        itemClickHandler,
+                    )
                 holder.binding.subPartContainer.adapter = adapter
             }
 
             is SspMfViewHolder -> {
                 holder.binding.serialOrder.text = serialOrder
-                val adapter = MultipleFileAdapter(
-                    context,
-                    labExperiment.labExperimentSubParts[0].contentFiles,
-                    itemClickHandler
-                )
+                val adapter =
+                    MultipleFileAdapter(
+                        context,
+                        labExperiment.labExperimentSubParts[0].contentFiles,
+                        itemClickHandler,
+                    )
                 holder.binding.filesContainer.adapter = adapter
-
             }
 
             is MspMfViewHolder -> {
                 holder.binding.serialOrder.text = serialOrder
-                val adapter = MultipleSubPartAdapter(
-                    context,
-                    labExperiment.labExperimentSubParts,
-                    true,
-                    itemClickHandler
-                )
+                val adapter =
+                    MultipleSubPartAdapter(
+                        context,
+                        labExperiment.labExperimentSubParts,
+                        true,
+                        itemClickHandler,
+                    )
                 holder.binding.subPartContainer.adapter = adapter
             }
         }
@@ -143,15 +152,17 @@ class ContentAdapter(
             contentFileLength = contentFileLength.coerceAtLeast(subPart.contentFiles.size)
         }
         val labExperimentSubPartsSize = labExperimentSubParts.size
-        return if (labExperimentSubPartsSize == 1 && contentFileLength == 1)
+        return if (labExperimentSubPartsSize == 1 && contentFileLength == 1) {
             VIEW_TYPE_SSP_SF
-        else if (labExperimentSubPartsSize > 1 && contentFileLength == 1)
+        } else if (labExperimentSubPartsSize > 1 && contentFileLength == 1) {
             VIEW_TYPE_MSP_SF
-        else if (labExperimentSubPartsSize == 1)
+        } else if (labExperimentSubPartsSize == 1) {
             VIEW_TYPE_SSP_MF
-        else if (labExperimentSubPartsSize > 1)
+        } else if (labExperimentSubPartsSize > 1) {
             VIEW_TYPE_MSP_MF
-        else VIEW_TYPE_INVALID
+        } else {
+            VIEW_TYPE_INVALID
+        }
     }
 
     private fun processSerialOrder(order: String?): String {
@@ -171,10 +182,12 @@ class ContentAdapter(
     }
 
     internal class InvalidViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
     internal inner class SspSfViewHolder(var binding: LayoutCardSeSspSfBinding) :
         RecyclerView.ViewHolder(
-            binding.root
-        ), View.OnClickListener {
+            binding.root,
+        ),
+        View.OnClickListener {
         init {
             binding.root.setOnClickListener(this)
         }
@@ -191,7 +204,7 @@ class ContentAdapter(
 
     internal inner class MspSfViewHolder(var binding: LayoutCardSeMspBinding) :
         RecyclerView.ViewHolder(
-            binding.root
+            binding.root,
         ) {
         init {
             binding.subPartContainer.layoutManager = LinearLayoutManager(context)
@@ -201,7 +214,7 @@ class ContentAdapter(
 
     internal inner class SspMfViewHolder(var binding: LayoutCardSeSspMfBinding) :
         RecyclerView.ViewHolder(
-            binding.root
+            binding.root,
         ) {
         init {
             binding.filesContainer.layoutManager = LinearLayoutManager(context)
@@ -211,7 +224,7 @@ class ContentAdapter(
 
     internal inner class MspMfViewHolder(var binding: LayoutCardSeMspBinding) :
         RecyclerView.ViewHolder(
-            binding.root
+            binding.root,
         ) {
         init {
             binding.subPartContainer.layoutManager = LinearLayoutManager(context)

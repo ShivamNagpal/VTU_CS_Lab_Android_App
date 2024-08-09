@@ -25,18 +25,20 @@ class VTUCSLabApplication : MultiDexApplication() {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false)
         }
 
-        _db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            VTU_CS_LAB
-        ).build()
+        _db =
+            Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java,
+                VTU_CS_LAB,
+            ).build()
 
         val vtuCsLabService = VtuCsLabService.instance
-        _vtuCsLabRepository = VtuCsLabRepositoryImpl(
-            this,
-            vtuCsLabService,
-            _db.labResponseDao(),
-            StaticMethods.moshi,
-        )
+        _vtuCsLabRepository =
+            VtuCsLabRepositoryImpl(
+                this,
+                vtuCsLabService,
+                _db.labResponseDao(),
+                StaticMethods.moshi,
+            )
     }
 }

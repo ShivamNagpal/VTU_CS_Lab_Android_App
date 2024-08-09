@@ -1,0 +1,10 @@
+#!/bin/sh
+check=$(head -1 $1 | grep -E '^(feature|fix|build|refactor|performance|docs|test|style|setup): #[1-9][0-9]* \| \S.*')
+if [ "" = "$check" ]; then
+        echo "Commit message doesn't match the required format." 1>&2
+        echo "Required format:" 1>&2
+        echo "    <type>: <issue-id> | <description>" 1>&2
+        echo "    e.g. feature: #14 | Initial project setup" 1>&2
+        echo "" 1>&2
+        exit 1
+fi

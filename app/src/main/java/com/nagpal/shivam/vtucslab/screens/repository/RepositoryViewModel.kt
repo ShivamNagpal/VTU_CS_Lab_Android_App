@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.update
 
 class RepositoryViewModel(
     application: Application,
-    private val vtuCsLabRepository: VtuCsLabRepository
+    private val vtuCsLabRepository: VtuCsLabRepository,
 ) : AndroidViewModel(application), EventEmitter<UiEvent> {
     private val initialState = ContentState<LaboratoryResponse>(Stages.LOADING)
     private val _uiState = MutableStateFlow(initialState)
@@ -47,32 +47,37 @@ class RepositoryViewModel(
         }
     }
 
-    private fun loadContent(url: String, forceRefresh: Boolean = false) {
-        fetchJob = Utils.loadContent(
-            _uiState,
-            fetchJob,
-            viewModelScope,
-            { urlArg, forceRefreshArg ->
-                vtuCsLabRepository.fetchLaboratories(
-                    urlArg,
-                    forceRefreshArg
-                )
-            },
-            { StaticMethods.getBaseURL(it) },
-            url,
-            forceRefresh,
-        )
+    private fun loadContent(
+        url: String,
+        forceRefresh: Boolean = false,
+    ) {
+        fetchJob =
+            Utils.loadContent(
+                _uiState,
+                fetchJob,
+                viewModelScope,
+                { urlArg, forceRefreshArg ->
+                    vtuCsLabRepository.fetchLaboratories(
+                        urlArg,
+                        forceRefreshArg,
+                    )
+                },
+                { StaticMethods.getBaseURL(it) },
+                url,
+                forceRefresh,
+            )
     }
 
     companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val vtuCsLabApplication = this[APPLICATION_KEY] as VTUCSLabApplication
-                RepositoryViewModel(
-                    vtuCsLabApplication,
-                    vtuCsLabApplication.vtuCsLabRepository
-                )
+        val Factory: ViewModelProvider.Factory =
+            viewModelFactory {
+                initializer {
+                    val vtuCsLabApplication = this[APPLICATION_KEY] as VTUCSLabApplication
+                    RepositoryViewModel(
+                        vtuCsLabApplication,
+                        vtuCsLabApplication.vtuCsLabRepository,
+                    )
+                }
             }
-        }
     }
 }

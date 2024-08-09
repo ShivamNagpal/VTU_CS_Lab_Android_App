@@ -14,16 +14,25 @@ import com.nagpal.shivam.vtucslab.utilities.StaticMethods.formatProgramName
 class MultipleFileAdapter(
     private val context: Context,
     private val contentFiles: List<ContentFile>,
-    private val itemClickHandler: ItemClickHandler?
+    private val itemClickHandler: ItemClickHandler?,
 ) : RecyclerView.Adapter<ContentFileViewHolder>() {
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ContentFileViewHolder {
-        val binding = LayoutCardSingleFilesWithoutSubPartsBinding.inflate(
-            LayoutInflater.from(context), viewGroup, false
-        )
+    override fun onCreateViewHolder(
+        viewGroup: ViewGroup,
+        i: Int,
+    ): ContentFileViewHolder {
+        val binding =
+            LayoutCardSingleFilesWithoutSubPartsBinding.inflate(
+                LayoutInflater.from(context),
+                viewGroup,
+                false,
+            )
         return ContentFileViewHolder(binding)
     }
 
-    override fun onBindViewHolder(contentFileViewHolder: ContentFileViewHolder, i: Int) {
+    override fun onBindViewHolder(
+        contentFileViewHolder: ContentFileViewHolder,
+        i: Int,
+    ) {
         val parts =
             contentFiles[i].fileName.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
                 .toTypedArray()
