@@ -26,11 +26,12 @@ class VTUCSLabApplication : MultiDexApplication() {
         }
 
         _db =
-            Room.databaseBuilder(
-                applicationContext,
-                AppDatabase::class.java,
-                VTU_CS_LAB,
-            ).build()
+            Room
+                .databaseBuilder(
+                    applicationContext,
+                    AppDatabase::class.java,
+                    VTU_CS_LAB,
+                ).build()
 
         val vtuCsLabService = VtuCsLabService.instance
         _vtuCsLabRepository =

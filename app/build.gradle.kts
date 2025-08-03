@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -8,24 +10,23 @@ plugins {
 
 android {
     namespace = "com.nagpal.shivam.vtucslab"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.nagpal.shivam.vtucslab"
-        minSdk = 23
-        targetSdk = 34
-        versionCode = 11
-        versionName = "7.2"
+        minSdk = 24
+        targetSdk = 36
+        versionCode = 12
+        versionName = "7.3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled = true
         vectorDrawables {
             useSupportLibrary = true
         }
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
     }
-
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -35,15 +36,14 @@ android {
             )
         }
     }
-    kotlin {
-        jvmToolchain(11)
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.JVM_11
+        }
     }
     buildFeatures {
         viewBinding = true
@@ -57,20 +57,20 @@ android {
 }
 
 dependencies {
-    val appCompatVersion = "1.6.1"
-    val constraintLayoutVersion = "2.1.4"
-    val coreKTXVersion = "1.12.0"
-    val espressoCoreVersion = "3.5.1"
-    val firebaseBomVersion = "31.2.3"
+    val appCompatVersion = "1.7.1"
+    val constraintLayoutVersion = "2.2.1"
+    val coreKTXVersion = "1.16.0"
+    val espressoCoreVersion = "3.7.0"
+    val firebaseBomVersion = "34.0.0"
     val junitVersion = "4.13.2"
-    val materialVersion = "1.11.0"
-    val moshiVersion = "1.15.0"
+    val materialVersion = "1.12.0"
+    val moshiVersion = "1.15.2"
     val multidexVersion = "2.0.1"
     val navigationVersion = rootProject.extra["navigation"] as String
-    val retrofitVersion = "2.9.0"
-    val roomVersion = "2.6.1"
+    val retrofitVersion = "3.0.0"
+    val roomVersion = "2.7.2"
     val swipeRefreshLayoutVersion = "1.1.0"
-    val testRunnerVersion = "1.5.2"
+    val testRunnerVersion = "1.7.0"
 
     implementation(platform("com.google.firebase:firebase-bom:$firebaseBomVersion"))
     implementation(fileTree(mapOf("include" to listOf("*.jar"), "dir" to "libs")))
@@ -95,8 +95,8 @@ dependencies {
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshLayoutVersion")
 
     // Firebase SDK
-    implementation("com.google.firebase:firebase-messaging-ktx")
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-crashlytics")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")

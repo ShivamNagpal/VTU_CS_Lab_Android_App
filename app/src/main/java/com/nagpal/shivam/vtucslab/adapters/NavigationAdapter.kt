@@ -53,9 +53,7 @@ class NavigationAdapter(
         holder.textView.text = laboratory.title
     }
 
-    override fun getItemCount(): Int {
-        return laboratoryArrayList.size
-    }
+    override fun getItemCount(): Int = laboratoryArrayList.size
 
     interface NavigationAdapterItemClickHandler {
         fun onNavigationAdapterItemClick(
@@ -64,13 +62,13 @@ class NavigationAdapter(
         )
     }
 
-    inner class NavigationViewHolder(itemView: View) :
-        RecyclerView.ViewHolder(itemView),
+    inner class NavigationViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
-        var textView: TextView
+        var textView: TextView = itemView.findViewById(R.id.text_view_layout)
 
         init {
-            textView = itemView.findViewById(R.id.text_view_layout)
             itemView.setOnClickListener(this)
         }
 

@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 
 class ProgramFragment : Fragment() {
     private var _binding: FragmentProgramBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     private val viewModel: ProgramViewModel by viewModels { ProgramViewModel.Factory }
     private lateinit var contentAdapter: ContentAdapter
@@ -113,8 +113,8 @@ class ProgramFragment : Fragment() {
                     menuInflater.inflate(R.menu.menu_program_fragment, menu)
                 }
 
-                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                    return when (menuItem.itemId) {
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+                    when (menuItem.itemId) {
                         R.id.menu_item_refresh -> {
                             viewModel.onEvent(UiEvent.RefreshContent(url))
                             true
@@ -122,7 +122,6 @@ class ProgramFragment : Fragment() {
 
                         else -> false
                     }
-                }
             },
             viewLifecycleOwner,
         )

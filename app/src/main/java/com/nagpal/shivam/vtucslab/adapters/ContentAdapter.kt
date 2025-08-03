@@ -39,8 +39,8 @@ class ContentAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
-    ): RecyclerView.ViewHolder {
-        return when (viewType) {
+    ): RecyclerView.ViewHolder =
+        when (viewType) {
             VIEW_TYPE_SSP_SF -> {
                 val sspSfBinding =
                     LayoutCardSeSspSfBinding.inflate(
@@ -83,7 +83,6 @@ class ContentAdapter(
 
             else -> InvalidViewHolder(View(context))
         }
-    }
 
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
@@ -95,8 +94,12 @@ class ContentAdapter(
             is SspSfViewHolder -> {
                 holder.binding.serialOrder.text = serialOrder
                 val parts =
-                    labExperiment.labExperimentSubParts[0].contentFiles[0].fileName.split("\\.".toRegex())
-                        .dropLastWhile { it.isEmpty() }.toTypedArray()
+                    labExperiment.labExperimentSubParts[0]
+                        .contentFiles[0]
+                        .fileName
+                        .split("\\.".toRegex())
+                        .dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
                 if (parts.size >= 2) {
                     holder.binding.programTitle.text =
                         formatProgramName(parts[parts.size - 2])
@@ -140,9 +143,7 @@ class ContentAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return labExperimentArrayList.size
-    }
+    override fun getItemCount(): Int = labExperimentArrayList.size
 
     override fun getItemViewType(position: Int): Int {
         val experiment = labExperimentArrayList[position]
@@ -181,10 +182,13 @@ class ContentAdapter(
         fun onContentFileClick(file: ContentFile)
     }
 
-    internal class InvalidViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    internal class InvalidViewHolder(
+        itemView: View,
+    ) : RecyclerView.ViewHolder(itemView)
 
-    internal inner class SspSfViewHolder(var binding: LayoutCardSeSspSfBinding) :
-        RecyclerView.ViewHolder(
+    internal inner class SspSfViewHolder(
+        var binding: LayoutCardSeSspSfBinding,
+    ) : RecyclerView.ViewHolder(
             binding.root,
         ),
         View.OnClickListener {
@@ -202,8 +206,9 @@ class ContentAdapter(
         }
     }
 
-    internal inner class MspSfViewHolder(var binding: LayoutCardSeMspBinding) :
-        RecyclerView.ViewHolder(
+    internal inner class MspSfViewHolder(
+        var binding: LayoutCardSeMspBinding,
+    ) : RecyclerView.ViewHolder(
             binding.root,
         ) {
         init {
@@ -212,8 +217,9 @@ class ContentAdapter(
         }
     }
 
-    internal inner class SspMfViewHolder(var binding: LayoutCardSeSspMfBinding) :
-        RecyclerView.ViewHolder(
+    internal inner class SspMfViewHolder(
+        var binding: LayoutCardSeSspMfBinding,
+    ) : RecyclerView.ViewHolder(
             binding.root,
         ) {
         init {
@@ -222,8 +228,9 @@ class ContentAdapter(
         }
     }
 
-    internal inner class MspMfViewHolder(var binding: LayoutCardSeMspBinding) :
-        RecyclerView.ViewHolder(
+    internal inner class MspMfViewHolder(
+        var binding: LayoutCardSeMspBinding,
+    ) : RecyclerView.ViewHolder(
             binding.root,
         ) {
         init {

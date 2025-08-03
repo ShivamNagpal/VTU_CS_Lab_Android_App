@@ -34,7 +34,10 @@ class MultipleFileAdapter(
         i: Int,
     ) {
         val parts =
-            contentFiles[i].fileName.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+            contentFiles[i]
+                .fileName
+                .split("\\.".toRegex())
+                .dropLastWhile { it.isEmpty() }
                 .toTypedArray()
         if (parts.size >= 2) {
             contentFileViewHolder.binding.programTitle.text =
@@ -42,12 +45,12 @@ class MultipleFileAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return contentFiles.size
-    }
+    override fun getItemCount(): Int = contentFiles.size
 
-    inner class ContentFileViewHolder(var binding: LayoutCardSingleFilesWithoutSubPartsBinding) :
-        RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+    inner class ContentFileViewHolder(
+        var binding: LayoutCardSingleFilesWithoutSubPartsBinding,
+    ) : RecyclerView.ViewHolder(binding.root),
+        View.OnClickListener {
         init {
             binding.root.setOnClickListener(this)
         }

@@ -22,7 +22,8 @@ import kotlinx.coroutines.flow.update
 class DisplayViewModel(
     application: Application,
     private val vtuCsLabRepository: VtuCsLabRepository,
-) : AndroidViewModel(application), EventEmitter<UiEvent> {
+) : AndroidViewModel(application),
+    EventEmitter<UiEvent> {
     var scrollX = 0
     var scrollY = 0
     private val initialState = ContentState<String>(Stages.LOADING)

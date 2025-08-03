@@ -12,12 +12,10 @@ object StaticMethods {
         Moshi.Builder().build()
     }
 
-    fun formatProgramName(programName: String): String {
-        return programName.replace('_', ' ')
-    }
+    fun formatProgramName(programName: String): String = programName.replace('_', ' ')
 
-    fun getBaseURL(labResponse: LaboratoryResponse): String {
-        return buildString {
+    fun getBaseURL(labResponse: LaboratoryResponse): String =
+        buildString {
             append(labResponse.githubRawContent)
             append("/")
             append(labResponse.organization)
@@ -26,10 +24,9 @@ object StaticMethods {
             append("/")
             append(labResponse.branch)
         }
-    }
 
-    fun getBaseURL(laboratoryExperimentResponse: LaboratoryExperimentResponse): String {
-        return buildString {
+    fun getBaseURL(laboratoryExperimentResponse: LaboratoryExperimentResponse): String =
+        buildString {
             append(laboratoryExperimentResponse.githubRawContent)
             append("/")
             append(laboratoryExperimentResponse.organization)
@@ -38,7 +35,6 @@ object StaticMethods {
             append("/")
             append(laboratoryExperimentResponse.branch)
         }
-    }
 
     fun logNetworkResultError(
         logTag: String,
