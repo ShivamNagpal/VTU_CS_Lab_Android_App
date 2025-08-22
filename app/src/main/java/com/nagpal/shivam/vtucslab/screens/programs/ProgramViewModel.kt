@@ -25,7 +25,8 @@ import kotlinx.coroutines.flow.update
 class ProgramViewModel(
     application: Application,
     private val vtuCsLabRepository: VtuCsLabRepository,
-) : AndroidViewModel(application), EventEmitter<UiEvent> {
+) : AndroidViewModel(application),
+    EventEmitter<UiEvent> {
     private val initialState =
         ContentState<LaboratoryExperimentResponse>(Stages.LOADING)
     private val _uiState = MutableStateFlow(initialState)

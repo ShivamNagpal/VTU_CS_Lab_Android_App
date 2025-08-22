@@ -7,7 +7,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ApiResultCall<T : Any>(private val proxy: Call<T>) : Call<ApiResult<T>> {
+class ApiResultCall<T : Any>(
+    private val proxy: Call<T>,
+) : Call<ApiResult<T>> {
     override fun enqueue(callback: Callback<ApiResult<T>>) {
         proxy.enqueue(
             object : Callback<T> {

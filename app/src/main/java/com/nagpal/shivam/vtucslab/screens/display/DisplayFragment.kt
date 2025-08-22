@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 class DisplayFragment : Fragment() {
     private var _binding: FragmentDisplayBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
     private val displayFragmentArgs by navArgs<DisplayFragmentArgs>()
     private val viewModel: DisplayViewModel by viewModels { DisplayViewModel.Factory }
     private var toast: Toast? = null
@@ -134,11 +134,12 @@ class DisplayFragment : Fragment() {
                                     ),
                                 )
                             clipboard.setPrimaryClip(clipData)
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.code_copied_to_clipboard),
-                                Toast.LENGTH_SHORT,
-                            ).show()
+                            Toast
+                                .makeText(
+                                    requireContext(),
+                                    getString(R.string.code_copied_to_clipboard),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
                             return true
                         }
 

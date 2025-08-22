@@ -36,7 +36,8 @@ object Utils {
 
         fetchJob?.cancel()
         return viewModelScope.launch(Dispatchers.IO) {
-            fetchExecutable.invoke(url, forceRefresh)
+            fetchExecutable
+                .invoke(url, forceRefresh)
                 .onEach { resource ->
                     when (resource) {
                         is Resource.Loading -> {
@@ -88,13 +89,12 @@ object Utils {
         }
     }
 
-    fun UIMessage.asString(context: Context): String {
-        return when (this.messageType) {
+    fun UIMessage.asString(context: Context): String =
+        when (this.messageType) {
             UIMessageType.NoActiveInternetConnectionDetailed -> context.getString(R.string.no_internet_connection_detailed)
             UIMessageType.SomeErrorOccurred -> context.getString(R.string.error_occurred)
             UIMessageType.NoActiveInternetConnection -> context.getString(R.string.no_internet_connection)
         }
-    }
 
     fun <T> showToast(
         context: Context,
@@ -102,8 +102,8 @@ object Utils {
         toastUIMessage: UIMessage?,
         eventEmitter: EventEmitter<T>,
         event: T,
-    ): Toast? {
-        return toastUIMessage?.let { uiMessage ->
+    ): Toast? =
+        toastUIMessage?.let { uiMessage ->
             toast?.cancel()
             val newToast =
                 Toast.makeText(
@@ -115,7 +115,6 @@ object Utils {
             eventEmitter.onEvent(event)
             newToast
         } ?: toast
-    }
 
     fun NavController.safeNavigate(direction: NavDirections) {
         with(this) {

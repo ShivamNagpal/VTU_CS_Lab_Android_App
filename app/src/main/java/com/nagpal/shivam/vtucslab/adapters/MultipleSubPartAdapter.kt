@@ -21,8 +21,8 @@ class MultipleSubPartAdapter(
     override fun onCreateViewHolder(
         viewGroup: ViewGroup,
         i: Int,
-    ): RecyclerView.ViewHolder {
-        return if (!containsMultipleFiles) {
+    ): RecyclerView.ViewHolder =
+        if (!containsMultipleFiles) {
             val binding =
                 LayoutCardSingleSubPartsWithoutFilesBinding.inflate(
                     LayoutInflater.from(context),
@@ -39,7 +39,6 @@ class MultipleSubPartAdapter(
                 )
             SubPartWithFilesViewHolder(binding)
         }
-    }
 
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
@@ -49,8 +48,12 @@ class MultipleSubPartAdapter(
             is SubPartWithoutFilesViewHolder -> {
                 holder.binding.serialOrder.text = subParts[i].subSerialOrder
                 val parts =
-                    subParts[i].contentFiles[0].fileName.split("\\.".toRegex())
-                        .dropLastWhile { it.isEmpty() }.toTypedArray()
+                    subParts[i]
+                        .contentFiles[0]
+                        .fileName
+                        .split("\\.".toRegex())
+                        .dropLastWhile { it.isEmpty() }
+                        .toTypedArray()
                 if (parts.size >= 2) {
                     holder.binding.programTitle.text =
                         formatProgramName(
@@ -72,12 +75,11 @@ class MultipleSubPartAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return subParts.size
-    }
+    override fun getItemCount(): Int = subParts.size
 
-    internal inner class SubPartWithoutFilesViewHolder(var binding: LayoutCardSingleSubPartsWithoutFilesBinding) :
-        RecyclerView.ViewHolder(
+    internal inner class SubPartWithoutFilesViewHolder(
+        var binding: LayoutCardSingleSubPartsWithoutFilesBinding,
+    ) : RecyclerView.ViewHolder(
             binding.root,
         ),
         View.OnClickListener {
@@ -94,8 +96,9 @@ class MultipleSubPartAdapter(
         }
     }
 
-    internal inner class SubPartWithFilesViewHolder(var binding: LayoutCardSingleSubPartsWithFilesBinding) :
-        RecyclerView.ViewHolder(
+    internal inner class SubPartWithFilesViewHolder(
+        var binding: LayoutCardSingleSubPartsWithFilesBinding,
+    ) : RecyclerView.ViewHolder(
             binding.root,
         ) {
         init {

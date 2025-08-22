@@ -34,7 +34,7 @@ class RepositoryFragment : Fragment() {
     private var _binding: FragmentRepositoryBinding? = null
     private lateinit var navigationAdapter: NavigationAdapter
 
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
     private val viewModel: RepositoryViewModel by viewModels { RepositoryViewModel.Factory }
     private val url = Constants.INDEX_REPOSITORY_URL
 
@@ -146,8 +146,8 @@ class RepositoryFragment : Fragment() {
                     menuInflater.inflate(R.menu.menu_main_fragment, menu)
                 }
 
-                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                    return when (menuItem.itemId) {
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+                    when (menuItem.itemId) {
                         R.id.menu_item_refresh -> {
                             viewModel.onEvent(UiEvent.RefreshContent(url))
                             true
@@ -162,7 +162,6 @@ class RepositoryFragment : Fragment() {
 
                         else -> false
                     }
-                }
             },
             viewLifecycleOwner,
         )
